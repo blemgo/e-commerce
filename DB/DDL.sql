@@ -1,14 +1,14 @@
-DROP TABLE IF EXISTS users CASCADE;
-DROP TYPE IF EXISTS user_role;
-DROP TYPE IF EXISTS auth_provider;
+DROP TABLE IF EXISTS bally.users CASCADE;
+DROP TYPE IF EXISTS bally.user_role;
+DROP TYPE IF EXISTS bally.auth_provider;
 DROP EXTENSION IF EXISTS "pgcrypto";
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
-CREATE TYPE user_role AS ENUM ('customer', 'admin');
-CREATE TYPE auth_provider AS ENUM ('local', 'google');
+CREATE TYPE bally.user_role AS ENUM ('customer', 'admin');
+CREATE TYPE bally.auth_provider AS ENUM ('local', 'google');
 
-CREATE TABLE users (
+CREATE TABLE bally.users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) NOT NULL,
     password_hash VARCHAR(255),
@@ -19,4 +19,4 @@ CREATE TABLE users (
     UNIQUE(auth_provider, provider_id)
 );
 
-CREATE UNIQUE INDEX idx_users_email ON users (email);
+CREATE UNIQUE INDEX idx_users_email ON bally.users (email);
