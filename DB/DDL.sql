@@ -10,12 +10,12 @@ CREATE TYPE bally.auth_provider AS ENUM ('local', 'google');
 
 CREATE TABLE bally.users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    email VARCHAR(255) NOT NULL,
-    password_hash VARCHAR(255),
-    full_name VARCHAR(255) NOT NULL,
+    email TEXT NOT NULL,
+    password_hash TEXT,
+    full_name TEXT NOT NULL,
     role user_role NOT NULL DEFAULT 'customer',
     auth_provider auth_provider NOT NULL DEFAULT 'local',
-    provider_id VARCHAR(255),
+    provider_id TEXT,
     UNIQUE(auth_provider, provider_id)
 );
 
