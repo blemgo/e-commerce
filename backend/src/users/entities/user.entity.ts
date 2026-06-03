@@ -15,13 +15,13 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar' })
   email: string;
 
-  @Column({ name: 'password_hash', type: 'varchar', length: 255, nullable: true })
+  @Column({ name: 'password_hash', type: 'varchar', nullable: true })
   passwordHash: string | null;
 
-  @Column({ name: 'full_name', type: 'varchar', length: 255 })
+  @Column({ name: 'full_name', type: 'varchar' })
   fullName: string;
 
   @Column({
@@ -41,6 +41,6 @@ export class User {
   })
   authProvider: AuthProvider;
 
-  @Column({ name: 'provider_id', type: 'varchar', length: 255, nullable: true })
+  @Column({ name: 'provider_id', type: 'varchar', nullable: true })
   providerId: string | null;
 }
