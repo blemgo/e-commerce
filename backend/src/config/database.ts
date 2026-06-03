@@ -1,18 +1,18 @@
-import { DataSource } from 'typeorm';
 import { env } from './env';
 import { User } from '../users/entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-export const AppDataSource = new DataSource({
-  type: 'postgres',
-  host: env.DB_HOST,
-  port: env.DB_PORT,
-  username: env.DB_USER,
-  password: env.DB_PASS,
-  database: env.DB_NAME,
-  ssl: { rejectUnauthorized: false },
+const typeOrmModule = TypeOrmModule.forRoot({
+    type: 'postgres',
+    host: env.DB_HOST || 'localhost',
+    port: env.DB_PORT || 5432,
+    username: env.DB_USER || 'postgres',
+    password: env.DB_PASS || 'postgres',
+    database: env.DB_NAME || 'postgres',
+    ssl: { rejectUnauthorized: false },
+    synchronize: false,
+    logging: false,
+    entities: [User],
+  });
 
-  synchronize: false,
-  logging: false,
-  entities: [User],
-});
-
+export { typeOrmModule };
