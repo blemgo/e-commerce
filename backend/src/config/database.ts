@@ -4,15 +4,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 const typeOrmModule = TypeOrmModule.forRoot({
     type: 'postgres',
-    host: env.DB_HOST || 'localhost',
-    port: env.DB_PORT || 5432,
-    username: env.DB_USER || 'postgres',
-    password: env.DB_PASS || 'postgres',
-    database: env.DB_NAME || 'postgres',
-    ssl: { rejectUnauthorized: false },
+    host: env.DB_HOST,
+    port: env.DB_PORT,
+    username: env.DB_USER,
+    password: env.DB_PASS,
+    database: env.DB_NAME,
     synchronize: false,
     logging: false,
-    entities: [User],
+    entities: [__dirname + '/../**/*.entity.{ts,js}'],
   });
 
 export { typeOrmModule };
