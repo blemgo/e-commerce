@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -16,6 +16,16 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
+
+  async getUserByEmail(email: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { email: email.toLowerCase() } });
+    
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
 
   async registerLocalUser(registerLocalUserDto: RegisterLocalUserDto): Promise<AuthorizedUser> {
     const hashedPass = await bcrypt.hash(registerLocalUserDto.password, env.BCRYPT_SALT);
