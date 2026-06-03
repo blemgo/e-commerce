@@ -4,6 +4,7 @@ import {
   Index,
   PrimaryGeneratedColumn,
   Unique,
+  Check,
 } from 'typeorm';
 import { AuthProvider } from './enums/auth-provider.enum';
 import { Role } from './enums/role.enum';
@@ -15,13 +16,14 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: false })
   email: string;
 
   @Column({ name: 'password_hash', type: 'varchar', nullable: true })
   passwordHash: string | null;
 
-  @Column({ name: 'full_name', type: 'varchar' })
+  @Column({ name: 'full_name', type: 'varchar', length: 100, nullable: false })
+  @Check('full_name ~ "^[a-zA-Z\\s]+$" && length(full_name) >= 2')
   fullName: string;
 
   @Column({
@@ -29,6 +31,7 @@ export class User {
     enum: Role,
     enumName: 'user_role',
     default: Role.CUSTOMER,
+    nullable: false,
   })
   role: Role;
 
@@ -38,6 +41,7 @@ export class User {
     enum: AuthProvider,
     enumName: 'auth_provider',
     default: AuthProvider.LOCAL,
+    nullable: false,
   })
   authProvider: AuthProvider;
 

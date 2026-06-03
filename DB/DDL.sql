@@ -12,7 +12,7 @@ CREATE TABLE bally.users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT NOT NULL,
     password_hash TEXT,
-    full_name TEXT NOT NULL,
+    full_name VARCHAR(100) NOT NULL CHECK (full_name ~ '^[a-zA-Z\s]+$' && length(full_name) >= 2),
     role user_role NOT NULL DEFAULT 'customer',
     auth_provider auth_provider NOT NULL DEFAULT 'local',
     provider_id TEXT,
