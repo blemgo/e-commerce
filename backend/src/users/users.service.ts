@@ -8,13 +8,7 @@ import { Role } from './entities/enums/role.enum';
 import { AuthProvider } from './entities/enums/auth-provider.enum';
 import { env } from 'src/config/env';
 import { pgCodes } from 'src/utils/pg-codes';
-
-class AuthorizedUser {
-  id: string;
-  email: string;
-  fullName: string;
-  role: Role;
-}
+import { AuthorizedUser } from 'src/auth/dto/authorized-user.dto';
 
 @Injectable()
 export class UsersService {
