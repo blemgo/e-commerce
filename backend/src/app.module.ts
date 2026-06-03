@@ -3,9 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { typeOrmModule } from './config/database';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UsersModule, typeOrmModule],
+  imports: [
+    UsersModule, 
+    AuthModule,
+    typeOrmModule,
+  ], 
   controllers: [AppController],
   providers: [AppService],
 })
