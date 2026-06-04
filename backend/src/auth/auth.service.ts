@@ -50,6 +50,31 @@ export class AuthService {
     return { accessToken, refreshToken, user: authorizedUser };
   }
 
+  async refreshAccessToken(refreshToken: string, accessToken: string): Promise<AuthResponse> {
+    const payload = this.jwtService.verify<JwtPayload>(accessToken, { ignoreExpiration: true });
+    let newRefreshToken: string | null;
+
+    try {
+      newRefreshToken = await this.refreshTokensService.reissueToken(refreshToken);
+
+    } catch (error) {
+      // connects with anti theft in refresh tokens service: delete all user refresh tokens.
+      if (error instanceof UnauthorizedException) {
+        this.refreshTokensService.revokeTokenByUserId(payload.sub);
+      }
+
+      throw error;
+    }
+
+    const authorizedUser: AuthorizedUser = { id: payload.sub, email: payload.email, fullName: payload.fullName, role: payload.role };
+
+    return {
+      accessToken: await this.signToken(authorizedUser),
+      refreshToken: newRefreshToken,
+      user: authorizedUser,
+    };
+  }
+
   private async signTokens(user: AuthorizedUser): Promise<{ accessToken: string, refreshToken: string }> {
     const accessToken = await this.signToken(user);
     const refreshToken = await this.refreshTokensService.createRefreshToken(user.id);
@@ -58,7 +83,12 @@ export class AuthService {
   }
 
   private async signToken(authorizedUser: AuthorizedUser): Promise<string> {
-    const payload: JwtPayload = { sub: authorizedUser.id, email: authorizedUser.email, role: authorizedUser.role };
+    const payload: JwtPayload = {
+      sub: authorizedUser.id,
+      email: authorizedUser.email,
+      fullName: authorizedUser.fullName,
+      role: authorizedUser.role,
+    };
 
     return this.jwtService.sign(payload);
   }
