@@ -8,7 +8,6 @@ import { Role } from './entities/enums/role.enum';
 import { AuthProvider } from './entities/enums/auth-provider.enum';
 import { env } from 'src/config/env';
 import { pgCodes } from 'src/utils/pg-codes';
-import { AuthorizedUser } from 'src/auth/dto/authorized-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -27,9 +26,9 @@ export class UsersService {
     return user;
   }
 
-  async registerLocalUser(registerLocalUserDto: RegisterLocalUserDto): Promise<AuthorizedUser> {
+  async createLocalUser(registerLocalUserDto: RegisterLocalUserDto): Promise<User> {
     const hashedPass = await bcrypt.hash(registerLocalUserDto.password, env.BCRYPT_SALT);
-    
+
     const user = this.usersRepository.create({
       email: registerLocalUserDto.email.toLowerCase(),
       passwordHash: hashedPass,
@@ -37,7 +36,7 @@ export class UsersService {
       role: Role.CUSTOMER,
       authProvider: AuthProvider.LOCAL,
     });
-    
+
     try {
       await this.usersRepository.save(user);
     } catch (error) {
@@ -47,7 +46,7 @@ export class UsersService {
 
       throw error;
     }
-    
-    return { id: user.id, email: user.email, fullName: user.fullName, role: user.role };
+
+    return user;
   }
 }
