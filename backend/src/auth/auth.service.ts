@@ -9,12 +9,14 @@ import { User } from 'src/users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { userToAuthorizedUser } from './utils/userToAuthorizedUser';
 import { JwtPayload } from './types/jwt-payload.interface';
+import { RefreshTokensService } from 'src/refresh-tokens/refresh-tokens.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly refreshTokensService: RefreshTokensService,
   ) {}
 
   async loginLocalUser(loginLocalUserDto: LoginLocalUserDto): Promise<AuthResponse> {
@@ -32,9 +34,9 @@ export class AuthService {
     }
 
     if (user.passwordHash && await bcrypt.compare(loginLocalUserDto.password, user.passwordHash)) {
-      const token = await this.signToken(user);
+      const { accessToken, refreshToken } = await this.signTokens(userToAuthorizedUser(user));
 
-      return { accessToken: token, user: userToAuthorizedUser(user) };
+      return { accessToken, refreshToken, user: userToAuthorizedUser(user) };
     }
 
     throw new UnauthorizedException('Invalid email or password');
@@ -43,8 +45,16 @@ export class AuthService {
   async registerLocalUser(registerLocalUserDto: RegisterLocalUserDto): Promise<AuthResponse> {
     const user = await this.usersService.createLocalUser(registerLocalUserDto);
     const authorizedUser = userToAuthorizedUser(user);
+    const { accessToken, refreshToken } = await this.signTokens(authorizedUser);
 
-    return { accessToken: await this.signToken(authorizedUser), user: authorizedUser };
+    return { accessToken, refreshToken, user: authorizedUser };
+  }
+
+  private async signTokens(user: AuthorizedUser): Promise<{ accessToken: string, refreshToken: string }> {
+    const accessToken = await this.signToken(user);
+    const refreshToken = await this.refreshTokensService.createRefreshToken(user.id);
+
+    return { accessToken, refreshToken };
   }
 
   private async signToken(authorizedUser: AuthorizedUser): Promise<string> {
