@@ -6,6 +6,8 @@ import * as crypto from 'crypto';
 import { BinaryToTextEncoding } from 'crypto';
 import ms from 'ms';
 import { env } from '../config/env';
+import { AuthorizedUser } from 'src/auth/dto/authorized-user.dto';
+import { userToAuthorizedUser } from 'src/auth/utils/userToAuthorizedUser';
 
 @Injectable()
 export class RefreshTokensService {
@@ -27,13 +29,17 @@ export class RefreshTokensService {
     }
 
     async createRefreshToken(userId: string): Promise<string> {
-        const refreshToken = this.refreshTokenRepository.create({
-            user: { id: userId },
-            tokenHash: this.hashToken(this.generateToken()),
-            expiresAt: new Date(Date.now() + ms(env.REFRESH_TOKEN_EXPIRES_IN)),
-        });
+        const rawToken = this.generateToken();
 
-        return this.refreshTokenRepository.save(refreshToken).then(token => token.id);
+        await this.refreshTokenRepository.save(
+            this.refreshTokenRepository.create({
+                user: { id: userId },
+                tokenHash: this.hashToken(rawToken),
+                expiresAt: new Date(Date.now() + ms(env.REFRESH_TOKEN_EXPIRES_IN)),
+            }),
+        );
+
+        return rawToken;
     }
 
     async revokeTokenByHash(token: string): Promise<void> {
@@ -50,30 +56,36 @@ export class RefreshTokensService {
         );
     }
 
-    async reissueToken(token: string): Promise<string> {
+    async reissueToken(token: string): Promise<{ refreshToken: string; user: AuthorizedUser }> {
         const existing = await this.refreshTokenRepository.findOne({
             where: { tokenHash: this.hashToken(token) },
             relations: { user: true },
         });
 
-        // anti theft
         if (!existing || existing.revoked || existing.expiresAt < new Date()) {
+            throw new UnauthorizedException('Invalid or expired refresh token');
+        }
+
+        // anti theft
+        if (existing.revoked) {
+            await this.revokeTokenByUserId(existing.user.id);
+
             throw new UnauthorizedException('Invalid or expired refresh token');
         }
 
         // revoke existing token
         await this.refreshTokenRepository.update(existing.id, { revoked: true });
 
-        const newToken = this.hashToken(this.generateToken());
+        const rawToken = this.generateToken();
 
         await this.refreshTokenRepository.save(
             this.refreshTokenRepository.create({
                 user: existing.user,
-                tokenHash: newToken,
+                tokenHash: this.hashToken(rawToken),
                 expiresAt: new Date(Date.now() + ms(env.REFRESH_TOKEN_EXPIRES_IN)),
             }),
         );
 
-        return newToken;
+        return { refreshToken: rawToken, user: userToAuthorizedUser(existing.user) };
     }
 }

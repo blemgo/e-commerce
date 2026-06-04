@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { LoginLocalUserDto } from './dto/login-local-user.dto';
 import { RegisterLocalUserDto } from 'src/users/dto/register-local-user.dto';
-import { AuthResponse } from './dto/auth-response.dto';
+import { AuthResult } from './types/auth-result';
 import { AuthorizedUser } from './dto/authorized-user.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
@@ -19,7 +19,7 @@ export class AuthService {
     private readonly refreshTokensService: RefreshTokensService,
   ) {}
 
-  async loginLocalUser(loginLocalUserDto: LoginLocalUserDto): Promise<AuthResponse> {
+  async loginLocalUser(loginLocalUserDto: LoginLocalUserDto): Promise<AuthResult> {
     let user: User | null = null;
 
     try {
@@ -34,7 +34,7 @@ export class AuthService {
     }
 
     if (user.passwordHash && await bcrypt.compare(loginLocalUserDto.password, user.passwordHash)) {
-      const { accessToken, refreshToken } = await this.signTokens(userToAuthorizedUser(user));
+      const { accessToken, refreshToken } = await this.generateTokens(userToAuthorizedUser(user));
 
       return { accessToken, refreshToken, user: userToAuthorizedUser(user) };
     }
@@ -42,40 +42,25 @@ export class AuthService {
     throw new UnauthorizedException('Invalid email or password');
   } 
 
-  async registerLocalUser(registerLocalUserDto: RegisterLocalUserDto): Promise<AuthResponse> {
+  async registerLocalUser(registerLocalUserDto: RegisterLocalUserDto): Promise<AuthResult> {
     const user = await this.usersService.createLocalUser(registerLocalUserDto);
     const authorizedUser = userToAuthorizedUser(user);
-    const { accessToken, refreshToken } = await this.signTokens(authorizedUser);
+    const { accessToken, refreshToken } = await this.generateTokens(authorizedUser);
 
     return { accessToken, refreshToken, user: authorizedUser };
   }
 
-  async refreshAccessToken(refreshToken: string, accessToken: string): Promise<AuthResponse> {
-    const payload = this.jwtService.verify<JwtPayload>(accessToken, { ignoreExpiration: true });
-    let newRefreshToken: string | null;
-
-    try {
-      newRefreshToken = await this.refreshTokensService.reissueToken(refreshToken);
-
-    } catch (error) {
-      // connects with anti theft in refresh tokens service: delete all user refresh tokens.
-      if (error instanceof UnauthorizedException) {
-        this.refreshTokensService.revokeTokenByUserId(payload.sub);
-      }
-
-      throw error;
-    }
-
-    const authorizedUser: AuthorizedUser = { id: payload.sub, email: payload.email, fullName: payload.fullName, role: payload.role };
+  async refreshAccessToken(oldRefreshToken: string): Promise<AuthResult> {
+    const { refreshToken, user } = await this.refreshTokensService.reissueToken(oldRefreshToken);
 
     return {
-      accessToken: await this.signToken(authorizedUser),
-      refreshToken: newRefreshToken,
-      user: authorizedUser,
+      accessToken: await this.signToken(user),
+      refreshToken,
+      user,
     };
   }
 
-  private async signTokens(user: AuthorizedUser): Promise<{ accessToken: string, refreshToken: string }> {
+  private async generateTokens(user: AuthorizedUser): Promise<{ accessToken: string, refreshToken: string }> {
     const accessToken = await this.signToken(user);
     const refreshToken = await this.refreshTokensService.createRefreshToken(user.id);
 

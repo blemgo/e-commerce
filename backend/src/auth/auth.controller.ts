@@ -1,9 +1,10 @@
-import { Controller, Post, Body, HttpCode } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, Req, Res } from '@nestjs/common';
+import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginLocalUserDto } from './dto/login-local-user.dto';
 import { AuthResponse } from './dto/auth-response.dto';
 import { RegisterLocalUserDto } from 'src/users/dto/register-local-user.dto';
-import { RefreshAccessTokenDto } from './dto/refresh-access-token.dto';
+import { setRefreshTokenCookie } from './utils/refresh-token-cookie.utils';
 
 @Controller('auth')
 export class AuthController {
@@ -11,22 +12,40 @@ export class AuthController {
 
   @Post('local-login')
   @HttpCode(200)
-  async loginLocalUser(@Body() loginLocalUserDto: LoginLocalUserDto): Promise<AuthResponse> {
-    return await this.authService.loginLocalUser(loginLocalUserDto);
+  async loginLocalUser(
+    @Body() loginLocalUserDto: LoginLocalUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<AuthResponse> {
+    const { refreshToken, ...clientResponse } = await this.authService.loginLocalUser(loginLocalUserDto);
+
+    setRefreshTokenCookie(res, refreshToken);
+
+    return clientResponse;
   }
 
   @Post('local-register')
   @HttpCode(201)
-  async registerLocalUser(@Body() registerLocalUserDto: RegisterLocalUserDto): Promise<AuthResponse> {
-    return await this.authService.registerLocalUser(registerLocalUserDto);
+  async registerLocalUser(
+    @Body() registerLocalUserDto: RegisterLocalUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<AuthResponse> {
+    const { refreshToken, ...clientResponse } = await this.authService.registerLocalUser(registerLocalUserDto);
+    
+    setRefreshTokenCookie(res, refreshToken);
+
+    return clientResponse;
   }
 
   @Post('refresh')
   @HttpCode(200)
-  async refreshAccessToken(@Body() refreshAccessTokenDto: RefreshAccessTokenDto): Promise<AuthResponse> {
-    return await this.authService.refreshAccessToken(
-      refreshAccessTokenDto.refreshToken,
-      refreshAccessTokenDto.accessToken,
-    );
+  async refreshAccessToken(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<{ accessToken: string }> {
+    const { refreshToken, accessToken } = await this.authService.refreshAccessToken(req.cookies['refresh_token']);
+
+    setRefreshTokenCookie(res, refreshToken);
+
+    return { accessToken };
   }
 }
