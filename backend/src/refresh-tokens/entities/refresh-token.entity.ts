@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 
 @Entity({ schema: 'bally', name: 'refresh_tokens' })
@@ -7,6 +7,7 @@ export class RefreshToken {
     id: string;
 
     @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: false })
+    @JoinColumn({ name: 'user_id' })
     @Index('idx_refresh_tokens_user_id')
     user: User;
 
