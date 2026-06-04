@@ -1,7 +1,7 @@
 import { Controller, Post, Body, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthorizedUser } from './dto/authorized-user.dto';
 import { LoginLocalUserDto } from './dto/login-local-user.dto';
+import { AuthResponse } from './dto/auth-response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -9,7 +9,7 @@ export class AuthController {
 
   @Post('local-login')
   @HttpCode(200)
-  async loginLocalUser(@Body() loginLocalUserDto: LoginLocalUserDto): Promise<AuthorizedUser> {
+  async loginLocalUser(@Body() loginLocalUserDto: LoginLocalUserDto): Promise<AuthResponse> {
     return await this.authService.loginLocalUser(loginLocalUserDto);
   }
 }
