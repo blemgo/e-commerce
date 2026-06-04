@@ -1,15 +1,22 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { LoginLocalUserDto } from './dto/login-local-user.dto';
+import { AuthResponse } from './dto/auth-response.dto';
 import { AuthorizedUser } from './dto/authorized-user.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/entities/user.entity';
+import { JwtService } from '@nestjs/jwt';
+import { userToAuthorizedUser } from './utils/userToAuthorizedUser';
+import { JwtPayload } from './types/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService
+  ) {}
 
-  async loginLocalUser(loginLocalUserDto: LoginLocalUserDto): Promise<AuthorizedUser> {
+  async loginLocalUser(loginLocalUserDto: LoginLocalUserDto): Promise<AuthResponse> {
     let user: User | null = null;
 
     try {
@@ -24,14 +31,17 @@ export class AuthService {
     }
 
     if (user.passwordHash && await bcrypt.compare(loginLocalUserDto.password, user.passwordHash)) {
-      return {
-        id: user.id,
-        email: user.email,
-        fullName: user.fullName,
-        role: user.role,
-      };
+      const token = await this.signToken(user);
+
+      return { accessToken: token, user: userToAuthorizedUser(user) };
     }
 
     throw new UnauthorizedException('Invalid email or password');
   } 
+
+  async signToken(authorizedUser: AuthorizedUser): Promise<string> {
+    const payload: JwtPayload = { sub: authorizedUser.id, email: authorizedUser.email, role: authorizedUser.role };
+
+    return this.jwtService.sign(payload);
+  }
 }
