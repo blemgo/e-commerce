@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { LoginLocalUserDto } from './dto/login-local-user.dto';
+import { RegisterLocalUserDto } from 'src/users/dto/register-local-user.dto';
 import { AuthResponse } from './dto/auth-response.dto';
 import { AuthorizedUser } from './dto/authorized-user.dto';
 import { UsersService } from 'src/users/users.service';
@@ -39,7 +40,14 @@ export class AuthService {
     throw new UnauthorizedException('Invalid email or password');
   } 
 
-  async signToken(authorizedUser: AuthorizedUser): Promise<string> {
+  async registerLocalUser(registerLocalUserDto: RegisterLocalUserDto): Promise<AuthResponse> {
+    const user = await this.usersService.createLocalUser(registerLocalUserDto);
+    const authorizedUser = userToAuthorizedUser(user);
+
+    return { accessToken: await this.signToken(authorizedUser), user: authorizedUser };
+  }
+
+  private async signToken(authorizedUser: AuthorizedUser): Promise<string> {
     const payload: JwtPayload = { sub: authorizedUser.id, email: authorizedUser.email, role: authorizedUser.role };
 
     return this.jwtService.sign(payload);
