@@ -1,10 +1,10 @@
-import { Controller, Post, Body, HttpCode, Req, Res } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, Req, Res, UnauthorizedException } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginLocalUserDto } from './dto/login-local-user.dto';
 import { AuthResponse } from './dto/auth-response.dto';
 import { RegisterLocalUserDto } from 'src/users/dto/register-local-user.dto';
-import { setRefreshTokenCookie } from './utils/refresh-token-cookie.utils';
+import { clearRefreshTokenCookie, setRefreshTokenCookie } from './utils/refresh-token-cookie.utils';
 
 @Controller('auth')
 export class AuthController {
@@ -42,10 +42,18 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ accessToken: string }> {
-    const { refreshToken, accessToken } = await this.authService.refreshAccessToken(req.cookies['refresh_token']);
+    try {
+      const { refreshToken, accessToken } = await this.authService.refreshAccessToken(req.cookies['refresh_token']);
 
-    setRefreshTokenCookie(res, refreshToken);
+      setRefreshTokenCookie(res, refreshToken);
 
-    return { accessToken };
+      return { accessToken };
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        clearRefreshTokenCookie(res);
+      }
+
+      throw error;
+    }
   }
 }
