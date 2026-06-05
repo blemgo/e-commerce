@@ -14,9 +14,6 @@ export class RefreshToken {
     @Column({ name: 'token_hash', type: 'text', unique: true, nullable: false })
     tokenHash: string;
 
-    @Column({ name: 'expires_at', type: 'timestamptz', nullable: false })
-    expiresAt: Date;
-
     @Column({ type: 'boolean', default: false, nullable: false })
     revoked: boolean;
 

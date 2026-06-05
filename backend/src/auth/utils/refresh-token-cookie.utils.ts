@@ -1,8 +1,8 @@
 import { CookieOptions, Response } from 'express';
-import ms from 'ms';
 import { env } from 'src/config/env';
 
 const REFRESH_TOKEN_COOKIE_NAME = 'refresh_token';
+const COOKIE_MAX_AGE_MS = 400 * 24 * 60 * 60 * 1000; // 400 days browser maximum
 
 const REFRESH_TOKEN_COOKIE_OPTIONS = {
     httpOnly: true,
@@ -14,7 +14,7 @@ const REFRESH_TOKEN_COOKIE_OPTIONS = {
 export const setRefreshTokenCookie = (res: Response, token: string): void => {
     res.cookie(REFRESH_TOKEN_COOKIE_NAME, token, {
         ...REFRESH_TOKEN_COOKIE_OPTIONS,
-        maxAge: ms(env.REFRESH_TOKEN_EXPIRES_IN),
+        maxAge: COOKIE_MAX_AGE_MS,
     });
 };
 

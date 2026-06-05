@@ -4,8 +4,6 @@ import { RefreshToken } from './entities/refresh-token.entity';
 import { DataSource, Repository } from 'typeorm';
 import * as crypto from 'crypto';
 import { BinaryToTextEncoding } from 'crypto';
-import ms from 'ms';
-import { env } from '../config/env';
 import { AuthorizedUser } from 'src/auth/dto/authorized-user.dto';
 import { userToAuthorizedUser } from 'src/auth/utils/userToAuthorizedUser';
 
@@ -37,7 +35,6 @@ export class RefreshTokensService {
             this.refreshTokenRepository.create({
                 user: { id: userId },
                 tokenHash: this.hashToken(rawToken),
-                expiresAt: new Date(Date.now() + ms(env.REFRESH_TOKEN_EXPIRES_IN)),
             }),
         );
 
@@ -78,8 +75,8 @@ export class RefreshTokensService {
                     throw new UnauthorizedException('Invalid or expired refresh token');
                 }
 
-                if (!existing || existing.expiresAt < new Date()) {
-                    this.logger.log('Refresh token not found or expired');
+                if (!existing) {
+                    this.logger.log('Refresh token not found');
 
                     throw new UnauthorizedException('Invalid or expired refresh token');
                 }
@@ -94,7 +91,6 @@ export class RefreshTokensService {
                 await db.save(db.create(RefreshToken, {
                     user: existing.user,
                     tokenHash: this.hashToken(rawToken),
-                    expiresAt: new Date(Date.now() + ms(env.REFRESH_TOKEN_EXPIRES_IN)),
                 }));
 
                 const reissuedUser = userToAuthorizedUser(existing.user);
