@@ -53,6 +53,15 @@ export class AuthService {
     return { accessToken, refreshToken, user: authorizedUser };
   }
 
+  async loginGoogleUser(user: User): Promise<AuthResult> {
+    const authorizedUser = userToAuthorizedUser(user);
+    const { accessToken, refreshToken } = await this.generateTokens(authorizedUser);
+
+    this.logger.log(`Google user logged in: ${user.id}`);
+
+    return { accessToken, refreshToken, user: authorizedUser };
+  }
+
   async refreshAccessToken(oldRefreshToken: string): Promise<AuthResult> {
     const { refreshToken, user } = await this.refreshTokensService.reissueToken(oldRefreshToken);
 

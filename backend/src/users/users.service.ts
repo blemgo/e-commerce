@@ -1,5 +1,6 @@
 import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
+import { GoogleProfileData } from './types/google-profile-data.type';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -48,6 +49,44 @@ export class UsersService {
       }
 
       this.logger.error(`Unexpected DB error creating user: ${error.message}`, error.stack);
+      throw error;
+    }
+
+    return user;
+  }
+
+  async findOrCreateGoogleUser(profile: GoogleProfileData): Promise<User> {
+    const { googleId, email, fullName } = profile;
+
+    const existingUser = await this.usersRepository.findOne({
+      where: { providerId: googleId, authProvider: AuthProvider.GOOGLE },
+    });
+
+    if (existingUser) {
+      return existingUser;
+    }
+
+    const user = this.usersRepository.create({
+      email: email.toLowerCase(),
+      passwordHash: null,
+      fullName,
+      role: Role.CUSTOMER,
+      authProvider: AuthProvider.GOOGLE,
+      providerId: googleId,
+    });
+
+    try {
+      await this.usersRepository.save(user);
+    } catch (error) {
+      if (error?.code === pgCodes.UNIQUE_VIOLATION) {
+        this.logger.warn(`Email already registered: ${email}`);
+        throw new ConflictException('An account with this email already exists');
+      }
+
+      this.logger.error(
+        `Unexpected DB error creating Google user: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
 
