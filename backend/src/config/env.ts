@@ -17,5 +17,10 @@ export const env = {
     JWT_EXPIRES_IN: (process.env.JWT_EXPIRES_IN || '8h') as StringValue,
 
     BCRYPT_SALT: parseInt(process.env.BCRYPT_SALT || '10'),
+
+    // Google
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || '',
+    GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL || '',
 }
   
