@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RefreshToken } from './entities/refresh-token.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -11,6 +11,7 @@ import { userToAuthorizedUser } from 'src/auth/utils/userToAuthorizedUser';
 
 @Injectable()
 export class RefreshTokensService {
+    private readonly logger = new Logger(RefreshTokensService.name);
     private readonly TOKEN_BYTES = 32;
     private readonly TOKEN_ENCODING: BinaryToTextEncoding = 'hex';
     private readonly HASH_ALGORITHM = 'sha256';
@@ -72,11 +73,14 @@ export class RefreshTokensService {
                 // anti theft measure
                 if (existing?.revoked) {
                     revokeAllForUserId = existing.user.id;
+                    this.logger.warn(`SECURITY: Refresh token reuse detected userId: ${existing.user.id}`);
 
                     throw new UnauthorizedException('Invalid or expired refresh token');
                 }
-                
+
                 if (!existing || existing.expiresAt < new Date()) {
+                    this.logger.log('Refresh token not found or expired');
+
                     throw new UnauthorizedException('Invalid or expired refresh token');
                 }
 
@@ -93,7 +97,11 @@ export class RefreshTokensService {
                     expiresAt: new Date(Date.now() + ms(env.REFRESH_TOKEN_EXPIRES_IN)),
                 }));
 
-                return { refreshToken: rawToken, user: userToAuthorizedUser(existing.user) };
+                const reissuedUser = userToAuthorizedUser(existing.user);
+
+                this.logger.log(`Token reissued for userId: ${reissuedUser.id}`);
+
+                return { refreshToken: rawToken, user: reissuedUser };
             });
         } finally {
             if (revokeAllForUserId) {
@@ -101,6 +109,7 @@ export class RefreshTokensService {
                     await this.revokeTokenByUserId(revokeAllForUserId);
                 } catch (error) {
                     // prevent impacting the original error 
+                    this.logger.error(`Error revoking token for userId: ${revokeAllForUserId}`, error);
                 }
             }
         }

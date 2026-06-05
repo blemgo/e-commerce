@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -11,6 +11,8 @@ import { pgCodes } from 'src/utils/pg-codes';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
@@ -41,9 +43,11 @@ export class UsersService {
       await this.usersRepository.save(user);
     } catch (error) {
       if (error?.code === pgCodes.UNIQUE_VIOLATION) {
+        this.logger.warn(`Email already taken: ${registerLocalUserDto.email}`);
         throw new ConflictException('Email already taken');
       }
 
+      this.logger.error(`Unexpected DB error creating user: ${error.message}`, error.stack);
       throw error;
     }
 

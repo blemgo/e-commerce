@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { LoginLocalUserDto } from './dto/login-local-user.dto';
 import { RegisterLocalUserDto } from 'src/users/dto/register-local-user.dto';
 import { AuthResult } from './types/auth-result';
@@ -13,6 +13,8 @@ import { RefreshTokensService } from 'src/refresh-tokens/refresh-tokens.service'
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
@@ -32,16 +34,21 @@ export class AuthService {
     if (user.passwordHash && await bcrypt.compare(loginLocalUserDto.password, user.passwordHash)) {
       const { accessToken, refreshToken } = await this.generateTokens(userToAuthorizedUser(user));
 
+      this.logger.log(`User logged in: ${user.id}`);
+
       return { accessToken, refreshToken, user: userToAuthorizedUser(user) };
     }
 
+    this.logger.warn(`Bad password for email: ${loginLocalUserDto.email}`);
     throw new UnauthorizedException('Invalid email or password');
-  } 
+  }
 
   async registerLocalUser(registerLocalUserDto: RegisterLocalUserDto): Promise<AuthResult> {
     const user = await this.usersService.createLocalUser(registerLocalUserDto);
     const authorizedUser = userToAuthorizedUser(user);
     const { accessToken, refreshToken } = await this.generateTokens(authorizedUser);
+
+    this.logger.log(`New user registered: ${user.id} (${user.email})`);
 
     return { accessToken, refreshToken, user: authorizedUser };
   }
