@@ -25,7 +25,7 @@ export class AuthService {
     try {
       user = await this.usersService.getUserByEmail(loginLocalUserDto.email);
     } catch (error) {
-      // Avoid leaking information about the existence of the email + prevent false error info.
+      // avoid leaking information about the existence of the email + prevent false error info
       if (error instanceof NotFoundException) {
         throw new UnauthorizedException('Invalid email or password');
       }
