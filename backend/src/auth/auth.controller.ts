@@ -43,7 +43,13 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ accessToken: string }> {
     try {
-      const { refreshToken, accessToken } = await this.authService.refreshAccessToken(req.cookies['refresh_token']);
+      const receivedRefreshToken = req.cookies['refresh_token'];
+
+      if (!receivedRefreshToken) {
+        throw new UnauthorizedException('Refresh token is missing');
+      }
+
+      const { refreshToken, accessToken } = await this.authService.refreshAccessToken(receivedRefreshToken);
 
       setRefreshTokenCookie(res, refreshToken);
 
