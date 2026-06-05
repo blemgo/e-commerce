@@ -68,17 +68,18 @@ export class RefreshTokensService {
                     relations: { user: true },
                     lock: { mode: 'pessimistic_write' },
                 });
+                
+                // anti theft measure
+                if (existing?.revoked) {
+                    revokeAllForUserId = existing.user.id;
 
+                    throw new UnauthorizedException('Invalid or expired refresh token');
+                }
+                
                 if (!existing || existing.expiresAt < new Date()) {
                     throw new UnauthorizedException('Invalid or expired refresh token');
                 }
 
-                // anti theft measure
-                if (existing.revoked) {
-                    revokeAllForUserId = existing.user.id;
-                    
-                    throw new UnauthorizedException('Invalid or expired refresh token');
-                }
 
                 // revoke old token
                 await db.update(RefreshToken, existing.id, { revoked: true });
@@ -96,7 +97,11 @@ export class RefreshTokensService {
             });
         } finally {
             if (revokeAllForUserId) {
-                await this.revokeTokenByUserId(revokeAllForUserId);
+                try {
+                    await this.revokeTokenByUserId(revokeAllForUserId);
+                } catch (error) {
+                    // prevent impacting the original error 
+                }
             }
         }
     }
