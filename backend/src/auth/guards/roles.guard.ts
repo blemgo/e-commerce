@@ -1,7 +1,6 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from 'src/users/entities/enums/role.enum';
-import { AuthorizedUser } from '../dto/authorized-user.dto';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 
 @Injectable()
@@ -18,7 +17,12 @@ export class RolesGuard implements CanActivate {
             return true;
         }
 
-        const user: AuthorizedUser = context.switchToHttp().getRequest().user;
+        const user = context.switchToHttp().getRequest().user;
+
+        // when used with jwt guard there should be a user, this is a safety measure
+        if (!user) {
+            throw new UnauthorizedException('User not found');
+        }
 
         return requiredRoles.includes(user.role);
     }
