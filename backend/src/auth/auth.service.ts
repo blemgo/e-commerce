@@ -20,18 +20,14 @@ export class AuthService {
   ) {}
 
   async loginLocalUser(loginLocalUserDto: LoginLocalUserDto): Promise<AuthResult> {
-    let user: User | null = null;
-
-    try {
-      user = await this.usersService.getUserByEmail(loginLocalUserDto.email);
-    } catch (error) {
-      // avoid leaking information about the existence of the email + prevent false error info
+    const user = await this.usersService.getUserByEmail(loginLocalUserDto.email)
+    .catch((error) => {
       if (error instanceof NotFoundException) {
         throw new UnauthorizedException('Invalid email or password');
       }
       
       throw error;
-    }
+    });
 
     if (user.passwordHash && await bcrypt.compare(loginLocalUserDto.password, user.passwordHash)) {
       const { accessToken, refreshToken } = await this.generateTokens(userToAuthorizedUser(user));
@@ -61,13 +57,13 @@ export class AuthService {
   }
 
   private async generateTokens(user: AuthorizedUser): Promise<{ accessToken: string, refreshToken: string }> {
-    const accessToken = await this.signToken(user);
+    const accessToken = this.signToken(user);
     const refreshToken = await this.refreshTokensService.createRefreshToken(user.id);
 
     return { accessToken, refreshToken };
   }
 
-  private async signToken(authorizedUser: AuthorizedUser): Promise<string> {
+  private signToken(authorizedUser: AuthorizedUser): string {
     const payload: JwtPayload = {
       sub: authorizedUser.id,
       email: authorizedUser.email,
