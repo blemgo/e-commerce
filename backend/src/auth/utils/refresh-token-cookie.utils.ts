@@ -7,7 +7,7 @@ const REFRESH_TOKEN_COOKIE_NAME = 'refresh_token';
 const REFRESH_TOKEN_COOKIE_OPTIONS = {
     httpOnly: true,
     path: '/auth/refresh',
-    secure: process.env.NODE_ENV === 'production',
+    secure: env.NODE_ENV === 'production',
     sameSite: 'lax',
 } as CookieOptions;
 
