@@ -1,10 +1,23 @@
-import { Controller, Post, Body, HttpCode, Req, Res, UnauthorizedException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  HttpCode,
+  Req,
+  Res,
+  UseGuards,
+  UnauthorizedException,
+} from '@nestjs/common';
 import type { Request, Response } from 'express';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { LoginLocalUserDto } from './dto/login-local-user.dto';
 import { AuthResponse } from './dto/auth-response.dto';
 import { RegisterLocalUserDto } from 'src/users/dto/register-local-user.dto';
 import { clearRefreshTokenCookie, setRefreshTokenCookie } from './utils/refresh-token-cookie.utils';
+import { User } from 'src/users/entities/user.entity';
+import { env } from 'src/config/env';
 
 @Controller('auth')
 export class AuthController {
@@ -34,6 +47,22 @@ export class AuthController {
     setRefreshTokenCookie(res, refreshToken);
 
     return clientResponse;
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  googleLogin(): void {}
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleCallback(@Req() req: Request, @Res() res: Response): Promise<void> {
+    const { accessToken, refreshToken } = await this.authService.loginGoogleUser(
+      req.user as User,
+    );
+
+    setRefreshTokenCookie(res, refreshToken);
+
+    res.redirect(`${env.FRONTEND_URL}/auth/callback?accessToken=${accessToken}`);
   }
 
   @Post('refresh')
