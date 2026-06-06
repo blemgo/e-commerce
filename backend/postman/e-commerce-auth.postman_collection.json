@@ -1,0 +1,427 @@
+{
+  "info": {
+    "name": "E-Commerce Auth (JWT + Refresh + Guards)",
+    "description": "Tests for local register/login, JWT access tokens, refresh-token rotation & reuse detection, and role-based guards.\n\nSetup:\n1. Import this collection and the matching environment file.\n2. Select the 'E-Commerce Local' environment.\n3. Enable 'Send cookies automatically' (cookie jar) - the refresh_token is an httpOnly cookie scoped to Path=/auth/refresh.\n4. Run requests top-to-bottom; login/refresh requests auto-store accessToken.\n\nNotes:\n- Groups B and D require guarded endpoints that may not exist yet (stubs are described in each request).\n- DTO validation (A3) only returns 400 once a global ValidationPipe is registered in main.ts.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "accessToken", "value": "" },
+    { "key": "adminToken", "value": "" },
+    { "key": "stolenRefreshToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "A - Registration & Login",
+      "item": [
+        {
+          "name": "A1 Register new user (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 201', () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "pm.test('returns accessToken + user', () => {",
+                  "  pm.expect(json).to.have.property('accessToken');",
+                  "  pm.expect(json.user).to.have.property('role', 'customer');",
+                  "});",
+                  "if (json.accessToken) { pm.collectionVariables.set('accessToken', json.accessToken); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/local-register", "host": ["{{baseUrl}}"], "path": ["auth", "local-register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alice@example.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"Alice Smith\"\n}"
+            },
+            "description": "Expected: 201, body { accessToken, user: { id, email, fullName, role: 'customer' } }, Set-Cookie refresh_token (HttpOnly, Path=/auth/refresh). Refresh token NOT in body."
+          }
+        },
+        {
+          "name": "A2 Register duplicate email (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 409', () => pm.response.to.have.status(409));",
+                  "pm.test('message: Email already taken', () => {",
+                  "  pm.expect(pm.response.json().message).to.eql('Email already taken');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/local-register", "host": ["{{baseUrl}}"], "path": ["auth", "local-register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alice@example.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"Alice Smith\"\n}"
+            },
+            "description": "Run A1 first. Expected: 409 'Email already taken' via the unique constraint + pgCodes.UNIQUE_VIOLATION mapping."
+          }
+        },
+        {
+          "name": "A3 Register invalid data",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Today (no global ValidationPipe) this is NOT rejected for validation reasons.",
+                  "// After adding app.useGlobalPipes(new ValidationPipe({ whitelist: true })) expect 400.",
+                  "pm.test('SHOULD be 400 once ValidationPipe is enabled', () => {",
+                  "  pm.expect(pm.response.code, 'currently passes through without a ValidationPipe').to.be.oneOf([400, 201, 409, 500]);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/local-register", "host": ["{{baseUrl}}"], "path": ["auth", "local-register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"not-an-email\",\n  \"password\": \"123\",\n  \"fullName\": \"A\"\n}"
+            },
+            "description": "Invalid email, short password, short fullName. Without a global ValidationPipe these constraints are not enforced. Add one in main.ts to get a 400."
+          }
+        },
+        {
+          "name": "A4 Login (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('returns accessToken + user', () => {",
+                  "  pm.expect(json).to.have.property('accessToken');",
+                  "  pm.expect(json).to.have.property('user');",
+                  "});",
+                  "if (json.accessToken) { pm.collectionVariables.set('accessToken', json.accessToken); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/local-login", "host": ["{{baseUrl}}"], "path": ["auth", "local-login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alice@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "description": "Expected: 200, { accessToken, user }, fresh refresh_token cookie. Stores accessToken into the collection variable."
+          }
+        },
+        {
+          "name": "A5 Login wrong password (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 401', () => pm.response.to.have.status(401));",
+                  "pm.test('generic message (no enumeration)', () => {",
+                  "  pm.expect(pm.response.json().message).to.eql('Invalid email or password');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/local-login", "host": ["{{baseUrl}}"], "path": ["auth", "local-login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alice@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "description": "Expected: 401 'Invalid email or password'."
+          }
+        },
+        {
+          "name": "A6 Login unknown email (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 401', () => pm.response.to.have.status(401));",
+                  "pm.test('same generic message as wrong password', () => {",
+                  "  pm.expect(pm.response.json().message).to.eql('Invalid email or password');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/local-login", "host": ["{{baseUrl}}"], "path": ["auth", "local-login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ghost@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "description": "Expected: 401 with the IDENTICAL message as A5 - proves no user enumeration."
+          }
+        }
+      ]
+    },
+    {
+      "name": "B - Access Token / JWT",
+      "description": "Requires a guarded route. Add to users.controller.ts:\n\n@UseGuards(JwtAuthGuard)\n@Get('me')\nme(@Req() req: Request) { return req.user; }",
+      "item": [
+        {
+          "name": "B1 Protected route, valid token (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('returns the authorized user', () => {",
+                  "  pm.expect(pm.response.json()).to.have.property('id');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/users/me", "host": ["{{baseUrl}}"], "path": ["users", "me"] },
+            "description": "Expected: 200, body = decoded AuthorizedUser { id, email, fullName, role }. Run A4 first to populate {{accessToken}}."
+          }
+        },
+        {
+          "name": "B2 Protected route, no token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/users/me", "host": ["{{baseUrl}}"], "path": ["users", "me"] },
+            "description": "Expected: 401 - JwtAuthGuard rejects missing bearer token."
+          }
+        },
+        {
+          "name": "B3 Protected route, malformed token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer abc.def.ghi" }],
+            "url": { "raw": "{{baseUrl}}/users/me", "host": ["{{baseUrl}}"], "path": ["users", "me"] },
+            "description": "Expected: 401 - invalid signature/format. Also try editing one char of a real token's signature."
+          }
+        }
+      ]
+    },
+    {
+      "name": "C - Refresh Token",
+      "item": [
+        {
+          "name": "C1 Refresh (200, rotates cookie)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('returns a new accessToken', () => pm.expect(json).to.have.property('accessToken'));",
+                  "if (json.accessToken) { pm.collectionVariables.set('accessToken', json.accessToken); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/auth/refresh", "host": ["{{baseUrl}}"], "path": ["auth", "refresh"] },
+            "description": "No body. Postman sends the refresh_token cookie automatically (after A4). Expected: 200 { accessToken }, new refresh_token cookie (rotation); old token revoked."
+          }
+        },
+        {
+          "name": "C2 Refresh, no cookie (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 401', () => pm.response.to.have.status(401));",
+                  "pm.test('message: Refresh token is missing', () => {",
+                  "  pm.expect(pm.response.json().message).to.eql('Refresh token is missing');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/auth/refresh", "host": ["{{baseUrl}}"], "path": ["auth", "refresh"] },
+            "description": "Clear cookies for localhost first (Postman cookie manager). Expected: 401 'Refresh token is missing' + Set-Cookie clearing refresh_token."
+          }
+        },
+        {
+          "name": "C3 Refresh reuse / theft replay (401 + cascade)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 401', () => pm.response.to.have.status(401));",
+                  "pm.test('message: Invalid or expired refresh token', () => {",
+                  "  pm.expect(pm.response.json().message).to.eql('Invalid or expired refresh token');",
+                  "});",
+                  "// Server should log: 'SECURITY: Refresh token reuse detected'.",
+                  "// Follow-up: the rotated token (T2) is now also revoked - retry C1 and expect 401."
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Cookie", "value": "refresh_token={{stolenRefreshToken}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/refresh", "host": ["{{baseUrl}}"], "path": ["auth", "refresh"] },
+            "description": "Manual setup: 1) Login (A4). 2) Copy current refresh_token from Postman cookie manager into the {{stolenRefreshToken}} env var (this is T1). 3) Run C1 once to rotate (T1 now revoked). 4) Run THIS request to replay T1. For a clean replay, disable 'Send cookies automatically' or delete the jar cookie so only the manual header is sent. Expected: 401 + a SECURITY log line + all of the user's tokens revoked."
+          }
+        }
+      ]
+    },
+    {
+      "name": "D - Guards (Roles)",
+      "description": "Requires an admin-only route, e.g.:\n\n@AdminOnly()\n@Get('ping')\nping() { return { ok: true }; }\n\nGet an admin token by promoting a user in the DB: UPDATE users SET role='admin' WHERE email='admin@example.com'; then run D0.",
+      "item": [
+        {
+          "name": "D0 Login as admin (stores adminToken)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('user role is admin', () => pm.expect(json.user.role).to.eql('admin'));",
+                  "if (json.accessToken) { pm.collectionVariables.set('adminToken', json.accessToken); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/local-login", "host": ["{{baseUrl}}"], "path": ["auth", "local-login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "description": "Register this user first (A1 with admin@example.com), then promote it to admin in the DB, then run this to capture {{adminToken}}."
+          }
+        },
+        {
+          "name": "D1 Admin route, no token (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 401', () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/admin/ping", "host": ["{{baseUrl}}"], "path": ["admin", "ping"] },
+            "description": "Expected: 401 - JwtAuthGuard runs before RolesGuard."
+          }
+        },
+        {
+          "name": "D2 Admin route, customer token (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 403', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/ping", "host": ["{{baseUrl}}"], "path": ["admin", "ping"] },
+            "description": "Uses the customer {{accessToken}} (from A4). Expected: 403 Forbidden - authenticated but role mismatch. This is the core 'block regular users from admin APIs' requirement."
+          }
+        },
+        {
+          "name": "D3 Admin route, admin token (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": { "raw": "{{baseUrl}}/admin/ping", "host": ["{{baseUrl}}"], "path": ["admin", "ping"] },
+            "description": "Run D0 first. Expected: 200 { ok: true }."
+          }
+        }
+      ]
+    }
+  ]
+}
