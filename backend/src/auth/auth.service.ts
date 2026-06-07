@@ -27,12 +27,12 @@ export class AuthService {
       if (error instanceof NotFoundException) {
         throw new UnauthorizedException('Invalid email or password');
       }
-      
+
       throw error;
     });
 
     if (user.passwordHash && await bcrypt.compare(loginLocalUserDto.password, user.passwordHash)) {
-      const { accessToken, refreshToken } = await this.generateTokens(userToAuthorizedUser(user));
+      const { accessToken, refreshToken } = await this.generateTokens(userToAuthorizedUser(user), loginLocalUserDto.rememberMe);
 
       this.logger.log(`User logged in: ${user.id}`);
 
@@ -65,6 +65,7 @@ export class AuthService {
   async refreshAccessToken(oldRefreshToken: string): Promise<AuthResult> {
     const { refreshToken, user } = await this.refreshTokensService.reissueToken(oldRefreshToken);
 
+
     return {
       accessToken: await this.signToken(user),
       refreshToken,
@@ -72,9 +73,9 @@ export class AuthService {
     };
   }
 
-  private async generateTokens(user: AuthorizedUser): Promise<{ accessToken: string, refreshToken: string }> {
+  private async generateTokens(user: AuthorizedUser, persistent = false): Promise<{ accessToken: string, refreshToken: string }> {
     const accessToken = this.signToken(user);
-    const refreshToken = await this.refreshTokensService.createRefreshToken(user.id);
+    const refreshToken = await this.refreshTokensService.createRefreshToken(user.id, persistent);
 
     return { accessToken, refreshToken };
   }

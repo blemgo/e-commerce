@@ -11,7 +11,8 @@ const REFRESH_TOKEN_COOKIE_OPTIONS = {
     sameSite: 'lax',
 } as CookieOptions;
 
-export const setRefreshTokenCookie = (res: Response, token: string, persistent = false): void => {
+export const setRefreshTokenCookie = (res: Response, token: string): void => {
+    const persistent = token.startsWith('p.');
     res.cookie(REFRESH_TOKEN_COOKIE_NAME, token, {
         ...REFRESH_TOKEN_COOKIE_OPTIONS,
         ...(persistent && { maxAge: COOKIE_MAX_AGE_MS }),

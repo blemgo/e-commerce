@@ -31,7 +31,7 @@ export class AuthController {
   ): Promise<AuthResponse> {
     const { refreshToken, ...clientResponse } = await this.authService.loginLocalUser(loginLocalUserDto);
 
-    setRefreshTokenCookie(res, refreshToken, loginLocalUserDto.rememberMe);
+    setRefreshTokenCookie(res, refreshToken);
 
     return clientResponse;
   }
@@ -70,10 +70,10 @@ export class AuthController {
   async refreshAccessToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<AuthResponse> {
     try {
       const receivedRefreshToken = req.cookies['refresh_token'];
-
+      console.log("receivedRefreshToken: " + receivedRefreshToken);
       if (!receivedRefreshToken) {
         throw new UnauthorizedException('Refresh token is missing');
       }
