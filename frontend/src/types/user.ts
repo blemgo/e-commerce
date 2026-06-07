@@ -3,7 +3,11 @@ export interface User {
   fullName: string;
   email: string;
   role: 'user' | 'admin';
-  createdAt: string;
+}
+
+export interface LocalLoginResponse {
+  user: User;
+  accessToken: string;
 }
 
 export interface LocalRegisterDTO {
