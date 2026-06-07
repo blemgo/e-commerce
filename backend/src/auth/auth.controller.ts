@@ -31,7 +31,7 @@ export class AuthController {
   ): Promise<AuthResponse> {
     const { refreshToken, ...clientResponse } = await this.authService.loginLocalUser(loginLocalUserDto);
 
-    setRefreshTokenCookie(res, refreshToken);
+    setRefreshTokenCookie(res, refreshToken, loginLocalUserDto.rememberMe);
 
     return clientResponse;
   }

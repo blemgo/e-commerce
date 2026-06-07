@@ -19,4 +19,5 @@ export interface LocalRegisterDTO {
 export interface LocalLoginDTO {
   email: string;
   password: string;
+  rememberMe?: boolean;
 }
