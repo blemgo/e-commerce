@@ -14,6 +14,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import GoogleIcon from '@mui/icons-material/Google';
 import { StyledButton } from '@components/StyledButton/StyledButton';
 import { StyledInput } from '@components/StyledInput/StyledInput';
+import { validateEmail, validatePassword } from '@/utils/authValidation';
 import { signInStyles } from './SignInStyles';
 
 interface SignInProps {
@@ -22,6 +23,11 @@ interface SignInProps {
   onCreateAccount: () => void;
   loading?: boolean;
   disabled?: boolean;
+}
+
+interface SignInFieldErrors {
+  email?: string;
+  password?: string;
 }
 
 const SignIn: React.FC<SignInProps> = ({
@@ -35,10 +41,40 @@ const SignIn: React.FC<SignInProps> = ({
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState<SignInFieldErrors>({});
+
+  const clearFieldError = (field: keyof SignInFieldErrors) => {
+    setErrors((prev) => {
+      if (!prev[field]) {
+        return prev;
+      }
+
+      const next = { ...prev };
+      delete next[field];
+
+      return next;
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(email, password, rememberMe);
+
+    const fieldErrors: SignInFieldErrors = {
+      email: validateEmail(email),
+      password: validatePassword(password),
+    };
+
+    const nextErrors = Object.fromEntries(
+      Object.entries(fieldErrors).filter(([, message]) => message !== undefined),
+    ) as SignInFieldErrors;
+
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) {
+      return;
+    }
+
+    onSubmit(email.trim(), password, rememberMe);
   };
 
   return (
@@ -72,7 +108,12 @@ const SignIn: React.FC<SignInProps> = ({
             type="email"
             placeholder="you@email.com"
             value={email}
-            onChange={setEmail}
+            onChange={(value) => {
+              setEmail(value);
+              clearFieldError('email');
+            }}
+            error={Boolean(errors.email)}
+            helperText={errors.email}
             slotProps={{
               input: {
                 startAdornment: (
@@ -91,7 +132,12 @@ const SignIn: React.FC<SignInProps> = ({
             type={showPassword ? 'text' : 'password'}
             placeholder="••••••••"
             value={password}
-            onChange={setPassword}
+            onChange={(value) => {
+              setPassword(value);
+              clearFieldError('password');
+            }}
+            error={Boolean(errors.password)}
+            helperText={errors.password}
             slotProps={{
               input: {
                 startAdornment: (
@@ -135,7 +181,7 @@ const SignIn: React.FC<SignInProps> = ({
 
       <Box sx={signInStyles.signInButtonWrapper}>
         <StyledButton
-          onClick={() => onSubmit(email, password, rememberMe)}
+          type="submit"
           disabled={disabled}
           loading={loading}
           variant="contained"
