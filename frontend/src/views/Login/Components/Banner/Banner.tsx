@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
-import ballyLogo from '../../../assets/bally-white.png';
-import registerImage from '../../../assets/register.png';
+import ballyLogo from '../../../../assets/bally-white.png';
+import registerImage from '../../../../assets/register.png';
 import { bannerStyles } from './BannerStyle';
 
 const Banner = () => {

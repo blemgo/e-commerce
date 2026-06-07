@@ -6,9 +6,14 @@ export const loginStyles: Record<string, SxProps<Theme>> = {
         flexDirection: 'row',
         height: '100vh',
     },
-
     banner: {
         flex: 0.4,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    signIn: {
+        flex: 0.6,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
