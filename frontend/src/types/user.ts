@@ -10,6 +10,11 @@ export interface LocalLoginResponse {
   accessToken: string;
 }
 
+export interface RefreshResponse {
+  user: User;
+  accessToken: string;
+}
+
 export interface LocalRegisterDTO {
   fullName: string;
   email: string;
