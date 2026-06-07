@@ -25,9 +25,14 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'system-ui, "Segoe UI", Roboto, sans-serif',
-    h1: { fontWeight: 600 },
-    h2: { fontWeight: 600 },
+    fontFamily: '"Inter", "Heebo", sans-serif',
+    h1: { fontFamily: '"Bricolage Grotesque", "Heebo", sans-serif', fontWeight: 700 },
+    h2: { fontFamily: '"Bricolage Grotesque", "Heebo", sans-serif', fontWeight: 700 },
+    h3: { fontFamily: '"Bricolage Grotesque", "Heebo", sans-serif', fontWeight: 600 },
+    h4: { fontFamily: '"Bricolage Grotesque", "Heebo", sans-serif', fontWeight: 600 },
+    h5: { fontFamily: '"Bricolage Grotesque", "Heebo", sans-serif', fontWeight: 600 },
+    h6: { fontFamily: '"Bricolage Grotesque", "Heebo", sans-serif', fontWeight: 600 },
+    button: { fontWeight: 600 },
   },
   components: {
     MuiButton: {

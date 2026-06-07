@@ -1,5 +1,5 @@
 import { Home } from '@views/Home';
-import { Login } from '@views/Login';
+import { LoginPage } from '@views/Login';
 import type { Page } from './types';
 import { createPage } from './functions';
 
@@ -8,5 +8,5 @@ export const PAGES: Page[] = [
 ];
 
 export const AUTH_PAGES: Page[] = [
-  createPage('/login', <Login />, 'Login'),
+  createPage('/login', <LoginPage />, 'Login'),
 ];

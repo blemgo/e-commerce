@@ -3,7 +3,7 @@ import { Banner } from './Components/Banner/Banner';
 import { loginStyles } from './LoginStyles';
 import { SignIn } from '@/components/SignIn/SignIn';
 
-const Login = () => {
+const LoginPage = () => {
   return (
     <Box sx={loginStyles.container}>
       <Box sx={loginStyles.banner}>
@@ -16,4 +16,4 @@ const Login = () => {
   );
 };
 
-export { Login };
+export { LoginPage };
