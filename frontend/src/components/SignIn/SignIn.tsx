@@ -12,7 +12,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import GoogleIcon from '@mui/icons-material/Google';
-import AppleIcon from '@mui/icons-material/Apple';
 import { StyledButton } from '@components/StyledButton/StyledButton';
 import { StyledInput } from '@components/StyledInput/StyledInput';
 import { signInStyles } from './SignInStyles';
@@ -20,8 +19,6 @@ import { signInStyles } from './SignInStyles';
 interface SignInProps {
   onSubmit: (email: string, password: string, rememberMe: boolean) => void;
   onGoogleLogin: () => void;
-  onAppleLogin: () => void;
-  onForgotPassword: () => void;
   onCreateAccount: () => void;
   loading?: boolean;
   disabled?: boolean;
@@ -30,8 +27,6 @@ interface SignInProps {
 const SignIn: React.FC<SignInProps> = ({
   onSubmit,
   onGoogleLogin,
-  onAppleLogin,
-  onForgotPassword,
   onCreateAccount,
   loading = false,
   disabled = false,
@@ -63,16 +58,6 @@ const SignIn: React.FC<SignInProps> = ({
           sx={signInStyles.socialButton}
         >
           Continue with Google
-        </Button>
-        <Button
-          variant="outlined"
-          fullWidth
-          startIcon={<AppleIcon />}
-          onClick={onAppleLogin}
-          type="button"
-          sx={signInStyles.socialButton}
-        >
-          Continue with Apple
         </Button>
       </Box>
 
@@ -146,9 +131,6 @@ const SignIn: React.FC<SignInProps> = ({
           }
           label={<Typography sx={signInStyles.rememberLabel}>Remember me</Typography>}
         />
-        <Typography component="span" sx={signInStyles.forgotLink} onClick={onForgotPassword}>
-          Forgot password?
-        </Typography>
       </Box>
 
       <Box sx={signInStyles.signInButtonWrapper}>
@@ -168,10 +150,6 @@ const SignIn: React.FC<SignInProps> = ({
         <Typography component="span" sx={signInStyles.createAccountLink} onClick={onCreateAccount}>
           Create account
         </Typography>
-      </Typography>
-
-      <Typography sx={signInStyles.legalText}>
-        By continuing you agree to our Terms &amp; Privacy.
       </Typography>
     </Box>
   );

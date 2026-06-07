@@ -3,12 +3,6 @@ import { Banner } from './Components/Banner/Banner';
 import { loginStyles } from './LoginStyles';
 import { SignIn } from '@/components/SignIn/SignIn';
 
-const providers = [
-  { id: 'github', name: 'GitHub' },
-  { id: 'google', name: 'Google' },
-
-];
-
 const Login = () => {
   return (
     <Box sx={loginStyles.container}>
@@ -16,7 +10,7 @@ const Login = () => {
         <Banner />
       </Box>
       <Box sx={loginStyles.signIn}>
-        <SignIn onSubmit={() => {}} onGoogleLogin={() => {}} onAppleLogin={() => {}} onForgotPassword={() => {}} onCreateAccount={() => {}} />
+        <SignIn onSubmit={() => {}} onGoogleLogin={() => {}} onCreateAccount={() => {}} />
       </Box>
     </Box>
   );

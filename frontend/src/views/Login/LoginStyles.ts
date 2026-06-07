@@ -13,6 +13,7 @@ export const loginStyles: Record<string, SxProps<Theme>> = {
         alignItems: 'center',
     },
     signIn: {
+        backgroundColor: 'background.',
         flex: 0.6,
         display: 'flex',
         justifyContent: 'center',

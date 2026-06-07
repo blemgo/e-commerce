@@ -2,9 +2,8 @@ import type { SxProps, Theme } from '@mui/material/styles';
 
 export const signInStyles: Record<string, SxProps<Theme>> = {
   card: {
-    width: 360,
-    bgcolor: 'background.paper',
-    borderRadius: 3,
+    width: '100%',
+    maxWidth: 400,
     p: 4,
     display: 'flex',
     flexDirection: 'column',
