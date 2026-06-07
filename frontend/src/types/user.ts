@@ -11,3 +11,8 @@ export interface LocalRegisterDTO {
   email: string;
   password: string;
 }
+
+export interface LocalLoginDTO {
+  email: string;
+  password: string;
+}
