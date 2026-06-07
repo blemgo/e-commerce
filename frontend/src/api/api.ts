@@ -13,6 +13,9 @@ const auth = () => ({
     await axiosInstance.post<LocalLoginResponse>('/auth/local-login', localLoginDTO).then(postData),
   refresh: async (): Promise<RefreshResponse> =>
     await axiosInstance.post<RefreshResponse>('/auth/refresh').then(postData),
+  googleLogin: () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+  },
 });
 
 export default { auth };

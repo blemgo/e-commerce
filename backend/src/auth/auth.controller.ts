@@ -62,7 +62,7 @@ export class AuthController {
 
     setRefreshTokenCookie(res, refreshToken);
 
-    res.redirect(`${env.FRONTEND_URL}/auth/callback?accessToken=${accessToken}`);
+    res.redirect(`${env.FRONTEND_URL}/`);
   }
 
   @Post('refresh')

@@ -5,6 +5,7 @@ import { SignIn } from '@/components/SignIn/SignIn';
 import useLocalLogin from '@/api/hooks/auth/useLocalLogin';
 import { useUserContext } from '@/contexts/user';
 import { useNavigate } from 'react-router-dom';
+import api from '@api/api';
 
 const LoginPage = () => {
   const { setUser, setAccessToken } = useUserContext();
@@ -13,7 +14,7 @@ const LoginPage = () => {
 
   const onLoginSubmit = async (email: string, password: string, rememberMe: boolean) => {
     const { user, accessToken } = await localLogin({ email, password, rememberMe });
-
+    
     setUser(user);
     setAccessToken(accessToken);
 
@@ -26,7 +27,7 @@ const LoginPage = () => {
         <Banner />
       </Box>
       <Box sx={loginStyles.signIn}>
-        <SignIn onSubmit={onLoginSubmit} onGoogleLogin={() => {}} onCreateAccount={() => {}} />
+        <SignIn onSubmit={onLoginSubmit} onGoogleLogin={api.auth().googleLogin} onCreateAccount={() => {}} />
       </Box>
     </Box>
   );
