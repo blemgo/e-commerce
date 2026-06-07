@@ -78,11 +78,11 @@ export class AuthController {
         throw new UnauthorizedException('Refresh token is missing');
       }
 
-      const { refreshToken, accessToken } = await this.authService.refreshAccessToken(receivedRefreshToken);
+      const { refreshToken, accessToken, user } = await this.authService.refreshAccessToken(receivedRefreshToken);
 
       setRefreshTokenCookie(res, refreshToken);
 
-      return { accessToken };
+      return { accessToken, user };
     } catch (error) {
       if (error instanceof UnauthorizedException) {
         clearRefreshTokenCookie(res);
