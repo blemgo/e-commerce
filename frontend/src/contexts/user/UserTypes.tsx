@@ -1,12 +1,10 @@
 import type { ReactNode } from 'react';
-import type { User } from '@types';
+import type { AuthUser } from '@types';
 
 export interface UserContextValue {
-  user: User | null;
-  accessToken: string | null;
+  user: AuthUser | null;
   isInitializing: boolean;
-  setUser: (user: User | null) => void;
-  setAccessToken: (token: string | null) => void;
+  setUser: (user: AuthUser | null) => void;
   logout: () => void;
 }
 

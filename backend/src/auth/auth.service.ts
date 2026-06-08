@@ -65,12 +65,15 @@ export class AuthService {
   async refreshAccessToken(oldRefreshToken: string): Promise<AuthResult> {
     const { refreshToken, user } = await this.refreshTokensService.reissueToken(oldRefreshToken);
 
-
     return {
-      accessToken: await this.signToken(user),
+      accessToken: this.signToken(user),
       refreshToken,
       user,
     };
+  }
+
+  async logout(refreshToken: string): Promise<void> {
+    await this.refreshTokensService.revokeTokenByHash(refreshToken);
   }
 
   private async generateTokens(user: AuthorizedUser, persistent = false): Promise<{ accessToken: string, refreshToken: string }> {

@@ -1,5 +1,7 @@
-import { AuthResponse } from '../dto/auth-response.dto';
+import { AuthorizedUser } from '../dto/authorized-user.dto';
 
-export class AuthResult extends AuthResponse {
+export class AuthResult {
+    accessToken: string;
     refreshToken: string;
+    user: AuthorizedUser;
 }
