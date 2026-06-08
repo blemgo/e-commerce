@@ -1,6 +1,6 @@
 import type { SxProps, Theme } from '@mui/material/styles';
 
-export const signInStyles: Record<string, SxProps<Theme>> = {
+export const signUpStyles: Record<string, SxProps<Theme>> = {
   card: {
     width: '100%',
     maxWidth: 500,
@@ -24,21 +24,6 @@ export const signInStyles: Record<string, SxProps<Theme>> = {
     color: 'text.secondary',
     fontSize: '0.9rem',
   },
-  socialButtonsGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 1,
-  },
-  socialButton: {
-    borderRadius: 2,
-    borderColor: 'divider',
-    color: 'text.primary',
-    fontWeight: 600,
-    fontSize: '0.9rem',
-    py: 1.2,
-    textTransform: 'none',
-    justifyContent: 'center',
-  },
   fieldsGroup: {
     display: 'flex',
     flexDirection: 'column',
@@ -54,37 +39,17 @@ export const signInStyles: Record<string, SxProps<Theme>> = {
     fontWeight: 600,
     color: 'text.primary',
   },
-  rememberRow: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  rememberLabel: {
-    fontSize: '0.875rem',
-  },
-  forgotLink: {
-    fontSize: '0.875rem',
-    fontWeight: 600,
-    color: 'primary.main',
-    cursor: 'pointer',
-    '&:hover': { textDecoration: 'underline' },
-  },
-  signInButtonWrapper: {
+  signUpButtonWrapper: {
     height: 48,
   },
-  createAccountText: {
+  signInText: {
     textAlign: 'center',
     fontSize: '0.875rem',
   },
-  createAccountLink: {
+  signInLink: {
     fontWeight: 700,
     color: 'text.primary',
     cursor: 'pointer',
     '&:hover': { textDecoration: 'underline' },
-  },
-  legalText: {
-    textAlign: 'center',
-    fontSize: '0.75rem',
-    color: 'text.disabled',
   },
 };

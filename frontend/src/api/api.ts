@@ -1,14 +1,21 @@
 import type { AxiosResponse } from 'axios';
 import axiosInstance from './axiosInstance';
-import type { User, LocalRegisterDTO } from '@types';
+import type { LocalRegisterDTO, LocalLoginDTO, LocalLoginResponse, RefreshResponse } from '@types';
 
 const getData = <T>(result: AxiosResponse<T>): T => result.data;
 const postData = <T>(result: AxiosResponse<T>): T => result.data;
 const patchData = <T>(result: AxiosResponse<T>): T => result.data;
 
 const auth = () => ({
-  localRegister: (dto: LocalRegisterDTO): Promise<User> =>
-    axiosInstance.post<User>('/auth/local-register', dto).then(postData),
+  localRegister: async (localRegisterDTO: LocalRegisterDTO): Promise<LocalLoginResponse> =>
+    await axiosInstance.post<LocalLoginResponse>('/auth/local-register', localRegisterDTO).then(postData),
+  localLogin: async (localLoginDTO: LocalLoginDTO): Promise<LocalLoginResponse> =>
+    await axiosInstance.post<LocalLoginResponse>('/auth/local-login', localLoginDTO).then(postData),
+  refresh: async (): Promise<RefreshResponse> =>
+    await axiosInstance.post<RefreshResponse>('/auth/refresh').then(postData),
+  googleLogin: () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+  },
 });
 
 export default { auth };

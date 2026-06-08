@@ -56,13 +56,13 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() req: Request, @Res() res: Response): Promise<void> {
-    const { accessToken, refreshToken } = await this.authService.loginGoogleUser(
+    const { refreshToken } = await this.authService.loginGoogleUser(
       req.user as User,
     );
 
     setRefreshTokenCookie(res, refreshToken);
 
-    res.redirect(`${env.FRONTEND_URL}/auth/callback?accessToken=${accessToken}`);
+    res.redirect(`${env.FRONTEND_URL}/`);
   }
 
   @Post('refresh')
@@ -70,19 +70,19 @@ export class AuthController {
   async refreshAccessToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<AuthResponse> {
     try {
       const receivedRefreshToken = req.cookies['refresh_token'];
-
+      console.log("receivedRefreshToken: " + receivedRefreshToken);
       if (!receivedRefreshToken) {
         throw new UnauthorizedException('Refresh token is missing');
       }
 
-      const { refreshToken, accessToken } = await this.authService.refreshAccessToken(receivedRefreshToken);
+      const { refreshToken, accessToken, user } = await this.authService.refreshAccessToken(receivedRefreshToken);
 
       setRefreshTokenCookie(res, refreshToken);
 
-      return { accessToken };
+      return { accessToken, user };
     } catch (error) {
       if (error instanceof UnauthorizedException) {
         clearRefreshTokenCookie(res);

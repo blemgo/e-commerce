@@ -7,6 +7,8 @@ import { BinaryToTextEncoding } from 'crypto';
 import { AuthorizedUser } from 'src/auth/dto/authorized-user.dto';
 import { userToAuthorizedUser } from 'src/auth/utils/userToAuthorizedUser';
 
+const PERSISTENT_PREFIX = 'p.';
+
 @Injectable()
 export class RefreshTokensService {
     private readonly logger = new Logger(RefreshTokensService.name);
@@ -28,17 +30,29 @@ export class RefreshTokensService {
         return crypto.createHash(this.HASH_ALGORITHM).update(token).digest(this.TOKEN_ENCODING);
     }
 
-    async createRefreshToken(userId: string): Promise<string> {
+    private encodeToken(rawToken: string, persistent: boolean): string {
+        return persistent ? `${PERSISTENT_PREFIX}${rawToken}` : rawToken;
+    }
+
+    private decodeToken(token: string): { rawToken: string; persistent: boolean } {
+        const persistent = token.startsWith(PERSISTENT_PREFIX);
+        const rawToken = persistent ? token.slice(PERSISTENT_PREFIX.length) : token;
+
+        return { rawToken, persistent };
+    }
+
+    async createRefreshToken(userId: string, persistent = false): Promise<string> {
         const rawToken = this.generateToken();
+        const encodedToken = this.encodeToken(rawToken, persistent);
 
         await this.refreshTokenRepository.save(
             this.refreshTokenRepository.create({
                 user: { id: userId },
-                tokenHash: this.hashToken(rawToken),
+                tokenHash: this.hashToken(encodedToken),
             }),
         );
 
-        return rawToken;
+        return encodedToken;
     }
 
     async revokeTokenByHash(token: string): Promise<void> {
@@ -56,17 +70,17 @@ export class RefreshTokensService {
     }
 
     async reissueToken(token: string): Promise<{ refreshToken: string; user: AuthorizedUser }> {
+        const { persistent } = this.decodeToken(token);
         let revokeAllForUserId: string | null = null;
 
         try {
-            // transaction to avoid revoking token without creating a new one
             return await this.dataSource.transaction(async (db) => {
                 const existing = await db.findOne(RefreshToken, {
                     where: { tokenHash: this.hashToken(token) },
                     relations: { user: true },
                     lock: { mode: 'pessimistic_write' },
                 });
-                
+
                 // anti theft measure
                 if (existing?.revoked) {
                     revokeAllForUserId = existing.user.id;
@@ -81,30 +95,28 @@ export class RefreshTokensService {
                     throw new UnauthorizedException('Invalid or expired refresh token');
                 }
 
-
                 // revoke old token
                 await db.update(RefreshToken, existing.id, { revoked: true });
 
-                const rawToken = this.generateToken();
+                const newEncodedToken = this.encodeToken(this.generateToken(), persistent);
 
                 // create new token
                 await db.save(db.create(RefreshToken, {
                     user: existing.user,
-                    tokenHash: this.hashToken(rawToken),
+                    tokenHash: this.hashToken(newEncodedToken),
                 }));
 
                 const reissuedUser = userToAuthorizedUser(existing.user);
 
                 this.logger.log(`Token reissued for userId: ${reissuedUser.id}`);
 
-                return { refreshToken: rawToken, user: reissuedUser };
+                return { refreshToken: newEncodedToken, user: reissuedUser };
             });
         } finally {
             if (revokeAllForUserId) {
                 try {
                     await this.revokeTokenByUserId(revokeAllForUserId);
                 } catch (error) {
-                    // prevent impacting the original error 
                     this.logger.error(`Error revoking token for userId: ${revokeAllForUserId}`, error);
                 }
             }

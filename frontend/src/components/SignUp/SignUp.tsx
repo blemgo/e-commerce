@@ -1,54 +1,43 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Divider from '@mui/material/Divider';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import GoogleIcon from '@mui/icons-material/Google';
 import { StyledButton } from '@components/StyledButton/StyledButton';
 import { StyledInput } from '@components/StyledInput/StyledInput';
-import { DismissibleDangerAlert } from '@components/DismissibleDangerAlert';
-import { validateEmail, validatePassword } from '@/utils/authValidation';
-import { signInStyles } from './SignInStyles';
+import { validateEmail, validateFullName, validatePassword } from '@/utils/authValidation';
+import { signUpStyles } from './SignUpStyles';
 
-interface SignInProps {
-  onSubmit: (email: string, password: string, rememberMe: boolean) => void;
-  onGoogleLogin: () => void;
-  onCreateAccount: () => void;
-  authError?: string | null;
-  onDismissAuthError?: () => void;
+interface SignUpProps {
+  onSubmit: (fullName: string, email: string, password: string) => void;
+  onSignIn: () => void;
   loading?: boolean;
   disabled?: boolean;
 }
 
-interface SignInFieldErrors {
+interface SignUpFieldErrors {
+  fullName?: string;
   email?: string;
   password?: string;
 }
 
-const SignIn: React.FC<SignInProps> = ({
+const SignUp: React.FC<SignUpProps> = ({
   onSubmit,
-  onGoogleLogin,
-  onCreateAccount,
-  authError = null,
-  onDismissAuthError,
+  onSignIn,
   loading = false,
   disabled = false,
 }) => {
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<SignInFieldErrors>({});
+  const [errors, setErrors] = useState<SignUpFieldErrors>({});
 
-  const clearFieldError = (field: keyof SignInFieldErrors) => {
+  const clearFieldError = (field: keyof SignUpFieldErrors) => {
     setErrors((prev) => {
       if (!prev[field]) {
         return prev;
@@ -64,14 +53,15 @@ const SignIn: React.FC<SignInProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const fieldErrors: SignInFieldErrors = {
+    const fieldErrors: SignUpFieldErrors = {
+      fullName: validateFullName(fullName),
       email: validateEmail(email),
       password: validatePassword(password),
     };
 
     const nextErrors = Object.fromEntries(
       Object.entries(fieldErrors).filter(([, message]) => message !== undefined),
-    ) as SignInFieldErrors;
+    ) as SignUpFieldErrors;
 
     setErrors(nextErrors);
 
@@ -79,24 +69,45 @@ const SignIn: React.FC<SignInProps> = ({
       return;
     }
 
-    onDismissAuthError?.();
-    onSubmit(email.trim(), password, rememberMe);
+    onSubmit(fullName.trim(), email.trim(), password);
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate sx={signInStyles.card}>
-      <Box sx={signInStyles.titleGroup}>
-        <Typography sx={signInStyles.title}>Welcome back</Typography>
-        <Typography sx={signInStyles.subtitle}>Sign in to pick up where you left off.</Typography>
+    <Box component="form" onSubmit={handleSubmit} noValidate sx={signUpStyles.card}>
+      <Box sx={signUpStyles.titleGroup}>
+        <Typography sx={signUpStyles.title}>Create your account</Typography>
+        <Typography sx={signUpStyles.subtitle}>
+          Join bally to start shopping in minutes.
+        </Typography>
       </Box>
 
-      {authError && onDismissAuthError && (
-        <DismissibleDangerAlert message={authError} onClose={onDismissAuthError} />
-      )}
+      <Box sx={signUpStyles.fieldsGroup}>
+        <Box sx={signUpStyles.fieldGroup}>
+          <Typography sx={signUpStyles.inputLabel}>Full name</Typography>
+          <StyledInput
+            type="text"
+            placeholder="Jane Doe"
+            value={fullName}
+            onChange={(value) => {
+              setFullName(value);
+              clearFieldError('fullName');
+            }}
+            error={Boolean(errors.fullName)}
+            helperText={errors.fullName}
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PersonOutlineOutlinedIcon fontSize="small" color="disabled" />
+                  </InputAdornment>
+                ),
+              },
+            }}
+          />
+        </Box>
 
-<Box sx={signInStyles.fieldsGroup}>
-        <Box sx={signInStyles.fieldGroup}>
-          <Typography sx={signInStyles.inputLabel}>Email</Typography>
+        <Box sx={signUpStyles.fieldGroup}>
+          <Typography sx={signUpStyles.inputLabel}>Email</Typography>
           <StyledInput
             type="email"
             placeholder="you@email.com"
@@ -119,8 +130,8 @@ const SignIn: React.FC<SignInProps> = ({
           />
         </Box>
 
-        <Box sx={signInStyles.fieldGroup}>
-          <Typography sx={signInStyles.inputLabel}>Password</Typography>
+        <Box sx={signUpStyles.fieldGroup}>
+          <Typography sx={signUpStyles.inputLabel}>Password</Typography>
           <StyledInput
             type={showPassword ? 'text' : 'password'}
             placeholder="••••••••"
@@ -158,21 +169,7 @@ const SignIn: React.FC<SignInProps> = ({
         </Box>
       </Box>
 
-      <Box sx={signInStyles.rememberRow}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              size="small"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-              color="secondary"
-            />
-          }
-          label={<Typography sx={signInStyles.rememberLabel}>Remember me</Typography>}
-        />
-      </Box>
-
-      <Box sx={signInStyles.signInButtonWrapper}>
+      <Box sx={signUpStyles.signUpButtonWrapper}>
         <StyledButton
           type="submit"
           disabled={disabled}
@@ -180,35 +177,18 @@ const SignIn: React.FC<SignInProps> = ({
           variant="contained"
           color="secondary"
         >
-          Sign in
+          Create account
         </StyledButton>
       </Box>
 
-      <Divider>
-        <Typography variant="caption" color="text.secondary">or</Typography>
-      </Divider>
-
-      <Box sx={signInStyles.socialButtonsGroup}>
-        <Button
-          variant="outlined"
-          fullWidth
-          startIcon={<GoogleIcon sx={{ color: '#4285F4' }} />}
-          onClick={onGoogleLogin}
-          type="button"
-          sx={signInStyles.socialButton}
-        >
-          Continue with Google
-        </Button>
-      </Box>
-
-      <Typography sx={signInStyles.createAccountText}>
-        New to bally?{' '}
-        <Typography component="span" sx={signInStyles.createAccountLink} onClick={onCreateAccount}>
-          Create account
+      <Typography sx={signUpStyles.signInText}>
+        Already have an account?{' '}
+        <Typography component="span" sx={signUpStyles.signInLink} onClick={onSignIn}>
+          Sign in
         </Typography>
       </Typography>
     </Box>
   );
 };
 
-export { SignIn };
+export { SignUp };
