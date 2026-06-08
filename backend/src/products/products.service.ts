@@ -26,11 +26,23 @@ export class ProductsService {
       return [];
     }
 
-    return qb.distinct(true).getMany();
+    if (query.name) {
+      qb.andWhere('product.name ILIKE :name', { name: `%${query.name}%` });
+    }
+
+    if (query.minPrice !== undefined) {
+      qb.andWhere('product.price >= :minPrice', { minPrice: query.minPrice });
+    }
+
+    if (query.maxPrice !== undefined) {
+      qb.andWhere('product.price <= :maxPrice', { maxPrice: query.maxPrice });
+    }
+
+    return qb.getMany();
   }
 
-  /* Checks if the there are products under the queried category 
-  and updates the query builder accordingly
+  /* Checks if products exist under the queried category and filters accordingly.
+     Uses EXISTS to avoid row multiplication from the many-to-many join.
   */
   private async checkCategoryQuery(
     qb: SelectQueryBuilder<Product>,
@@ -48,8 +60,12 @@ export class ProductsService {
       return false;
     }
 
-    qb.innerJoin('product.categories', 'category').andWhere(
-      'category.id IN (:...ids)',
+    qb.andWhere(
+      `EXISTS (
+        SELECT 1 FROM bally.product_category_link pcl
+        WHERE pcl.product_id = product.id
+        AND pcl.product_category_id IN (:...ids)
+      )`,
       { ids },
     );
 
