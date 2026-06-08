@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { CategoriesService } from '../categories/categories.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -22,18 +22,32 @@ export class ProductsService {
   async findAll(query: GetProductsQueryDto): Promise<Product[]> {
     const qb = this.productRepository.createQueryBuilder('product');
 
-    if (query.category) {
-      const ids = await this.categoriesService.getDescendantCategoryIds(query.category);
-
-      if (ids.length === 0) {
-        return [];
-      }
-
-      qb.innerJoin('"bally"."product_category_link"', 'pcl', 'pcl.product_id = product.id')
-        .andWhere('pcl.product_category_id IN (:...ids)', { ids });
+    if (!await this.checkCategoryQuery(qb, query)) {
+      return [];
     }
 
     return qb.distinct(true).getMany();
+  }
+
+  /* Checks if the there are products under the queried category 
+  and updates the query builder accordingly
+  */
+  private async checkCategoryQuery(qb: SelectQueryBuilder<Product>, query: GetProductsQueryDto)
+        : Promise<boolean> {
+    if (!query.category) {
+      return true;
+    }
+
+    const ids = await this.categoriesService.getDescendantCategoryIds(query.category);
+
+    if (ids.length === 0) {
+      return false;
+    }
+
+    qb.innerJoin('"bally"."product_category_link"', 'pcl', 'pcl.product_id = product.id')
+      .andWhere('pcl.product_category_id IN (:...ids)', { ids });
+
+    return true;
   }
 
   findOne(id: number) {
