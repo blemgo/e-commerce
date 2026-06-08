@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { LoadingScreen } from '@components/LoadingScreen';
 import { UserContext } from './UserContext';
 import { useInitAuth } from './useInitAuth';
 import type { User } from '@types';
@@ -16,7 +17,7 @@ const UserProvider = ({ children }: UserProviderProps) => {
 
   return (
     <UserContext.Provider value={{ user, accessToken, isInitializing, setUser, setAccessToken, logout }}>
-      {children}
+      {isInitializing ? <LoadingScreen /> : children}
     </UserContext.Provider>
   );
 };
