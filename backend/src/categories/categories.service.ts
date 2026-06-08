@@ -24,8 +24,8 @@ export class CategoriesService {
     return categoryRowsToTree(categoryRows);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  findOne(id: string) {
+    return this.productCategoryRepository.findOne({ where: { id } });
   }
 
   update(id: number, updateCategoryDto: UpdateCategoryDto) {
