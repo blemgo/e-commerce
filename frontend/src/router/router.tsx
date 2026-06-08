@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Layout } from '@views/Layout';
 import { AuthLayout } from '@views/AuthLayout';
-import { PAGES, AUTH_PAGES } from './contants';
+import { PAGES, AUTH_PAGES } from './constants';
 
 const router = createBrowserRouter([
   {
