@@ -3,20 +3,18 @@ import {
   Entity,
   Index,
   PrimaryGeneratedColumn,
-  Unique,
   Check,
 } from 'typeorm';
 import { AuthProvider } from './enums/auth-provider.enum';
 import { Role } from './enums/role.enum';
 
 @Entity({ schema: 'bally', name: 'users' })
-@Unique(['authProvider', 'providerId'])
-@Index('idx_users_email', ['email'], { unique: true })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'varchar', nullable: false })
+  @Index('idx_users_email', { unique: true })
   email: string;
 
   @Column({ name: 'password_hash', type: 'varchar', nullable: true })
@@ -43,6 +41,7 @@ export class User {
     default: AuthProvider.LOCAL,
     nullable: false,
   })
+  @Index(['authProvider', 'providerId'], { unique: true })
   authProvider: AuthProvider;
 
   @Column({ name: 'provider_id', type: 'varchar', nullable: true })

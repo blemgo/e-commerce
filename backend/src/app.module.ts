@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { typeOrmModule } from './config/database';
 import { AuthModule } from './auth/auth.module';
 import { RefreshTokensModule } from './refresh-tokens/refresh-tokens.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -14,10 +13,9 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
     AuthModule,
     typeOrmModule,
     RefreshTokensModule,
+    CategoriesModule,
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
   ],
 })
