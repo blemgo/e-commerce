@@ -2,18 +2,15 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  JoinColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
-import { ProductCategory } from "src/categories/entities/product-category.entity";
+import { ProductCategory } from 'src/categories/entities/product-category.entity';
 
-@Entity('product')
+@Entity({ schema: 'bally', name: 'product' })
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column({ name: 'category_id', type: 'uuid', nullable: true })
-  categoryId?: string;
 
   @Column({ type: 'text', nullable: false })
   name: string;
@@ -30,7 +27,12 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   price: number;
 
-  @ManyToOne(() => ProductCategory, { onDelete: 'SET NULL' })
-  @JoinColumn({ name: 'category_id' })
-  category?: ProductCategory;
+  @ManyToMany(() => ProductCategory, (cat) => cat.products)
+  @JoinTable({
+    name: 'product_category_link',
+    schema: 'bally',
+    joinColumn: { name: 'product_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'product_category_id', referencedColumnName: 'id' },
+  })
+  categories: ProductCategory[];
 }

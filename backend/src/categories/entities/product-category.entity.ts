@@ -2,10 +2,12 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Product } from 'src/products/entities/product.entity';
 
 @Entity({ schema: 'bally', name: 'product_category' })
 export class ProductCategory {
@@ -27,4 +29,7 @@ export class ProductCategory {
 
   @OneToMany(() => ProductCategory, (cat) => cat.parent)
   children: ProductCategory[];
+
+  @ManyToMany(() => Product, (product) => product.categories)
+  products: Product[];
 }
