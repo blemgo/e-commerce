@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { RefreshTokensModule } from './refresh-tokens/refresh-tokens.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { CategoriesModule } from './categories/categories.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CategoriesModule } from './categories/categories.module';
     typeOrmModule,
     RefreshTokensModule,
     CategoriesModule,
+    ProductsModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
