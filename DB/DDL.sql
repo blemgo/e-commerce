@@ -35,9 +35,10 @@ CREATE TABLE bally.refresh_tokens (
 CREATE INDEX idx_refresh_tokens_user_id ON bally.refresh_tokens(user_id);
 
 -- PRODUCTS
-
+-- TODO: update the names of users, product-category, product-category-link.
 DROP TABLE IF EXISTS bally.product_category CASCADE;
 DROP TABLE IF EXISTS bally.product CASCADE;
+DROP TABLE IF EXISTS bally.product_category_link CASCADE;
  
 CREATE TABLE bally.product_category (
     id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -49,22 +50,25 @@ CREATE TABLE bally.product_category (
         ON DELETE SET NULL
 );
 
-CREATE INDEX idx_product_category_parent_category_id
-    ON bally.product_category (parent_category_id);
-
 CREATE TABLE bally.product (
     id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    category_id    uuid,
     name           text NOT NULL,
     description    text,
     product_image  text,
     qty_in_stock   int  NOT NULL DEFAULT 0,
     price          decimal(10,2) NOT NULL,
-    CONSTRAINT fk_product_category
-        FOREIGN KEY (category_id)
-        REFERENCES bally.product_category (id)
-        ON DELETE SET NULL
 );
 
-CREATE INDEX idx_product_category_id ON bally.product (category_id);
-CREATE INDEX idx_product_name        ON bally.product (name);
+CREATE TABLE bally.product_category_link (
+    product_id          uuid NOT NULL,
+    product_category_id uuid NOT NULL,
+    PRIMARY KEY (product_id, product_category_id),
+    CONSTRAINT fk_pcl_product
+        FOREIGN KEY (product_id)
+        REFERENCES bally.product (id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_pcl_category
+        FOREIGN KEY (product_category_id)
+        REFERENCES bally.product_category (id)
+        ON DELETE CASCADE
+);
