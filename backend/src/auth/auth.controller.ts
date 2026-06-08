@@ -56,7 +56,7 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() req: Request, @Res() res: Response): Promise<void> {
-    const { accessToken, refreshToken } = await this.authService.loginGoogleUser(
+    const { refreshToken } = await this.authService.loginGoogleUser(
       req.user as User,
     );
 
