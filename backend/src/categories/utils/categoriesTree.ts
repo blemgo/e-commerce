@@ -21,4 +21,30 @@ export const categoryRowsToTree = (categoryRows: ProductCategory[]): CategoryNod
     });
 
     return rootNodes;
-}
+};
+
+export const findNode = (tree: CategoryNode[], id: string): CategoryNode | null => {
+    tree.forEach(node => {
+        if (node.id === id) {
+            return node;
+        }
+
+        const child = findNode(node.children, id);
+
+        if (child) {
+            return child;
+        }
+    });
+
+    return null;
+};
+
+export const getDescendantIds = (node: CategoryNode): string[] => {
+    const descendantIds: string[] = [node.id];
+
+    node.children.forEach(child => {
+        descendantIds.push(...getDescendantIds(child));
+    });
+
+    return descendantIds;
+};
