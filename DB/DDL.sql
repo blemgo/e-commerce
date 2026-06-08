@@ -56,7 +56,7 @@ CREATE TABLE bally.product (
     description    text,
     product_image  text,
     qty_in_stock   int  NOT NULL DEFAULT 0,
-    price          decimal(10,2) NOT NULL,
+    price          decimal(10,2) NOT NULL
 );
 
 CREATE TABLE bally.product_category_link (
