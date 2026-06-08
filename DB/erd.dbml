@@ -17,7 +17,7 @@ Enum order_status {
   cancelled
 }
  
-Table users {
+Table user {
   id            uuid          [pk, default: `gen_random_uuid()`]
   email         text          [unique, not null]
   password_hash text
@@ -28,7 +28,7 @@ Table users {
   created_at    timestamptz   [not null, default: `now()`]
 }
  
-Table refresh_tokens {
+Table refresh_token {
   id         uuid      [pk, default: `gen_random_uuid()`]
   user_id    uuid      [not null]
   token_hash text      [not null]
@@ -117,14 +117,14 @@ Table promotion_product {
   }
 }
  
-Table carts {
+Table cart {
   id         uuid      [pk, default: `gen_random_uuid()`]
   user_id    uuid      [unique, not null]
   created_at timestamp [not null, default: `now()`]
   updated_at timestamp [not null, default: `now()`]
 }
  
-Table cart_items {
+Table cart_item {
   id         uuid [pk, default: `gen_random_uuid()`]
   cart_id    uuid [not null]
   product_id uuid [not null]
@@ -135,7 +135,7 @@ Table cart_items {
   }
 }
  
-Table orders {
+Table order {
   id           uuid          [pk, default: `gen_random_uuid()`]
   user_id      uuid          [not null]
   status       order_status  [not null, default: 'pending']
@@ -150,7 +150,7 @@ Table orders {
   }
 }
  
-Table order_items {
+Table order_item {
   id           uuid          [pk, default: `gen_random_uuid()`]
   order_id     uuid          [not null]
   product_id   uuid          [not null]
@@ -163,7 +163,7 @@ Table order_items {
   }
 }
  
-Table conversations {
+Table conversation {
   id              uuid      [pk, default: `gen_random_uuid()`]
   customer_id     uuid      [not null]
   last_message_at timestamp [not null, default: `now()`]
@@ -175,7 +175,7 @@ Table conversations {
   }
 }
  
-Table messages {
+Table message {
   id              uuid      [pk, default: `gen_random_uuid()`]
   conversation_id uuid      [not null]
   sender_id       uuid      [not null]
@@ -188,10 +188,10 @@ Table messages {
   }
 }
  
-Ref: refresh_tokens.user_id > users.id [delete: cascade]
+Ref: refresh_token.user_id > user.id [delete: cascade]
  
 Ref: address.country_id      > country.id [delete: restrict]
-Ref: user_address.user_id    > users.id   [delete: cascade]
+Ref: user_address.user_id    > user.id    [delete: cascade]
 Ref: user_address.address_id > address.id [delete: cascade]
  
 Ref: product_category.parent_category_id > product_category.id [delete: set null]
@@ -199,14 +199,13 @@ Ref: product.category_id                 > product_category.id [delete: set null
 Ref: promotion_product.product_id        > product.id          [delete: cascade]
 Ref: promotion_product.promotion_id      > promotion.id        [delete: cascade]
  
-Ref: carts.user_id          > users.id   [delete: cascade]
-Ref: cart_items.cart_id     > carts.id   [delete: cascade]
-Ref: cart_items.product_id  > product.id [delete: cascade]
-Ref: orders.user_id         > users.id   [delete: restrict]
-Ref: order_items.order_id   > orders.id  [delete: cascade]
-Ref: order_items.product_id > product.id [delete: restrict]
+Ref: cart.user_id          > user.id    [delete: cascade]
+Ref: cart_item.cart_id     > cart.id    [delete: cascade]
+Ref: cart_item.product_id  > product.id [delete: cascade]
+Ref: order.user_id         > user.id    [delete: restrict]
+Ref: order_item.order_id   > order.id   [delete: cascade]
+Ref: order_item.product_id > product.id [delete: restrict]
  
-Ref: conversations.customer_id > users.id         [delete: cascade]
-Ref: messages.conversation_id  > conversations.id [delete: cascade]
-Ref: messages.sender_id        > users.id         [delete: cascade]
- 
+Ref: conversation.customer_id > user.id         [delete: cascade]
+Ref: message.conversation_id  > conversation.id [delete: cascade]
+Ref: message.sender_id        > user.id         [delete: cascade]
