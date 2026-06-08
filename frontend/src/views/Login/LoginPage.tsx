@@ -9,23 +9,35 @@ import useLocalRegister from '@/api/hooks/auth/useLocalRegister';
 import { useUserContext } from '@/contexts/user';
 import { useNavigate } from 'react-router-dom';
 import api from '@api/api';
+import { isUnauthorizedError } from '@/utils/getResponseStatus';
 
 type AuthView = 'signIn' | 'signUp';
 
+const LOGIN_UNAUTHORIZED_MESSAGE = 'Incorrect email or password.';
+
 const LoginPage = () => {
   const [authView, setAuthView] = useState<AuthView>('signIn');
+  const [loginError, setLoginError] = useState<string | null>(null);
   const { setUser, setAccessToken } = useUserContext();
   const { localLogin, isLoading: isLoginLoading } = useLocalLogin();
   const { localRegister, isLoading: isRegisterLoading } = useLocalRegister();
   const navigate = useNavigate();
 
   const onLoginSubmit = async (email: string, password: string, rememberMe: boolean) => {
-    const { user, accessToken } = await localLogin({ email, password, rememberMe });
+    setLoginError(null);
 
-    setUser(user);
-    setAccessToken(accessToken);
+    try {
+      const { user, accessToken } = await localLogin({ email, password, rememberMe });
 
-    navigate('/');
+      setUser(user);
+      setAccessToken(accessToken);
+
+      navigate('/');
+    } catch (error) {
+      if (isUnauthorizedError(error)) {
+        setLoginError(LOGIN_UNAUTHORIZED_MESSAGE);
+      }
+    }
   };
 
   const onRegisterSubmit = async (fullName: string, email: string, password: string) => {
@@ -47,7 +59,12 @@ const LoginPage = () => {
           <SignIn
             onSubmit={onLoginSubmit}
             onGoogleLogin={api.auth().googleLogin}
-            onCreateAccount={() => setAuthView('signUp')}
+            onCreateAccount={() => {
+              setLoginError(null);
+              setAuthView('signUp');
+            }}
+            authError={loginError}
+            onDismissAuthError={() => setLoginError(null)}
             loading={isLoginLoading}
           />
         ) : (

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { isUnauthorizedError } from '@/utils/getResponseStatus';
 import type { LocalLoginDTO, LocalLoginResponse } from '@types';
 
 export interface UseLocalLoginReturn {
@@ -18,10 +19,12 @@ const useLocalLogin = (): UseLocalLoginReturn => {
       const {user, accessToken} = await api.auth().localLogin(dto);
 
       return { user, accessToken };
-    } catch {
-      toast.error('Login failed. Please try again.');
+    } catch (error) {
+      if (!isUnauthorizedError(error)) {
+        toast.error('Login failed. Please try again.');
+      }
 
-      throw new Error('Login failed');
+      throw error;
     } finally {
       setIsLoading(false);
     }

@@ -14,6 +14,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import GoogleIcon from '@mui/icons-material/Google';
 import { StyledButton } from '@components/StyledButton/StyledButton';
 import { StyledInput } from '@components/StyledInput/StyledInput';
+import { DismissibleDangerAlert } from '@components/DismissibleDangerAlert';
 import { validateEmail, validatePassword } from '@/utils/authValidation';
 import { signInStyles } from './SignInStyles';
 
@@ -21,6 +22,8 @@ interface SignInProps {
   onSubmit: (email: string, password: string, rememberMe: boolean) => void;
   onGoogleLogin: () => void;
   onCreateAccount: () => void;
+  authError?: string | null;
+  onDismissAuthError?: () => void;
   loading?: boolean;
   disabled?: boolean;
 }
@@ -34,6 +37,8 @@ const SignIn: React.FC<SignInProps> = ({
   onSubmit,
   onGoogleLogin,
   onCreateAccount,
+  authError = null,
+  onDismissAuthError,
   loading = false,
   disabled = false,
 }) => {
@@ -74,6 +79,7 @@ const SignIn: React.FC<SignInProps> = ({
       return;
     }
 
+    onDismissAuthError?.();
     onSubmit(email.trim(), password, rememberMe);
   };
 
@@ -84,24 +90,11 @@ const SignIn: React.FC<SignInProps> = ({
         <Typography sx={signInStyles.subtitle}>Sign in to pick up where you left off.</Typography>
       </Box>
 
-      <Box sx={signInStyles.socialButtonsGroup}>
-        <Button
-          variant="outlined"
-          fullWidth
-          startIcon={<GoogleIcon sx={{ color: '#4285F4' }} />}
-          onClick={onGoogleLogin}
-          type="button"
-          sx={signInStyles.socialButton}
-        >
-          Continue with Google
-        </Button>
-      </Box>
+      {authError && onDismissAuthError && (
+        <DismissibleDangerAlert message={authError} onClose={onDismissAuthError} />
+      )}
 
-      <Divider>
-        <Typography variant="caption" color="text.secondary">or</Typography>
-      </Divider>
-
-      <Box sx={signInStyles.fieldsGroup}>
+<Box sx={signInStyles.fieldsGroup}>
         <Box sx={signInStyles.fieldGroup}>
           <Typography sx={signInStyles.inputLabel}>Email</Typography>
           <StyledInput
@@ -189,6 +182,23 @@ const SignIn: React.FC<SignInProps> = ({
         >
           Sign in
         </StyledButton>
+      </Box>
+
+      <Divider>
+        <Typography variant="caption" color="text.secondary">or</Typography>
+      </Divider>
+
+      <Box sx={signInStyles.socialButtonsGroup}>
+        <Button
+          variant="outlined"
+          fullWidth
+          startIcon={<GoogleIcon sx={{ color: '#4285F4' }} />}
+          onClick={onGoogleLogin}
+          type="button"
+          sx={signInStyles.socialButton}
+        >
+          Continue with Google
+        </Button>
       </Box>
 
       <Typography sx={signInStyles.createAccountText}>
