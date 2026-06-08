@@ -24,17 +24,13 @@ export const categoryRowsToTree = (categoryRows: ProductCategory[]): CategoryNod
 };
 
 export const findNode = (tree: CategoryNode[], id: string): CategoryNode | null => {
-    tree.forEach(node => {
-        if (node.id === id) {
-            return node;
-        }
+    for (const node of tree) {
+        if (node.id === id) return node;
 
         const child = findNode(node.children, id);
 
-        if (child) {
-            return child;
-        }
-    });
+        if (child) return child;
+    }
 
     return null;
 };
