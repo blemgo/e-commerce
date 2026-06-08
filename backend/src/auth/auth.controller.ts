@@ -15,8 +15,14 @@ import { AuthService } from './auth.service';
 import { LoginLocalUserDto } from './dto/login-local-user.dto';
 import { AuthorizedUser } from './dto/authorized-user.dto';
 import { RegisterLocalUserDto } from 'src/users/dto/register-local-user.dto';
-import { clearRefreshTokenCookie, setRefreshTokenCookie } from './utils/refresh-token-cookie.utils';
-import { clearAccessTokenCookie, setAccessTokenCookie } from './utils/access-token-cookie.utils';
+import {
+  clearRefreshTokenCookie,
+  setRefreshTokenCookie,
+} from './utils/refresh-token-cookie.utils';
+import {
+  clearAccessTokenCookie,
+  setAccessTokenCookie,
+} from './utils/access-token-cookie.utils';
 import { User } from 'src/users/entities/user.entity';
 import { env } from 'src/config/env';
 
@@ -30,7 +36,8 @@ export class AuthController {
     @Body() loginLocalUserDto: LoginLocalUserDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthorizedUser> {
-    const { refreshToken, accessToken, user } = await this.authService.loginLocalUser(loginLocalUserDto);
+    const { refreshToken, accessToken, user } =
+      await this.authService.loginLocalUser(loginLocalUserDto);
 
     setRefreshTokenCookie(res, refreshToken);
     setAccessTokenCookie(res, accessToken);
@@ -44,7 +51,8 @@ export class AuthController {
     @Body() registerLocalUserDto: RegisterLocalUserDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthorizedUser> {
-    const { refreshToken, accessToken, user } = await this.authService.registerLocalUser(registerLocalUserDto);
+    const { refreshToken, accessToken, user } =
+      await this.authService.registerLocalUser(registerLocalUserDto);
 
     setRefreshTokenCookie(res, refreshToken);
     setAccessTokenCookie(res, accessToken);
@@ -58,8 +66,12 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  async googleCallback(@Req() req: Request, @Res() res: Response): Promise<void> {
-    const { refreshToken, accessToken } = await this.authService.loginGoogleUser(req.user as User);
+  async googleCallback(
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<void> {
+    const { refreshToken, accessToken } =
+      await this.authService.loginGoogleUser(req.user as User);
 
     setRefreshTokenCookie(res, refreshToken);
     setAccessTokenCookie(res, accessToken);
@@ -80,7 +92,8 @@ export class AuthController {
         throw new UnauthorizedException('Refresh token is missing');
       }
 
-      const { refreshToken, accessToken, user } = await this.authService.refreshAccessToken(receivedRefreshToken);
+      const { refreshToken, accessToken, user } =
+        await this.authService.refreshAccessToken(receivedRefreshToken);
 
       setRefreshTokenCookie(res, refreshToken);
       setAccessTokenCookie(res, accessToken);
@@ -98,7 +111,10 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(200)
-  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<void> {
+  async logout(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
     const refreshToken = req.cookies['refresh_token'];
 
     if (refreshToken) {

@@ -17,9 +17,6 @@ import { ProductsModule } from './products/products.module';
     CategoriesModule,
     ProductsModule,
   ],
-  providers: [
-    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
-  ],
+  providers: [{ provide: APP_INTERCEPTOR, useClass: LoggingInterceptor }],
 })
-
 export class AppModule {}

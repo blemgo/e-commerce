@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
 import { GoogleProfileData } from './types/google-profile-data.type';
 import { User } from './entities/user.entity';
@@ -20,8 +25,10 @@ export class UsersService {
   ) {}
 
   async getUserByEmail(email: string): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { email: email.toLowerCase() } });
-    
+    const user = await this.usersRepository.findOne({
+      where: { email: email.toLowerCase() },
+    });
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -29,8 +36,13 @@ export class UsersService {
     return user;
   }
 
-  async createLocalUser(registerLocalUserDto: RegisterLocalUserDto): Promise<User> {
-    const hashedPass = await bcrypt.hash(registerLocalUserDto.password, env.BCRYPT_SALT);
+  async createLocalUser(
+    registerLocalUserDto: RegisterLocalUserDto,
+  ): Promise<User> {
+    const hashedPass = await bcrypt.hash(
+      registerLocalUserDto.password,
+      env.BCRYPT_SALT,
+    );
 
     const user = this.usersRepository.create({
       email: registerLocalUserDto.email.toLowerCase(),
@@ -48,7 +60,10 @@ export class UsersService {
         throw new ConflictException('Email already taken');
       }
 
-      this.logger.error(`Unexpected DB error creating user: ${error.message}`, error.stack);
+      this.logger.error(
+        `Unexpected DB error creating user: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
 
@@ -80,7 +95,9 @@ export class UsersService {
     } catch (error) {
       if (error?.code === pgCodes.UNIQUE_VIOLATION) {
         this.logger.warn(`Email already registered: ${email}`);
-        throw new ConflictException('An account with this email already exists');
+        throw new ConflictException(
+          'An account with this email already exists',
+        );
       }
 
       this.logger.error(

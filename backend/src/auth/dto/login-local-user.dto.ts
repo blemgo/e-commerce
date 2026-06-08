@@ -1,13 +1,13 @@
-import { IsBoolean, IsEmail, IsOptional, MinLength } from "class-validator";
+import { IsBoolean, IsEmail, IsOptional, MinLength } from 'class-validator';
 
 export class LoginLocalUserDto {
-    @IsEmail()
-    email: string;
+  @IsEmail()
+  email: string;
 
-    @MinLength(8)
-    password: string;
+  @MinLength(8)
+  password: string;
 
-    @IsOptional()
-    @IsBoolean()
-    rememberMe?: boolean;
+  @IsOptional()
+  @IsBoolean()
+  rememberMe?: boolean;
 }

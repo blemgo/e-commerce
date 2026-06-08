@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { LoginLocalUserDto } from './dto/login-local-user.dto';
 import { RegisterLocalUserDto } from 'src/users/dto/register-local-user.dto';
 import { AuthResult } from './types/auth-result';
@@ -21,18 +26,27 @@ export class AuthService {
     private readonly refreshTokensService: RefreshTokensService,
   ) {}
 
-  async loginLocalUser(loginLocalUserDto: LoginLocalUserDto): Promise<AuthResult> {
-    const user = await this.usersService.getUserByEmail(loginLocalUserDto.email)
-    .catch((error) => {
-      if (error instanceof NotFoundException) {
-        throw new UnauthorizedException('Invalid email or password');
-      }
+  async loginLocalUser(
+    loginLocalUserDto: LoginLocalUserDto,
+  ): Promise<AuthResult> {
+    const user = await this.usersService
+      .getUserByEmail(loginLocalUserDto.email)
+      .catch((error) => {
+        if (error instanceof NotFoundException) {
+          throw new UnauthorizedException('Invalid email or password');
+        }
 
-      throw error;
-    });
+        throw error;
+      });
 
-    if (user.passwordHash && await bcrypt.compare(loginLocalUserDto.password, user.passwordHash)) {
-      const { accessToken, refreshToken } = await this.generateTokens(userToAuthorizedUser(user), loginLocalUserDto.rememberMe);
+    if (
+      user.passwordHash &&
+      (await bcrypt.compare(loginLocalUserDto.password, user.passwordHash))
+    ) {
+      const { accessToken, refreshToken } = await this.generateTokens(
+        userToAuthorizedUser(user),
+        loginLocalUserDto.rememberMe,
+      );
 
       this.logger.log(`User logged in: ${user.id}`);
 
@@ -43,10 +57,13 @@ export class AuthService {
     throw new UnauthorizedException('Invalid email or password');
   }
 
-  async registerLocalUser(registerLocalUserDto: RegisterLocalUserDto): Promise<AuthResult> {
+  async registerLocalUser(
+    registerLocalUserDto: RegisterLocalUserDto,
+  ): Promise<AuthResult> {
     const user = await this.usersService.createLocalUser(registerLocalUserDto);
     const authorizedUser = userToAuthorizedUser(user);
-    const { accessToken, refreshToken } = await this.generateTokens(authorizedUser);
+    const { accessToken, refreshToken } =
+      await this.generateTokens(authorizedUser);
 
     this.logger.log(`New user registered: ${user.id} (${user.email})`);
 
@@ -55,7 +72,8 @@ export class AuthService {
 
   async loginGoogleUser(user: User): Promise<AuthResult> {
     const authorizedUser = userToAuthorizedUser(user);
-    const { accessToken, refreshToken } = await this.generateTokens(authorizedUser);
+    const { accessToken, refreshToken } =
+      await this.generateTokens(authorizedUser);
 
     this.logger.log(`Google user logged in: ${user.id}`);
 
@@ -63,7 +81,8 @@ export class AuthService {
   }
 
   async refreshAccessToken(oldRefreshToken: string): Promise<AuthResult> {
-    const { refreshToken, user } = await this.refreshTokensService.reissueToken(oldRefreshToken);
+    const { refreshToken, user } =
+      await this.refreshTokensService.reissueToken(oldRefreshToken);
 
     return {
       accessToken: this.signToken(user),
@@ -76,9 +95,15 @@ export class AuthService {
     await this.refreshTokensService.revokeTokenByHash(refreshToken);
   }
 
-  private async generateTokens(user: AuthorizedUser, persistent = false): Promise<{ accessToken: string, refreshToken: string }> {
+  private async generateTokens(
+    user: AuthorizedUser,
+    persistent = false,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const accessToken = this.signToken(user);
-    const refreshToken = await this.refreshTokensService.createRefreshToken(user.id, persistent);
+    const refreshToken = await this.refreshTokensService.createRefreshToken(
+      user.id,
+      persistent,
+    );
 
     return { accessToken, refreshToken };
   }

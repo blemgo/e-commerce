@@ -24,15 +24,18 @@ Table users {
   full_name     text          [not null]
   role          user_role     [not null, default: 'customer']
   auth_provider auth_provider [not null, default: 'local']
-  google_id     text          [unique]
+  provider_id   text
   created_at    timestamptz   [not null, default: `now()`]
+
+  indexes {
+    (auth_provider, provider_id) [unique]
+  }
 }
  
 Table refresh_tokens {
   id         uuid      [pk, default: `gen_random_uuid()`]
   user_id    uuid      [not null]
   token_hash text      [not null]
-  expires_at timestamp [not null]
   revoked    boolean   [not null, default: false]
   created_at timestamp [not null, default: `now()`]
  

@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  PrimaryGeneratedColumn,
-  Check,
-} from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn, Check } from 'typeorm';
 import { AuthProvider } from './enums/auth-provider.enum';
 import { Role } from './enums/role.enum';
 

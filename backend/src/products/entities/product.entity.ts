@@ -32,7 +32,10 @@ export class Product {
     name: 'product_category_link',
     schema: 'bally',
     joinColumn: { name: 'product_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'product_category_id', referencedColumnName: 'id' },
+    inverseJoinColumn: {
+      name: 'product_category_id',
+      referencedColumnName: 'id',
+    },
   })
   categories: ProductCategory[];
 }

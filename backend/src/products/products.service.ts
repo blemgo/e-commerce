@@ -22,7 +22,7 @@ export class ProductsService {
   async findAll(query: GetProductsQueryDto): Promise<Product[]> {
     const qb = this.productRepository.createQueryBuilder('product');
 
-    if (!await this.checkCategoryQuery(qb, query)) {
+    if (!(await this.checkCategoryQuery(qb, query))) {
       return [];
     }
 
@@ -32,20 +32,26 @@ export class ProductsService {
   /* Checks if the there are products under the queried category 
   and updates the query builder accordingly
   */
-  private async checkCategoryQuery(qb: SelectQueryBuilder<Product>, query: GetProductsQueryDto)
-        : Promise<boolean> {
+  private async checkCategoryQuery(
+    qb: SelectQueryBuilder<Product>,
+    query: GetProductsQueryDto,
+  ): Promise<boolean> {
     if (!query.category) {
       return true;
     }
 
-    const ids = await this.categoriesService.getDescendantCategoryIds(query.category);
+    const ids = await this.categoriesService.getDescendantCategoryIds(
+      query.category,
+    );
 
     if (ids.length === 0) {
       return false;
     }
 
-    qb.innerJoin('"bally"."product_category_link"', 'pcl', 'pcl.product_id = product.id')
-      .andWhere('pcl.product_category_id IN (:...ids)', { ids });
+    qb.innerJoin('product.categories', 'category').andWhere(
+      'category.id IN (:...ids)',
+      { ids },
+    );
 
     return true;
   }

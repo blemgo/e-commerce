@@ -5,7 +5,11 @@ import { Repository } from 'typeorm';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoryNode } from './interfaces/CategoryNode';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { categoryRowsToTree, findNode, getDescendantIds } from './utils/categoriesTree';
+import {
+  categoryRowsToTree,
+  findNode,
+  getDescendantIds,
+} from './utils/categoriesTree';
 
 @Injectable()
 export class CategoriesService {
@@ -20,12 +24,14 @@ export class CategoriesService {
 
   async getCategoryTree(): Promise<CategoryNode[]> {
     const categoryRows = await this.productCategoryRepository.find();
-    
+
     return categoryRowsToTree(categoryRows);
   }
 
   async findOne(id: string): Promise<ProductCategory> {
-    const category = await this.productCategoryRepository.findOne({ where: { id } });
+    const category = await this.productCategoryRepository.findOne({
+      where: { id },
+    });
 
     if (!category) {
       throw new NotFoundException('Category not found');
@@ -36,7 +42,7 @@ export class CategoriesService {
 
   async getDescendantCategoryIds(categoryId: string): Promise<string[]> {
     const categoryTree = await this.getCategoryTree();
-    
+
     const node = findNode(categoryTree, categoryId);
 
     return node ? getDescendantIds(node) : [];

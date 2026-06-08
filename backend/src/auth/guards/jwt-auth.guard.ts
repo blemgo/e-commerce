@@ -7,7 +7,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   handleRequest<TUser = any>(err: any, user: any, info: any): TUser {
     if (err || !user) {
-      this.logger.warn(`JWT validation failed: ${info?.message ?? 'unknown reason'}`);
+      this.logger.warn(
+        `JWT validation failed: ${info?.message ?? 'unknown reason'}`,
+      );
       throw err || new UnauthorizedException();
     }
 
