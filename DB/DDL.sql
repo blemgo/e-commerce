@@ -33,3 +33,38 @@ CREATE TABLE bally.refresh_tokens (
 );
 
 CREATE INDEX idx_refresh_tokens_user_id ON bally.refresh_tokens(user_id);
+
+-- PRODUCTS
+
+DROP TABLE IF EXISTS bally.product_category CASCADE;
+DROP TABLE IF EXISTS bally.product CASCADE;
+ 
+CREATE TABLE product_category (
+    id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    parent_category_id  uuid,
+    category_name       text NOT NULL,
+    CONSTRAINT fk_product_category_parent
+        FOREIGN KEY (parent_category_id)
+        REFERENCES product_category (id)
+        ON DELETE SET NULL
+);
+
+CREATE INDEX idx_product_category_parent_category_id
+    ON product_category (parent_category_id);
+
+CREATE TABLE product (
+    id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    category_id    uuid,
+    name           text NOT NULL,
+    description    text,
+    product_image  text,
+    qty_in_stock   int  NOT NULL DEFAULT 0,
+    price          decimal(10,2) NOT NULL,
+    CONSTRAINT fk_product_category
+        FOREIGN KEY (category_id)
+        REFERENCES product_category (id)
+        ON DELETE SET NULL
+);
+
+CREATE INDEX idx_product_category_id ON product (category_id);
+CREATE INDEX idx_product_name        ON product (name);
