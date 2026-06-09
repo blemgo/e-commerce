@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Delete,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -25,20 +24,11 @@ export class CartController {
   }
 
   @Patch('items/:productId')
-  addItem(
+  setItemQuantity(
     @CurrentUser('id') userId: string,
     @Param('productId', ParseUUIDPipe) productId: string,
     @Body() dto: UpdateCartItemDto,
   ): Promise<Cart> {
-    return this.cartService.addItem(userId, productId, dto);
-  }
-
-  @Delete('items/:productId')
-  removeItem(
-    @CurrentUser('id') userId: string,
-    @Param('productId', ParseUUIDPipe) productId: string,
-    @Body() dto: UpdateCartItemDto,
-  ): Promise<Cart> {
-    return this.cartService.removeItem(userId, productId, dto);
+    return this.cartService.setItemQuantity(userId, productId, dto);
   }
 }

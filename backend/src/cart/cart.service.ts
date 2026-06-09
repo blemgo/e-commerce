@@ -25,58 +25,38 @@ export class CartService {
     return this.getOrCreateCart(userId, true);
   }
 
-  async addItem(
+  async setItemQuantity(
     userId: string,
     productId: string,
     dto: UpdateCartItemDto,
   ): Promise<Cart> {
     const cart = await this.getOrCreateCart(userId);
-    const quantity = dto.quantity ?? 1;
 
     const existingItem = await this.cartItemRepository.findOne({
       where: { cart: { id: cart.id }, product: { id: productId } },
     });
 
-    const newQuantity = (existingItem?.quantity ?? 0) + quantity;
+    if (dto.quantity === 0) {
+      if (existingItem) {
+        await this.cartItemRepository.remove(existingItem);
+      }
 
-    await this.assertSufficientStock(productId, newQuantity);
+      return this.getCart(userId);
+    }
+
+    await this.assertSufficientStock(productId, dto.quantity);
 
     if (existingItem) {
-      existingItem.quantity = newQuantity;
+      existingItem.quantity = dto.quantity;
       await this.cartItemRepository.save(existingItem);
     } else {
       await this.cartItemRepository.save(
         this.cartItemRepository.create({
           cart: { id: cart.id },
           product: { id: productId },
-          quantity: newQuantity,
+          quantity: dto.quantity,
         }),
       );
-    }
-
-    return this.getCart(userId);
-  }
-
-  async removeItem(
-    userId: string,
-    productId: string,
-    dto: UpdateCartItemDto,
-  ): Promise<Cart> {
-    const cart = await this.getOrCreateCart(userId);
-
-    const item = await this.cartItemRepository.findOne({
-      where: { cart: { id: cart.id }, product: { id: productId } },
-    });
-
-    if (!item) {
-      throw new NotFoundException('Cart item not found');
-    }
-
-    if (dto.quantity === undefined || item.quantity - dto.quantity <= 0) {
-      await this.cartItemRepository.remove(item);
-    } else {
-      item.quantity -= dto.quantity;
-      await this.cartItemRepository.save(item);
     }
 
     return this.getCart(userId);
