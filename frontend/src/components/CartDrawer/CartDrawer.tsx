@@ -22,7 +22,7 @@ const CartDrawer = ({ open, onClose, onCheckout }: CartDrawerProps) => {
 
   const items = cart?.items ?? [];
   const totalQuantity = items.reduce((sum, i) => sum + i.quantity, 0);
-  const totalPrice = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
+  const totalPrice = items.reduce((sum, i) => sum + i.product.price * i.quantity, 0).toFixed(2);
 
   return (
     <Drawer
