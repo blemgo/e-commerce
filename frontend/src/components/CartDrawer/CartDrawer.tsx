@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import { useCartContext } from '@contexts/cart';
+import { useAppendCartItem } from '@contexts/cart/hooks/useAppendCartItem';
 import { CartItem } from './CartItem';
 import { cartDrawerStyles } from './CartDrawer.styles';
 
@@ -16,7 +17,8 @@ interface CartDrawerProps {
 }
 
 const CartDrawer = ({ open, onClose, onCheckout }: CartDrawerProps) => {
-  const { cart, addItem, removeItem } = useCartContext();
+  const { cart, setItemQuantity } = useCartContext();
+  const { appendCartItem } = useAppendCartItem();
 
   const items = cart?.items ?? [];
   const totalQuantity = items.reduce((sum, i) => sum + i.quantity, 0);
@@ -27,7 +29,7 @@ const CartDrawer = ({ open, onClose, onCheckout }: CartDrawerProps) => {
       anchor="right"
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: cartDrawerStyles.paper }}
+      slotProps={{ paper: { sx: cartDrawerStyles.paper } }}
     >
       <Box sx={cartDrawerStyles.header}>
         <Box sx={cartDrawerStyles.titleRow}>
@@ -49,9 +51,9 @@ const CartDrawer = ({ open, onClose, onCheckout }: CartDrawerProps) => {
             <Box key={item.id}>
               <CartItem
                 item={item}
-                onAdd={() => addItem(item.product, 1)}
-                onRemove={() => removeItem(item.product.id, 1)}
-                onDelete={() => removeItem(item.product.id)}
+                onAdd={() => appendCartItem(item.product.id)}
+                onRemove={() => setItemQuantity(item.product.id, item.quantity - 1)}
+                onDelete={() => setItemQuantity(item.product.id, 0)}
               />
               {index < items.length - 1 && <Divider sx={cartDrawerStyles.divider} />}
             </Box>

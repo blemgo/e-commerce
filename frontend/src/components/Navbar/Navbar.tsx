@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Backdrop from '@mui/material/Backdrop';
+import Badge from '@mui/material/Badge';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutlined';
@@ -15,12 +16,15 @@ import { CartDrawer } from '@components/CartDrawer';
 import { CategoryDropdown } from '@components/CategoryDropdown';
 import ballyLogo from '@/assets/bally-black.png';
 import type { CategoryNode } from '@types';
+import { useCartContext } from '@contexts/cart';
 import { navbarStyles } from './Navbar.styles';
 
 const CLOSE_DELAY_MS = 150;
 
 const Navbar = () => {
   const { categories } = useGetCategories();
+  const { cart } = useCartContext();
+  const cartItemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
   const navigate = useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -100,7 +104,9 @@ const Navbar = () => {
               sx={navbarStyles.iconButton}
               disableRipple
             >
-              <ShoppingCartOutlinedIcon sx={navbarStyles.icon} />
+              <Badge badgeContent={cartItemCount} color="primary" sx={navbarStyles.cartBadge}>
+                <ShoppingCartOutlinedIcon sx={navbarStyles.icon} />
+              </Badge>
             </IconButton>
 
             <IconButton

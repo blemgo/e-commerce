@@ -63,6 +63,14 @@ export const navbarStyles: Record<string, SxProps<Theme>> = {
   icon: {
     fontSize: '1.25rem',
   },
+  cartBadge: {
+    '& .MuiBadge-badge': {
+      fontSize: '0.6rem',
+      minWidth: '16px',
+      height: '16px',
+      padding: '0 3px',
+    },
+  },
   backdrop: {
     zIndex: 999,
   },

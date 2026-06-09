@@ -16,7 +16,7 @@ interface CartItemProps {
 
 const CartItem = ({ item, onAdd, onRemove, onDelete }: CartItemProps) => {
   const { product, quantity } = item;
-  const total = product.price * quantity;
+  const total = (product.price * quantity).toFixed(2);
 
   return (
     <Box sx={cartItemStyles.root}>
