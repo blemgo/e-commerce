@@ -2,7 +2,7 @@ import type { SxProps, Theme } from '@mui/material/styles';
 
 export const navbarStyles: Record<string, SxProps<Theme>> = {
   appBar: {
-    bgcolor: 'rgba(255, 255, 255, 0.9)',
+    background: 'rgba(255, 255, 255, 0.9)',
     backdropFilter: 'blur(12px)',
     WebkitBackdropFilter: 'blur(12px)',
     color: 'text.primary',

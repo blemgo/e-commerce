@@ -58,7 +58,7 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position="sticky" sx={navbarStyles.appBar}>
+      <AppBar position="sticky" color="transparent" sx={navbarStyles.appBar}>
         <Toolbar sx={navbarStyles.toolbar}>
           <Box sx={navbarStyles.left}>
             {categories.map(cat => (
