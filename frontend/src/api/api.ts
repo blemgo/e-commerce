@@ -38,6 +38,8 @@ const products = () => ({
     await axiosInstance
       .get<Paginated<Product>>('/products', { params, signal })
       .then(getData),
+  getProduct: async (id: string, signal?: AbortSignal): Promise<Product> =>
+    await axiosInstance.get<Product>(`/products/${id}`, { signal }).then(getData),
 });
 
 const cart = () => ({
