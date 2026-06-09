@@ -28,7 +28,9 @@ export class ProductsService {
   }
 
   async findAll(query: GetProductsQueryDto): Promise<PaginatedProducts> {
-    const qb = this.productRepository.createQueryBuilder('product');
+    const qb = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.categories', 'category');
 
     await applyCategoryFilter(qb, query, (categoryId) =>
       this.categoriesService.getDescendantCategoryIds(categoryId),
