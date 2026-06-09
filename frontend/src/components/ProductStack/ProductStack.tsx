@@ -1,16 +1,13 @@
 import { Grid, Pagination, Typography, Box } from '@mui/material';
 import { useGetProducts } from '@api/hooks/products/useGetProducts';
+import { useProductFilters } from '@api/hooks/products/useProductFilters';
 import { ProductCard } from '@components/ProductCard';
 import { LoadingScreen } from '@components/LoadingScreen';
-import type { Product, ProductFilters } from '@types';
+import type { Product } from '@types';
 import { productStackStyles } from './ProductStack.styles';
 
-interface ProductStackProps {
-  filters: ProductFilters;
-  onFiltersChange: (filters: ProductFilters) => void;
-}
-
-const ProductStack = ({ filters, onFiltersChange }: ProductStackProps) => {
+const ProductStack = () => {
+  const [filters, setFilters] = useProductFilters();
   const { paginatedProducts, loading } = useGetProducts(filters);
 
   const handleAddToCart = (_product: Product) => {
@@ -18,7 +15,7 @@ const ProductStack = ({ filters, onFiltersChange }: ProductStackProps) => {
   };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
-    onFiltersChange({ ...filters, page });
+    setFilters({ page });
   };
 
   if (loading) return <LoadingScreen />;

@@ -14,13 +14,3 @@ export interface Product {
   categories: ProductCategory[];
 }
 
-export interface ProductFilters {
-  category?: string;
-  name?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  sortBy?: 'name' | 'price';
-  sortOrder?: 'ASC' | 'DESC';
-  page?: number;
-  limit?: number;
-}

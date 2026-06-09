@@ -8,35 +8,56 @@ import {
   Box,
   Slider,
 } from '@mui/material';
-import { useState } from 'react';
-import type { ProductFilters } from '@types';
+import { useEffect, useState } from 'react';
+import { useProductFilters } from '@api/hooks/products/useProductFilters';
+import type { ProductFilters } from '@api/hooks/products/useProductFilters';
 import { StyledInput } from '@components/StyledInput';
 import { allFiltersModalStyles } from './AllFiltersModal.styles';
 
 interface AllFiltersModalProps {
   open: boolean;
   onClose: () => void;
-  filters: ProductFilters;
-  onApply: (filters: ProductFilters) => void;
 }
+
+type ModalState = Pick<ProductFilters, 'minPrice' | 'maxPrice' | 'sortBy' | 'sortOrder'>;
 
 const PRICE_MIN = 0;
 const PRICE_MAX = 200;
 
-const AllFiltersModal = ({ open, onClose, filters, onApply }: AllFiltersModalProps) => {
-  const [local, setLocal] = useState<ProductFilters>(filters);
+const AllFiltersModal = ({ open, onClose }: AllFiltersModalProps) => {
+  const [filters, setFilters] = useProductFilters();
+  const [filterValues, setFilterValues] = useState<ModalState>({
+    minPrice: null,
+    maxPrice: null,
+    sortBy: null,
+    sortOrder: null,
+  });
 
-  const set = (patch: Partial<ProductFilters>) => setLocal(prev => ({ ...prev, ...patch }));
+  const set = (patch: Partial<ModalState>) => setFilterValues(prev => ({ ...prev, ...patch }));
+
+  useEffect(() => {
+    if (open) {
+      setFilterValues({
+        minPrice: filters.minPrice,
+        maxPrice: filters.maxPrice,
+        sortBy: filters.sortBy,
+        sortOrder: filters.sortOrder,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const handleApply = () => {
-    onApply({ ...local, page: 1 });
+    // reset page so new filters don't land on a now-nonexistent page
+    setFilters({ ...filterValues, page: null });
     onClose();
   };
 
   const handleClear = () => {
-    const cleared: ProductFilters = { page: 1, limit: filters.limit };
-    setLocal(cleared);
-    onApply(cleared);
+    const cleared: ModalState = { minPrice: null, maxPrice: null, sortBy: null, sortOrder: null };
+    setFilterValues(cleared);
+    // reset page so new filters don't land on a now-nonexistent page
+    setFilters({ ...cleared, page: null });
     onClose();
   };
 
@@ -57,12 +78,12 @@ const AllFiltersModal = ({ open, onClose, filters, onApply }: AllFiltersModalPro
           </Typography>
           <Box sx={allFiltersModalStyles.sliderWrapper}>
             <Slider
-              value={[local.minPrice ?? PRICE_MIN, local.maxPrice ?? PRICE_MAX]}
+              value={[filterValues.minPrice ?? PRICE_MIN, filterValues.maxPrice ?? PRICE_MAX]}
               onChange={(_, val) => {
                 const [min, max] = val as [number, number];
                 set({
-                  minPrice: min === PRICE_MIN ? undefined : min,
-                  maxPrice: max === PRICE_MAX ? undefined : max,
+                  minPrice: min === PRICE_MIN ? null : min,
+                  maxPrice: max === PRICE_MAX ? null : max,
                 });
               }}
               min={PRICE_MIN}
@@ -76,18 +97,18 @@ const AllFiltersModal = ({ open, onClose, filters, onApply }: AllFiltersModalPro
               <StyledInput
                 type="number"
                 placeholder="MIN"
-                value={String(local.minPrice ?? '')}
-                onChange={val => set({ minPrice: val ? Number(val) : undefined })}
-                slotProps={{ htmlInput: { min: PRICE_MIN, max: local.maxPrice ?? PRICE_MAX } }}
+                value={String(filterValues.minPrice ?? '')}
+                onChange={val => set({ minPrice: val ? Number(val) : null })}
+                slotProps={{ htmlInput: { min: PRICE_MIN, max: filterValues.maxPrice ?? PRICE_MAX } }}
               />
             </Box>
             <Box sx={allFiltersModalStyles.priceInput}>
               <StyledInput
                 type="number"
                 placeholder="MAX"
-                value={String(local.maxPrice ?? '')}
-                onChange={val => set({ maxPrice: val ? Number(val) : undefined })}
-                slotProps={{ htmlInput: { min: local.minPrice ?? PRICE_MIN, max: PRICE_MAX } }}
+                value={String(filterValues.maxPrice ?? '')}
+                onChange={val => set({ maxPrice: val ? Number(val) : null })}
+                slotProps={{ htmlInput: { min: filterValues.minPrice ?? PRICE_MIN, max: PRICE_MAX } }}
               />
             </Box>
           </Box>
@@ -102,8 +123,8 @@ const AllFiltersModal = ({ open, onClose, filters, onApply }: AllFiltersModalPro
               select
               size="small"
               label="Sort by"
-              value={local.sortBy ?? ''}
-              onChange={e => set({ sortBy: (e.target.value as ProductFilters['sortBy']) || undefined })}
+              value={filterValues.sortBy ?? ''}
+              onChange={e => set({ sortBy: (e.target.value as ProductFilters['sortBy']) || null })}
               sx={allFiltersModalStyles.sortSelect}
             >
               <MenuItem value="">Default</MenuItem>
@@ -114,9 +135,9 @@ const AllFiltersModal = ({ open, onClose, filters, onApply }: AllFiltersModalPro
               select
               size="small"
               label="Order"
-              value={local.sortOrder ?? ''}
+              value={filterValues.sortOrder ?? ''}
               onChange={e =>
-                set({ sortOrder: (e.target.value as ProductFilters['sortOrder']) || undefined })
+                set({ sortOrder: (e.target.value as ProductFilters['sortOrder']) || null })
               }
               sx={allFiltersModalStyles.sortSelect}
             >

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
+import { ProductCategory } from '../categories/entities/product-category.entity';
 import { CategoriesService } from '../categories/categories.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -23,8 +24,19 @@ export class ProductsService {
     private categoriesService: CategoriesService,
   ) {}
 
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  async create(createProductDto: CreateProductDto): Promise<Product> {
+    const { categoryIds, qtyInStock, ...fields } = createProductDto;
+    const categories = await this.resolveCategories(categoryIds);
+
+    const saved = await this.productRepository.save(
+      this.productRepository.create({
+        ...fields,
+        qtyInStock: qtyInStock ?? 0,
+        categories,
+      }),
+    );
+
+    return this.findOne(saved.id);
   }
 
   async findAll(query: GetProductsQueryDto): Promise<PaginatedProducts> {
@@ -53,11 +65,39 @@ export class ProductsService {
     return product;
   }
 
-  update(id: string, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: string, updateProductDto: UpdateProductDto): Promise<Product> {
+    const product = await this.findOne(id);
+    const { categoryIds, ...productFields } = updateProductDto;
+
+    Object.assign(product, productFields, {
+      categories:
+        categoryIds === undefined
+          ? product.categories
+          : await this.resolveCategories(categoryIds),
+    });
+
+    await this.productRepository.save(product);
+
+    return this.findOne(id);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} product`;
+  async remove(id: string): Promise<void> {
+    const product = await this.findOne(id);
+
+    await this.productRepository.remove(product);
   }
+
+  private resolveCategories = async (
+    categoryIds?: string[],
+  ): Promise<ProductCategory[]> => {
+    if (!categoryIds?.length) {
+      return [];
+    }
+
+    return Promise.all(
+      categoryIds.map((categoryId) =>
+        this.categoriesService.findOne(categoryId),
+      ),
+    );
+  };
 }

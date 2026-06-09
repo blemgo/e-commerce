@@ -1,11 +1,10 @@
 import { Box, Button, Chip, Divider, MenuItem, Select, Typography } from '@mui/material';
 import TuneIcon from '@mui/icons-material/Tune';
-import type { ProductFilters } from '@types';
+import { useProductFilters } from '@api/hooks/products/useProductFilters';
+import type { ProductFilters } from '@api/hooks/products/useProductFilters';
 import { filterBarStyles } from './FilterBar.styles';
 
 interface FilterBarProps {
-  filters: ProductFilters;
-  onFiltersChange: (filters: ProductFilters) => void;
   onOpenAllFilters: () => void;
 }
 
@@ -28,10 +27,10 @@ const QUICK_FILTERS: QuickFilter[] = [
   },
 ];
 
-type SortOption = { label: string; sortBy?: ProductFilters['sortBy']; sortOrder?: ProductFilters['sortOrder'] };
+type SortOption = { label: string; sortBy: ProductFilters['sortBy']; sortOrder: ProductFilters['sortOrder'] };
 
 const SORT_OPTIONS: SortOption[] = [
-  { label: 'Newest' },
+  { label: 'Newest', sortBy: null, sortOrder: null },
   { label: 'Price: Low to High', sortBy: 'price', sortOrder: 'ASC' },
   { label: 'Price: High to Low', sortBy: 'price', sortOrder: 'DESC' },
   { label: 'Name A–Z', sortBy: 'name', sortOrder: 'ASC' },
@@ -46,14 +45,15 @@ const getSortValue = (filters: ProductFilters): string => {
   return match?.label ?? 'Newest';
 };
 
-const FilterBar = ({ filters, onFiltersChange, onOpenAllFilters }: FilterBarProps) => {
+const FilterBar = ({ onOpenAllFilters }: FilterBarProps) => {
+  const [filters, setFilters] = useProductFilters();
+
   const toggleQuickFilter = (qf: QuickFilter) => {
     if (qf.isActive(filters)) {
-      const next = { ...filters };
-      Object.keys(qf.patch).forEach(k => delete next[k as keyof ProductFilters]);
-      onFiltersChange({ ...next, page: 1 });
+      const off = Object.fromEntries(Object.keys(qf.patch).map(key => [key, null]));
+      setFilters({ ...off, page: null });
     } else {
-      onFiltersChange({ ...filters, ...qf.patch, page: 1 });
+      setFilters({ ...qf.patch, page: null });
     }
   };
 
@@ -62,14 +62,7 @@ const FilterBar = ({ filters, onFiltersChange, onOpenAllFilters }: FilterBarProp
 
     if (!option) return;
 
-    const next = { ...filters, sortBy: option.sortBy, sortOrder: option.sortOrder, page: 1 };
-
-    if (!option.sortBy) {
-      delete next.sortBy;
-      delete next.sortOrder;
-    }
-
-    onFiltersChange(next);
+    setFilters({ sortBy: option.sortBy, sortOrder: option.sortOrder, page: null });
   };
 
   return (

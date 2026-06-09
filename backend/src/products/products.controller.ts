@@ -22,7 +22,7 @@ export class ProductsController {
 
   @AdminOnly()
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
+  create(@Body() createProductDto: CreateProductDto): Promise<Product> {
     return this.productsService.create(createProductDto);
   }
 
@@ -41,13 +41,13 @@ export class ProductsController {
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
-  ) {
+  ): Promise<Product> {
     return this.productsService.update(id, updateProductDto);
   }
 
   @AdminOnly()
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.productsService.remove(id);
   }
 }
