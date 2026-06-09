@@ -1,4 +1,4 @@
-import { IsInt, IsNumber, IsOptional, IsString, Matches, Max, Min } from 'class-validator';
+import { IsEnum, IsInt, IsNumber, IsOptional, IsString, Matches, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 const UUID_REGEX =
@@ -24,6 +24,14 @@ export class GetProductsQueryDto {
   @IsNumber()
   @Min(0)
   maxPrice?: number;
+
+  @IsOptional()
+  @IsEnum(['name', 'price'])
+  sortBy?: 'name' | 'price';
+
+  @IsOptional()
+  @IsEnum(['ASC', 'DESC'])
+  sortOrder?: 'ASC' | 'DESC';
 
   @IsOptional()
   @Type(() => Number)

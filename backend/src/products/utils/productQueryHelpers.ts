@@ -29,6 +29,10 @@ export const applyQuery = (
   if (query.maxPrice) {
     qb.andWhere(MAX_PRICE_QUERY, { maxPrice: query.maxPrice });
   }
+
+  if (query.sortBy) {
+    qb.orderBy(`product.${query.sortBy}`, query.sortOrder ?? 'ASC');
+  }
 };
 
 export const applyPagination = async (
