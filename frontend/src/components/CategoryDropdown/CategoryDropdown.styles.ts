@@ -7,7 +7,7 @@ export const categoryDropdownStyles: Record<string, SxProps<Theme>> = {
     left: 0,
     right: 0,
     zIndex: 1200,
-    bgcolor: 'rgba(255, 255, 255, 0.9)',
+    background: 'rgba(255, 255, 255, 0.9)',
     backdropFilter: 'blur(12px)',
     WebkitBackdropFilter: 'blur(12px)',
     borderBottom: '1px solid',
