@@ -1,6 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import axiosInstance from './axiosInstance';
-import type { LocalRegisterDTO, LocalLoginDTO, AuthUser } from '@types';
+import type { LocalRegisterDTO, LocalLoginDTO, AuthUser, Paginated, Product, ProductFilters } from '@types';
 
 const getData = <T>(result: AxiosResponse<T>): T => result.data;
 const postData = <T>(result: AxiosResponse<T>): T => result.data;
@@ -20,4 +20,9 @@ const auth = () => ({
   },
 });
 
-export default { auth };
+const products = () => ({
+  getProducts: async (filters?: ProductFilters): Promise<Paginated<Product>> =>
+    await axiosInstance.get<Paginated<Product>>('/products', { params: filters }).then(getData),
+});
+
+export default { auth, products };
