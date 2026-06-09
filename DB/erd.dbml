@@ -153,9 +153,6 @@ Table orders {
  
   indexes {
     user_id
-    address_id
-    status
-    created_at
   }
 }
  
