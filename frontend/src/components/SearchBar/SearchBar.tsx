@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { InputAdornment, TextField } from '@mui/material';
+import Box from '@mui/material/Box';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import { useProductFilters, productFiltersParsers } from '@api/hooks/products/useProductFilters';
 import { searchBarStyles } from './SearchBar.styles';
@@ -15,24 +17,26 @@ const SearchBar = () => {
   };
 
   return (
-    <TextField
-      value={localValue}
-      onChange={e => setLocalValue(e.target.value)}
-      onKeyDown={e => e.key === 'Enter' && handleSearch()}
-      placeholder="Search products..."
-      size="small"
-      color="secondary"
-      sx={searchBarStyles.input}
-      slotProps={{
-        input: {
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon fontSize="small" sx={{ cursor: 'pointer' }} onClick={handleSearch} />
-            </InputAdornment>
-          ),
-        },
-      }}
-    />
+    <Box sx={searchBarStyles.floatingContainer}>
+      <TextField
+        value={localValue}
+        onChange={e => setLocalValue(e.target.value)}
+        onKeyDown={e => e.key === 'Enter' && handleSearch()}
+        placeholder="Search products..."
+        size="small"
+        fullWidth
+        sx={searchBarStyles.input}
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon fontSize="small" sx={{ cursor: 'pointer' }} onClick={handleSearch} />
+              </InputAdornment>
+            ),
+          },
+        }}
+      />
+    </Box>
   );
 };
 
