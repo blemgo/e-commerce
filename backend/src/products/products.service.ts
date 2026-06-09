@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { CategoriesService } from '../categories/categories.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { GetProductsQueryDto } from './dto/get-products-query.dto';
+import {
+  applyCategoryFilter,
+  applyPagination,
+  applyQuery,
+  PaginatedProducts,
+} from './utils/productQueryHelpers';
+
+export type { PaginatedProducts };
 
 @Injectable()
 export class ProductsService {
@@ -19,57 +27,15 @@ export class ProductsService {
     return 'This action adds a new product';
   }
 
-  async findAll(query: GetProductsQueryDto): Promise<Product[]> {
+  async findAll(query: GetProductsQueryDto): Promise<PaginatedProducts> {
     const qb = this.productRepository.createQueryBuilder('product');
 
-    if (!(await this.checkCategoryQuery(qb, query))) {
-      return [];
-    }
-
-    if (query.name) {
-      qb.andWhere('product.name ILIKE :name', { name: `%${query.name}%` });
-    }
-
-    if (query.minPrice !== undefined) {
-      qb.andWhere('product.price >= :minPrice', { minPrice: query.minPrice });
-    }
-
-    if (query.maxPrice !== undefined) {
-      qb.andWhere('product.price <= :maxPrice', { maxPrice: query.maxPrice });
-    }
-
-    return qb.getMany();
-  }
-
-  /* Checks if products exist under the queried category and filters accordingly.
-     Uses EXISTS to avoid row multiplication from the many-to-many join.
-  */
-  private async checkCategoryQuery(
-    qb: SelectQueryBuilder<Product>,
-    query: GetProductsQueryDto,
-  ): Promise<boolean> {
-    if (!query.category) {
-      return true;
-    }
-
-    const ids = await this.categoriesService.getDescendantCategoryIds(
-      query.category,
+    await applyCategoryFilter(qb, query, (categoryId) =>
+      this.categoriesService.getDescendantCategoryIds(categoryId),
     );
+    applyQuery(qb, query);
 
-    if (ids.length === 0) {
-      return false;
-    }
-
-    qb.andWhere(
-      `EXISTS (
-        SELECT 1 FROM bally.product_category_link pcl
-        WHERE pcl.product_id = product.id
-        AND pcl.product_category_id IN (:...ids)
-      )`,
-      { ids },
-    );
-
-    return true;
+    return applyPagination(qb, query);
   }
 
   findOne(id: string) {

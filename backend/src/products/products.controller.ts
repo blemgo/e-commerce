@@ -9,11 +9,10 @@ import {
   Query,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import { ProductsService } from './products.service';
+import { ProductsService, PaginatedProducts } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { GetProductsQueryDto } from './dto/get-products-query.dto';
-import { Product } from './entities/product.entity';
 import { AdminOnly } from 'src/auth/decorators/admin-only.decorator';
 
 @Controller('products')
@@ -27,7 +26,7 @@ export class ProductsController {
   }
 
   @Get()
-  findAll(@Query() query: GetProductsQueryDto): Promise<Product[]> {
+  findAll(@Query() query: GetProductsQueryDto): Promise<PaginatedProducts> {
     return this.productsService.findAll(query);
   }
 

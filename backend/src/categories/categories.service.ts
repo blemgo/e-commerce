@@ -41,11 +41,12 @@ export class CategoriesService {
   }
 
   async getDescendantCategoryIds(categoryId: string): Promise<string[]> {
-    const categoryTree = await this.getCategoryTree();
+    await this.findOne(categoryId);
 
+    const categoryTree = await this.getCategoryTree();
     const node = findNode(categoryTree, categoryId);
 
-    return node ? getDescendantIds(node) : [];
+    return node ? getDescendantIds(node) : [categoryId];
   }
 
   update(id: string, updateCategoryDto: UpdateCategoryDto) {
