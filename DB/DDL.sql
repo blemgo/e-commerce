@@ -72,3 +72,22 @@ CREATE TABLE bally.product_category_link (
         REFERENCES bally.product_category (id)
         ON DELETE CASCADE
 );
+
+-- CARTS
+DROP TABLE IF EXISTS bally.cart_items CASCADE;
+DROP TABLE IF EXISTS bally.carts CASCADE;
+
+CREATE TABLE bally.carts (
+    id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id    UUID NOT NULL UNIQUE REFERENCES bally.users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP NOT NULL DEFAULT now()
+);
+
+CREATE TABLE bally.cart_items (
+    id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    cart_id    UUID NOT NULL REFERENCES bally.carts(id) ON DELETE CASCADE,
+    product_id UUID NOT NULL REFERENCES bally.product(id) ON DELETE CASCADE,
+    quantity   INT NOT NULL DEFAULT 1,
+    UNIQUE (cart_id, product_id)
+);

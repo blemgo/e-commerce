@@ -145,6 +145,7 @@ Table cart_items {
 Table orders {
   id           uuid          [pk, default: `gen_random_uuid()`]
   user_id      uuid          [not null]
+  address_id   uuid          [not null]
   status       order_status  [not null, default: 'pending']
   total_amount decimal(10,2) [not null]
   created_at   timestamp     [not null, default: `now()`]
@@ -152,6 +153,7 @@ Table orders {
  
   indexes {
     user_id
+    address_id
     status
     created_at
   }
@@ -210,7 +212,8 @@ Ref: promotion_product.promotion_id             > promotion.id        [delete: c
 Ref: carts.user_id          > users.id   [delete: cascade]
 Ref: cart_items.cart_id     > carts.id   [delete: cascade]
 Ref: cart_items.product_id  > product.id [delete: cascade]
-Ref: orders.user_id         > users.id   [delete: restrict]
+Ref: orders.user_id         > users.id    [delete: restrict]
+Ref: orders.address_id      > address.id  [delete: restrict]
 Ref: order_items.order_id   > orders.id  [delete: cascade]
 Ref: order_items.product_id > product.id [delete: restrict]
  
