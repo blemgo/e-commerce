@@ -5,12 +5,12 @@ import { layoutStyles } from './Layout.styles';
 
 const Layout = () => {
   return (
-    <>
+    <Box sx={layoutStyles.wrapper}>
       <Navbar />
       <Box component="main" sx={layoutStyles.main}>
         <Outlet />
       </Box>
-    </>
+    </Box>
   );
 };
 
