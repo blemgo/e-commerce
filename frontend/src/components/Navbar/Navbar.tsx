@@ -134,7 +134,14 @@ const Navbar = () => {
         />
       )}
 
-      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+      <CartDrawer
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        onCheckout={() => {
+          setCartOpen(false);
+          navigate('/checkout');
+        }}
+      />
     </>
   );
 };
