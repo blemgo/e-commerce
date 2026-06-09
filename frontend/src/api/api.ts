@@ -2,6 +2,7 @@ import type { AxiosResponse } from 'axios';
 import axiosInstance from './axiosInstance';
 import type {
   AuthUser,
+  Cart,
   CategoryNode,
   LocalLoginDTO,
   LocalRegisterDTO,
@@ -39,4 +40,11 @@ const products = () => ({
       .then(getData),
 });
 
-export default { auth, categories, products };
+const cart = () => ({
+  getCart: async (): Promise<Cart> =>
+    await axiosInstance.get<Cart>('/cart').then(getData),
+  setItemQuantity: async (productId: string, quantity: number): Promise<Cart> =>
+    await axiosInstance.patch<Cart>(`/cart/items/${productId}`, { quantity }).then(patchData),
+});
+
+export default { auth, categories, products, cart };
