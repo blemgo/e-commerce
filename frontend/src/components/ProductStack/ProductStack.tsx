@@ -5,13 +5,17 @@ import { ProductCard } from '@components/ProductCard';
 import { LoadingScreen } from '@components/LoadingScreen';
 import type { Product } from '@types';
 import { productStackStyles } from './ProductStack.styles';
+import { useAppendCartItem } from '@contexts/cart/hooks/useAppendCartItem';
+import { toast } from 'react-toastify';
 
 const ProductStack = () => {
   const [filters, setFilters] = useProductFilters();
   const { paginatedProducts, loading } = useGetProducts(filters);
+  const { appendCartItem } = useAppendCartItem();
 
-  const handleAddToCart = (_product: Product) => {
-    // TODO: wire up cart context
+  const handleProductAdd = (product: Product) => {
+    appendCartItem(product.id);
+    toast.success(`${product.name} added to cart`);
   };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
@@ -33,7 +37,7 @@ const ProductStack = () => {
       <Grid container spacing={2.5}>
         {paginatedProducts.data.map(product => (
           <Grid key={product.id} size={{ xs: 12, sm: 6, md: 3 }}>
-            <ProductCard product={product} onAddToCart={handleAddToCart} />
+            <ProductCard product={product} onProductAdd={handleProductAdd} />
           </Grid>
         ))}
       </Grid>

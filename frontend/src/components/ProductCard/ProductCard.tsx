@@ -1,59 +1,66 @@
-import { Box, Typography, Chip, Fab } from '@mui/material';
+import { useState } from 'react';
+import { Box, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import CheckIcon from '@mui/icons-material/Check';
 import { useNavigate } from 'react-router-dom';
 import type { Product } from '@types';
 import { productCardStyles } from './ProductCard.styles';
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart: (product: Product) => void;
+  onProductAdd: (product: Product) => void;
 }
 
-const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
+const ProductCard = ({ product, onProductAdd }: ProductCardProps) => {
   const navigate = useNavigate();
-  const isOutOfStock = product.qtyInStock === 0;
-  const categoryName = product.categories[0]?.name;
+  const [added, setAdded] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const handleCardClick = () => {
     navigate(`/product/${product.id}`);
   };
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onAddToCart(product);
+
+    if (added) return;
+
+    setAdded(true);
+    onProductAdd(product);
+    setTimeout(() => setAdded(false), 1500);
   };
 
   return (
     <Box sx={productCardStyles.card} onClick={handleCardClick}>
       <Box sx={productCardStyles.imageWrapper}>
-        {product.productImage ? (
-          <Box component="img" src={product.productImage} alt={product.name} sx={productCardStyles.image} />
+        {product.productImage && !imgError ? (
+          <Box
+            component="img"
+            src={product.productImage}
+            alt={product.name}
+            sx={productCardStyles.image}
+            onError={() => setImgError(true)}
+          />
         ) : (
           <Box sx={productCardStyles.imagePlaceholder} />
         )}
+
+        <Box
+          className={`overlay-add-btn${added ? ' overlay-add-btn--active' : ''}`}
+          sx={productCardStyles.overlayButton}
+          onClick={handleAdd}
+        >
+          {added ? <CheckIcon /> : <AddIcon />}
+        </Box>
       </Box>
 
-      <Typography variant="body2" color="text.secondary" sx={productCardStyles.categoryText}>
-        {categoryName ?? ' '}
+      <Typography sx={productCardStyles.productName}>
+        {product.name}
       </Typography>
 
-      <Box sx={productCardStyles.nameRow}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
-          {product.name}
-        </Typography>
-        {isOutOfStock && (
-          <Chip label="Out Of Stock" color="error" size="small" />
-        )}
-      </Box>
-
-      <Box sx={productCardStyles.priceRow}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-          ${Number(product.price).toFixed(2)}
-        </Typography>
-        <Fab size="small" color="secondary" onClick={handleAddToCart} aria-label="Add to cart">
-          <AddIcon />
-        </Fab>
-      </Box>
+      <Typography sx={productCardStyles.productPrice}>
+        ${Number(product.price).toFixed(2)}
+      </Typography>
     </Box>
   );
 };
