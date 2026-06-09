@@ -7,6 +7,7 @@ import { RefreshTokensModule } from './refresh-tokens/refresh-tokens.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ProductsModule } from './products/products.module';
     RefreshTokensModule,
     CategoriesModule,
     ProductsModule,
+    CartModule,
   ],
   providers: [{ provide: APP_INTERCEPTOR, useClass: LoggingInterceptor }],
 })
