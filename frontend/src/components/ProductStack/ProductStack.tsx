@@ -6,7 +6,6 @@ import { LoadingScreen } from '@components/LoadingScreen';
 import type { Product } from '@types';
 import { productStackStyles } from './ProductStack.styles';
 import { useAppendCartItem } from '@contexts/cart/hooks/useAppendCartItem';
-import { toast } from 'react-toastify';
 
 const ProductStack = () => {
   const [filters, setFilters] = useProductFilters();
@@ -15,7 +14,6 @@ const ProductStack = () => {
 
   const handleProductAdd = (product: Product) => {
     appendCartItem(product.id);
-    toast.success(`${product.name} added to cart`);
   };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {

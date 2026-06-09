@@ -50,9 +50,8 @@ const Navbar = () => {
   };
 
   const handleCategoryClick = (cat: CategoryNode) => {
-    if (cat.children.length === 0) {
-      navigate(`/catalog?category=${cat.id}`);
-    }
+    setActiveCategory(null);
+    navigate(`/catalog?category=${cat.id}`);
   };
 
   const handleDropdownClose = () => {
