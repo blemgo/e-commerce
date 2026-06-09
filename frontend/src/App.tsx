@@ -3,6 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v6';
 import { Router } from '@/router';
 import theme from './theme/theme';
+import { CartProvider } from '@contexts/cart';
 import { UserProvider } from '@contexts/user';
 
 const App = () => {
@@ -11,7 +12,9 @@ const App = () => {
       <CssBaseline />
       <NuqsAdapter>
         <UserProvider>
-          <Router />
+          <CartProvider>
+            <Router />
+          </CartProvider>
         </UserProvider>
       </NuqsAdapter>
     </ThemeProvider>
