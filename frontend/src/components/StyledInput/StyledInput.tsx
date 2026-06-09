@@ -1,6 +1,6 @@
 import TextField from '@mui/material/TextField';
 import type { TextFieldProps } from '@mui/material/TextField';
-import { inputStyles } from '@/components/StyledInput/InputStyles';
+import { inputStyles } from '@/components/StyledInput/Input.styles';
 
 interface StyledInputProps {
   type: string;

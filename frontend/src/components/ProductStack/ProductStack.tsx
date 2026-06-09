@@ -3,7 +3,7 @@ import { useGetProducts } from '@api/hooks/products/useGetProducts';
 import { ProductCard } from '@components/ProductCard';
 import { LoadingScreen } from '@components/LoadingScreen';
 import type { Product, ProductFilters } from '@types';
-import { productStackStyles } from './ProductStackStyle';
+import { productStackStyles } from './ProductStack.styles';
 
 interface ProductStackProps {
   filters: ProductFilters;

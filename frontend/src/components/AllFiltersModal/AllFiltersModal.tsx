@@ -11,7 +11,7 @@ import {
 import { useState } from 'react';
 import type { ProductFilters } from '@types';
 import { StyledInput } from '@components/StyledInput';
-import { allFiltersModalStyles } from './AllFiltersModalStyle';
+import { allFiltersModalStyles } from './AllFiltersModal.styles';
 
 interface AllFiltersModalProps {
   open: boolean;

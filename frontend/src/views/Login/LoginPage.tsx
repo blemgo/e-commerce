@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import { Banner } from './Components/Banner/Banner';
-import { loginStyles } from './LoginStyles';
+import { loginStyles } from './Login.styles';
 import { SignIn } from '@/components/SignIn/SignIn';
 import { SignUp } from '@/components/SignUp';
 import useLocalLogin from '@/api/hooks/auth/useLocalLogin';

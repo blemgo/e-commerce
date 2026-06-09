@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { dismissibleDangerAlertStyles } from './DismissibleDangerAlertStyle';
+import { dismissibleDangerAlertStyles } from './DismissibleDangerAlert.styles';
 
 interface DismissibleDangerAlertProps {
   message: string;

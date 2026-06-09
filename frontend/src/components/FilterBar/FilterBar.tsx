@@ -1,7 +1,7 @@
 import { Box, Button, Chip, Divider, MenuItem, Select, Typography } from '@mui/material';
 import TuneIcon from '@mui/icons-material/Tune';
 import type { ProductFilters } from '@types';
-import { filterBarStyles } from './FilterBarStyle';
+import { filterBarStyles } from './FilterBar.styles';
 
 interface FilterBarProps {
   filters: ProductFilters;

@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
-import { loadingScreenStyles } from './LoadingScreenStyle';
+import { loadingScreenStyles } from './LoadingScreen.styles';
 
 const LoadingScreen = () => (
   <Box sx={loadingScreenStyles.root}>

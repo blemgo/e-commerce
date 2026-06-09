@@ -2,7 +2,7 @@ import { Box, Typography, Chip, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 import type { Product } from '@types';
-import { productCardStyles } from './ProductCardStyle';
+import { productCardStyles } from './ProductCard.styles';
 
 interface ProductCardProps {
   product: Product;

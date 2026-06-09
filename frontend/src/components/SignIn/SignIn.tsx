@@ -16,7 +16,7 @@ import { StyledButton } from '@components/StyledButton/StyledButton';
 import { StyledInput } from '@components/StyledInput/StyledInput';
 import { DismissibleDangerAlert } from '@components/DismissibleDangerAlert';
 import { validateEmail, validatePassword } from '@/utils/authValidation';
-import { signInStyles } from './SignInStyles';
+import { signInStyles } from './SignIn.styles';
 
 interface SignInProps {
   onSubmit: (email: string, password: string, rememberMe: boolean) => void;
