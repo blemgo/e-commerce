@@ -21,6 +21,7 @@ export interface OrderItem {
 export interface Order {
   id: string;
   status: OrderStatus;
+  trackingId: string;
   totalAmount: number;
   items: OrderItem[];
   address: Address;

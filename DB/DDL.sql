@@ -139,6 +139,7 @@ CREATE TABLE bally.orders (
     user_id      UUID NOT NULL REFERENCES bally.users(id) ON DELETE RESTRICT,
     address_id   UUID NOT NULL REFERENCES bally.address(id) ON DELETE RESTRICT,
     status       bally.order_status NOT NULL DEFAULT 'processing',
+    tracking_id  TEXT NOT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
     created_at   TIMESTAMP NOT NULL DEFAULT now(),
     updated_at   TIMESTAMP NOT NULL DEFAULT now()

@@ -19,6 +19,10 @@ export class OrdersService {
     private ordersRepository: Repository<Order>,
   ) {}
 
+  private generateTrackingId(): string {
+    return `#${Math.floor(100000 + Math.random() * 900000)}`;
+  }
+
   async getUserOrders(userId: string): Promise<Order[]> {
     return this.ordersRepository.find({
       where: { user: { id: userId } },
@@ -61,6 +65,7 @@ export class OrdersService {
       const order = queryRunner.manager.create(Order, {
         user: { id: userId },
         address: { id: addressId },
+        trackingId: this.generateTrackingId(),
         totalAmount,
       });
       await queryRunner.manager.save(order);
