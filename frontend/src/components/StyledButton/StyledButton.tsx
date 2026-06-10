@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button';
-import { styledButtonStyles } from './StyledButtonStyles';
+import { styledButtonStyles } from './StyledButton.styles';
 
 interface StyledButtonProps {
   children: React.ReactNode;

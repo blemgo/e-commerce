@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
-import type { LocalRegisterDTO, LocalLoginResponse } from '@types';
+import type { LocalRegisterDTO, AuthUser } from '@types';
 
 export interface UseLocalRegisterReturn {
-  localRegister: (dto: LocalRegisterDTO) => Promise<LocalLoginResponse>;
+  localRegister: (dto: LocalRegisterDTO) => Promise<AuthUser>;
   isLoading: boolean;
 }
 
 const useLocalRegister = (): UseLocalRegisterReturn => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const localRegister = async (dto: LocalRegisterDTO): Promise<LocalLoginResponse> => {
+  const localRegister = async (dto: LocalRegisterDTO): Promise<AuthUser> => {
     setIsLoading(true);
 
     try {

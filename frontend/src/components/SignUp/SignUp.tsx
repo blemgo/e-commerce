@@ -10,7 +10,7 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import { StyledButton } from '@components/StyledButton/StyledButton';
 import { StyledInput } from '@components/StyledInput/StyledInput';
 import { validateEmail, validateFullName, validatePassword } from '@/utils/authValidation';
-import { signUpStyles } from './SignUpStyles';
+import { signUpStyles } from './SignUp.styles';
 
 interface SignUpProps {
   onSubmit: (fullName: string, email: string, password: string) => void;

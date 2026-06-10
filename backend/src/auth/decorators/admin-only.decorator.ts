@@ -5,4 +5,4 @@ import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from './roles.decorator';
 
 export const AdminOnly = () =>
-    applyDecorators(Roles(Role.ADMIN), UseGuards(JwtAuthGuard, RolesGuard));
+  applyDecorators(Roles(Role.ADMIN), UseGuards(JwtAuthGuard, RolesGuard));

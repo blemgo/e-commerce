@@ -1,16 +1,22 @@
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { NuqsAdapter } from 'nuqs/adapters/react-router/v6';
 import { Router } from '@/router';
 import theme from './theme/theme';
+import { CartProvider } from '@contexts/cart';
 import { UserProvider } from '@contexts/user';
 
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <UserProvider>
-        <Router />
-      </UserProvider>
+      <NuqsAdapter>
+        <UserProvider>
+          <CartProvider>
+            <Router />
+          </CartProvider>
+        </UserProvider>
+      </NuqsAdapter>
     </ThemeProvider>
   );
 };

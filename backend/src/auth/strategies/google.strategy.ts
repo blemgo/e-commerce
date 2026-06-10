@@ -16,15 +16,25 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   }
 
-  async validate(_accessToken: string, _refreshToken: string, profile: Profile): Promise<User> {
+  async validate(
+    _accessToken: string,
+    _refreshToken: string,
+    profile: Profile,
+  ): Promise<User> {
     const email = profile.emails?.[0]?.value;
     const fullName = profile.displayName;
     const googleId = profile.id;
 
     if (!email) {
-      throw new UnauthorizedException('Google account did not provide an email');
+      throw new UnauthorizedException(
+        'Google account did not provide an email',
+      );
     }
 
-    return await this.usersService.findOrCreateGoogleUser({ googleId, email, fullName });
+    return await this.usersService.findOrCreateGoogleUser({
+      googleId,
+      email,
+      fullName,
+    });
   }
 }

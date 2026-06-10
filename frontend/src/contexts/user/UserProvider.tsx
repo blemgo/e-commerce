@@ -1,22 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LoadingScreen } from '@components/LoadingScreen';
 import { UserContext } from './UserContext';
 import { useInitAuth } from './useInitAuth';
-import type { User } from '@types';
+import api from '@api/api';
+import { setOnUnauthenticated } from '@api/interceptors/authInterceptor';
+import type { AuthUser } from '@types';
 import type { UserProviderProps } from './UserTypes';
 
 const UserProvider = ({ children }: UserProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const { isInitializing } = useInitAuth(setUser, setAccessToken);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const { isInitializing } = useInitAuth(setUser);
+
+  useEffect(() => {
+    setOnUnauthenticated(() => setUser(null));
+  }, []);
 
   const logout = () => {
+    api.auth().logout().catch(() => {});
     setUser(null);
-    setAccessToken(null);
   };
 
   return (
-    <UserContext.Provider value={{ user, accessToken, isInitializing, setUser, setAccessToken, logout }}>
+    <UserContext.Provider value={{ user, isInitializing, setUser, logout }}>
       {isInitializing ? <LoadingScreen /> : children}
     </UserContext.Provider>
   );

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import { Banner } from './Components/Banner/Banner';
-import { loginStyles } from './LoginStyles';
+import { loginStyles } from './Login.styles';
 import { SignIn } from '@/components/SignIn/SignIn';
 import { SignUp } from '@/components/SignUp';
 import useLocalLogin from '@/api/hooks/auth/useLocalLogin';
@@ -18,7 +18,7 @@ const LOGIN_UNAUTHORIZED_MESSAGE = 'Incorrect email or password.';
 const LoginPage = () => {
   const [authView, setAuthView] = useState<AuthView>('signIn');
   const [loginError, setLoginError] = useState<string | null>(null);
-  const { setUser, setAccessToken } = useUserContext();
+  const { setUser } = useUserContext();
   const { localLogin, isLoading: isLoginLoading } = useLocalLogin();
   const { localRegister, isLoading: isRegisterLoading } = useLocalRegister();
   const navigate = useNavigate();
@@ -27,10 +27,9 @@ const LoginPage = () => {
     setLoginError(null);
 
     try {
-      const { user, accessToken } = await localLogin({ email, password, rememberMe });
+      const user = await localLogin({ email, password, rememberMe });
 
       setUser(user);
-      setAccessToken(accessToken);
 
       navigate('/');
     } catch (error) {
@@ -41,10 +40,9 @@ const LoginPage = () => {
   };
 
   const onRegisterSubmit = async (fullName: string, email: string, password: string) => {
-    const { user, accessToken } = await localRegister({ fullName, email, password });
+    const user = await localRegister({ fullName, email, password });
 
     setUser(user);
-    setAccessToken(accessToken);
 
     navigate('/');
   };

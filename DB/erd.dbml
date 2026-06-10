@@ -1,4 +1,4 @@
-Enum user_role {
+﻿Enum user_role {
   customer
   admin
 }
@@ -7,35 +7,33 @@ Enum auth_provider {
   local
   google
 }
- 
+
 Enum order_status {
-  pending
-  paid
   processing
   shipped
   delivered
   cancelled
 }
  
-// ---------------------------------------------------------------------
-// Users & auth
-// ---------------------------------------------------------------------
 Table users {
   id            uuid          [pk, default: `gen_random_uuid()`]
-  email         text  [unique, not null]
+  email         text          [unique, not null]
   password_hash text
-  full_name     text  [not null]
+  full_name     text          [not null]
   role          user_role     [not null, default: 'customer']
   auth_provider auth_provider [not null, default: 'local']
-  google_id     text  [unique]
+  provider_id   text
   created_at    timestamptz   [not null, default: `now()`]
+
+  indexes {
+    (auth_provider, provider_id) [unique]
+  }
 }
  
 Table refresh_tokens {
   id         uuid      [pk, default: `gen_random_uuid()`]
   user_id    uuid      [not null]
   token_hash text      [not null]
-  expires_at timestamp [not null]
   revoked    boolean   [not null, default: false]
   created_at timestamp [not null, default: `now()`]
  
@@ -44,22 +42,19 @@ Table refresh_tokens {
   }
 }
  
-// ---------------------------------------------------------------------
-// Addresses
-// ---------------------------------------------------------------------
 Table country {
-  id           uuid         [pk, default: `gen_random_uuid()`]
-  country_name varchar(120) [not null]
+  id           uuid [pk, default: `gen_random_uuid()`]
+  country_name text [not null]
 }
  
 Table address {
   id            uuid         [pk, default: `gen_random_uuid()`]
-  unit_number   varchar(60)
-  street_number varchar(60)
-  address_line1 varchar(255) [not null]
-  address_line2 varchar(255)
-  city          varchar(120) [not null]
-  region        varchar(120)
+  unit_number   text
+  street_number text
+  address_line1 text [not null]
+  address_line2 text
+  city          text [not null]
+  region        text
   postal_code   varchar(20)
   country_id    uuid         [not null]
  
@@ -68,7 +63,6 @@ Table address {
   }
 }
  
-// Join table: which addresses belong to which user, and the default one.
 Table user_address {
   user_id    uuid    [not null]
   address_id uuid    [not null]
@@ -79,91 +73,46 @@ Table user_address {
   }
 }
  
-// ---------------------------------------------------------------------
-// Catalog
-// ---------------------------------------------------------------------
 Table product_category {
   id                 uuid         [pk, default: `gen_random_uuid()`]
-  parent_category_id uuid                              // nullable: top-level categories have no parent
-  category_name      varchar(120) [not null]
- 
-  indexes {
-    parent_category_id
-  }
+  parent_category_id uuid
+  category_name      text         [not null]
 }
  
 Table product {
-  id            uuid         [pk, default: `gen_random_uuid()`]
-  category_id   uuid                              // nullable: products can be uncategorised
-  name          varchar(255) [not null]
-  description   text
-  product_image varchar(500)                      // Cloudinary URL — NOT the binary
- 
-  indexes {
-    category_id
-    name
-  }
-}
- 
-// A concrete, purchasable instance of a product (a specific SKU /
-// variant combination). Holds the stock, price and image for that item.
-Table product_item {
   id            uuid          [pk, default: `gen_random_uuid()`]
-  product_id    uuid          [not null]
-  SKU           varchar(60)   [not null]
+  name          text          [not null]
+  description   text
+  product_image text
+  SKU           text          [not null]
   qty_in_stock  int           [not null, default: 0]
-  product_image varchar(500)
   price         decimal(10,2) [not null]
  
   indexes {
-    product_id
+    name
     SKU [unique]
   }
 }
  
-// A configurable dimension for a category (e.g. 'color', 'size').
-Table variation {
-  id          uuid         [pk, default: `gen_random_uuid()`]
-  category_id uuid         [not null]
-  name        varchar(60)  [not null]   // e.g. 'color'
+Table product_category_link {
+  product_id          uuid [not null]
+  product_category_id uuid [not null]
  
   indexes {
-    category_id
+    (product_id, product_category_id) [pk]
+    product_category_id
   }
 }
  
-// A specific value of a variation (e.g. 'red', 'large').
-Table variation_option {
-  id           uuid         [pk, default: `gen_random_uuid()`]
-  variation_id uuid         [not null]
-  value        varchar(255) [not null]   // e.g. 'red'
- 
-  indexes {
-    variation_id
-  }
-}
- 
-// Join table: which variation options apply to a given product_item.
-Table product_configuration {
-  product_item_id     uuid [not null]
-  variation_option_id uuid [not null]
- 
-  indexes {
-    (product_item_id, variation_option_id) [pk]
-  }
-}
- 
-// A discount campaign that can be applied to products.
 Table promotion {
   id            uuid          [pk, default: `gen_random_uuid()`]
-  name          varchar(255)  [not null]
+  name          text          [not null]
   description   text
-  discount_rate decimal(5,2)  [not null]   // percentage, e.g. 15.00 = 15% off
+  discount_rate decimal(5,2)  [not null]
   start_date    timestamp     [not null]
   end_date      timestamp     [not null]
 }
  
-// Join table: which promotions apply to which products.
 Table promotion_product {
   product_id   uuid [not null]
   promotion_id uuid [not null]
@@ -173,78 +122,67 @@ Table promotion_product {
   }
 }
  
-// ---------------------------------------------------------------------
-// Cart  (live, updates without page refresh on the client)
-// ---------------------------------------------------------------------
 Table carts {
   id         uuid      [pk, default: `gen_random_uuid()`]
-  user_id    uuid      [unique, not null]   // one active cart per user
+  user_id    uuid      [unique, not null]
   created_at timestamp [not null, default: `now()`]
   updated_at timestamp [not null, default: `now()`]
 }
  
 Table cart_items {
-  id              uuid [pk, default: `gen_random_uuid()`]
-  cart_id         uuid [not null]
-  product_item_id uuid [not null]
-  quantity        int  [not null, default: 1]
+  id         uuid [pk, default: `gen_random_uuid()`]
+  cart_id    uuid [not null]
+  product_id uuid [not null]
+  quantity   int  [not null, default: 1]
  
   indexes {
-    (cart_id, product_item_id) [unique]   // one row per item per cart
+    (cart_id, product_id) [unique]
   }
 }
  
-// ---------------------------------------------------------------------
-// Orders
-// ---------------------------------------------------------------------
 Table orders {
   id           uuid          [pk, default: `gen_random_uuid()`]
   user_id      uuid          [not null]
-  status       order_status  [not null, default: 'pending']
+  address_id   uuid          [not null]
+  status       order_status  [not null, default: 'processing']
   total_amount decimal(10,2) [not null]
   created_at   timestamp     [not null, default: `now()`]
   updated_at   timestamp     [not null, default: `now()`]
  
   indexes {
     user_id
-    status
-    created_at
   }
 }
  
 Table order_items {
-  id              uuid          [pk, default: `gen_random_uuid()`]
-  order_id        uuid          [not null]
-  product_item_id uuid          [not null]   // keep ref even if item later deleted/hidden
-  product_name    varchar(255)  [not null]   // snapshot at purchase time
-  unit_price      decimal(10,2) [not null]   // snapshot at purchase time
-  quantity        int           [not null]
+  id           uuid          [pk, default: `gen_random_uuid()`]
+  order_id     uuid          [not null]
+  product_id   uuid          [not null]
+  product_name text  [not null]
+  unit_price   decimal(10,2) [not null]
+  quantity     int           [not null]
  
   indexes {
     order_id
   }
 }
  
-// ---------------------------------------------------------------------
-// Bonus: real-time chat (user <-> admin) via socket.io
-// Simple model: a conversation owned by a customer; admins reply into it.
-// ---------------------------------------------------------------------
 Table conversations {
   id              uuid      [pk, default: `gen_random_uuid()`]
-  customer_id     uuid      [not null]          // the user who opened help
+  customer_id     uuid      [not null]
   last_message_at timestamp [not null, default: `now()`]
   created_at      timestamp [not null, default: `now()`]
  
   indexes {
     customer_id
-    last_message_at                              // sort admin's active-chats list
+    last_message_at
   }
 }
  
 Table messages {
   id              uuid      [pk, default: `gen_random_uuid()`]
   conversation_id uuid      [not null]
-  sender_id       uuid      [not null]           // customer or admin
+  sender_id       uuid      [not null]
   content         text      [not null]
   is_read         boolean   [not null, default: false]
   created_at      timestamp [not null, default: `now()`]
@@ -254,36 +192,27 @@ Table messages {
   }
 }
  
-// ---------------------------------------------------------------------
-// Relationships
-// ---------------------------------------------------------------------
-Ref: refresh_tokens.user_id              > users.id              [delete: cascade]
+Ref: refresh_tokens.user_id > users.id [delete: cascade]
  
-// Addresses
-Ref: address.country_id           > country.id        [delete: restrict]
-Ref: user_address.user_id         > users.id          [delete: cascade]
-Ref: user_address.address_id      > address.id        [delete: cascade]
+Ref: address.country_id      > country.id [delete: restrict]
+Ref: user_address.user_id    > users.id   [delete: cascade]
+Ref: user_address.address_id > address.id [delete: cascade]
  
-// Catalog
-Ref: product_category.parent_category_id > product_category.id   [delete: set null]
-Ref: product.category_id                 > product_category.id   [delete: set null]
-Ref: product_item.product_id             > product.id            [delete: cascade]
-Ref: variation.category_id               > product_category.id   [delete: cascade]
-Ref: variation_option.variation_id       > variation.id          [delete: cascade]
-Ref: product_configuration.product_item_id     > product_item.id     [delete: cascade]
-Ref: product_configuration.variation_option_id > variation_option.id [delete: cascade]
-Ref: promotion_product.product_id              > product.id          [delete: cascade]
-Ref: promotion_product.promotion_id            > promotion.id        [delete: cascade]
+Ref: product_category.parent_category_id        > product_category.id [delete: set null]
+Ref: product_category_link.product_id           > product.id          [delete: cascade]
+Ref: product_category_link.product_category_id  > product_category.id [delete: cascade]
+Ref: promotion_product.product_id               > product.id          [delete: cascade]
+Ref: promotion_product.promotion_id             > promotion.id        [delete: cascade]
  
-// Cart & orders
-Ref: carts.user_id                > users.id          [delete: cascade]
-Ref: cart_items.cart_id           > carts.id          [delete: cascade]
-Ref: cart_items.product_item_id   > product_item.id   [delete: cascade]
-Ref: orders.user_id               > users.id          [delete: restrict]
-Ref: order_items.order_id         > orders.id         [delete: cascade]
-Ref: order_items.product_item_id  > product_item.id   [delete: restrict]
+Ref: carts.user_id          > users.id   [delete: cascade]
+Ref: cart_items.cart_id     > carts.id   [delete: cascade]
+Ref: cart_items.product_id  > product.id [delete: cascade]
+Ref: orders.user_id         > users.id    [delete: restrict]
+Ref: orders.address_id      > address.id  [delete: restrict]
+Ref: order_items.order_id   > orders.id  [delete: cascade]
+Ref: order_items.product_id > product.id [delete: restrict]
  
-// Chat
-Ref: conversations.customer_id    > users.id          [delete: cascade]
-Ref: messages.conversation_id     > conversations.id  [delete: cascade]
-Ref: messages.sender_id           > users.id          [delete: cascade]
+Ref: conversations.customer_id > users.id         [delete: cascade]
+Ref: messages.conversation_id  > conversations.id [delete: cascade]
+Ref: messages.sender_id        > users.id         [delete: cascade]
+ 

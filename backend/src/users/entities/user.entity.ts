@@ -1,28 +1,20 @@
-import {
-  Column,
-  Entity,
-  Index,
-  PrimaryGeneratedColumn,
-  Unique,
-  Check,
-} from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn, Check } from 'typeorm';
 import { AuthProvider } from './enums/auth-provider.enum';
 import { Role } from './enums/role.enum';
 
 @Entity({ schema: 'bally', name: 'users' })
-@Unique(['authProvider', 'providerId'])
-@Index('idx_users_email', ['email'], { unique: true })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'varchar', nullable: false })
+  @Index('idx_users_email', { unique: true })
   email: string;
 
-  @Column({ name: 'password_hash', type: 'varchar', nullable: true })
+  @Column({ name: 'password_hash', type: 'text', nullable: true })
   passwordHash: string | null;
 
-  @Column({ name: 'full_name', type: 'varchar', length: 100, nullable: false })
+  @Column({ name: 'full_name', type: 'text', nullable: false })
   @Check('full_name ~ "^[a-zA-Z\\s]+$" && length(full_name) >= 2')
   fullName: string;
 
@@ -43,6 +35,7 @@ export class User {
     default: AuthProvider.LOCAL,
     nullable: false,
   })
+  @Index(['authProvider', 'providerId'], { unique: true })
   authProvider: AuthProvider;
 
   @Column({ name: 'provider_id', type: 'varchar', nullable: true })

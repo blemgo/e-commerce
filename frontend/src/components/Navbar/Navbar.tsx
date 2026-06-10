@@ -1,26 +1,29 @@
+import type { ReactNode } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import { Link } from 'react-router-dom';
-import { navbarStyles } from './NavbarStyle';
+import ballyLogo from '@/assets/bally-black.png';
+import { navbarStyles } from './Navbar.styles';
 
-const Navbar = () => {
+interface NavbarProps {
+  left?: ReactNode;
+  right?: ReactNode;
+}
+
+const Navbar = ({ left, right }: NavbarProps) => {
   return (
-    <AppBar position="sticky">
-      <Toolbar>
-        <Typography
-          variant="h6"
-          component={Link}
-          to="/"
-          sx={navbarStyles.brand}
-        >
-          E-Commerce
-        </Typography>
+    <AppBar position="sticky" color="transparent" sx={navbarStyles.appBar}>
+      <Toolbar sx={navbarStyles.toolbar}>
+        <Box sx={navbarStyles.left}>{left}</Box>
 
-        <Button color="inherit" component={Link} to="/login">
-          Login
-        </Button>
+        <Box sx={navbarStyles.center}>
+          <Link to="/">
+            <Box component="img" src={ballyLogo} alt="Bally" sx={navbarStyles.logo} />
+          </Link>
+        </Box>
+
+        <Box sx={navbarStyles.right}>{right}</Box>
       </Toolbar>
     </AppBar>
   );
