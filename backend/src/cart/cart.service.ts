@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
 import { CartItem } from './entities/cart-item.entity';
 import { Product } from 'src/products/entities/product.entity';
@@ -84,6 +84,28 @@ export class CartService {
     }
 
     return newCart;
+  }
+
+  async getCartForCheckout(userId: string, manager: EntityManager): Promise<Cart> {
+    const cart = await manager.findOne(Cart, {
+      where: { user: { id: userId } },
+      relations: { items: { product: true } },
+      lock: { mode: 'pessimistic_write' },
+    });
+
+    if (!cart || cart.items.length === 0) {
+      throw new BadRequestException('Cart is empty');
+    }
+
+    return cart;
+  }
+
+  async deleteCart(userId: string, manager: EntityManager): Promise<void> {
+    const cart = await manager.findOne(Cart, { where: { user: { id: userId } } });
+
+    if (cart) {
+      await manager.remove(Cart, cart);
+    }
   }
 
   private async assertSufficientStock(
