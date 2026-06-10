@@ -11,10 +11,10 @@ export class User {
   @Index('idx_users_email', { unique: true })
   email: string;
 
-  @Column({ name: 'password_hash', type: 'varchar', nullable: true })
+  @Column({ name: 'password_hash', type: 'text', nullable: true })
   passwordHash: string | null;
 
-  @Column({ name: 'full_name', type: 'varchar', length: 100, nullable: false })
+  @Column({ name: 'full_name', type: 'text', nullable: false })
   @Check('full_name ~ "^[a-zA-Z\\s]+$" && length(full_name) >= 2')
   fullName: string;
 
