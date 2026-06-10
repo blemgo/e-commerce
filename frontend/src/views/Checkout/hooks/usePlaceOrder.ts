@@ -22,7 +22,7 @@ const usePlaceOrder = (): UsePlaceOrderReturn => {
 
     await refreshCart();
     toast.success('Order placed successfully.');
-    navigate('/orders');
+    navigate('/account/orders');
   };
 
   return { placeOrder, isLoading };
