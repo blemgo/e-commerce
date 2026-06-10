@@ -9,6 +9,9 @@ import {
   UseGuards,
   UnauthorizedException,
 } from '@nestjs/common';
+import { AdminOnly } from './decorators/admin-only.decorator';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import type { ProductImageUploadSignatureDto } from 'src/cloudinary/dto/product-image-upload-signature.dto';
 import type { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
@@ -28,7 +31,10 @@ import { env } from 'src/config/env';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @Post('local-login')
   @HttpCode(200)
@@ -107,6 +113,12 @@ export class AuthController {
 
       throw error;
     }
+  }
+
+  @AdminOnly()
+  @Get('cloudinary-upload-signature')
+  getCloudinaryUploadSignature(): ProductImageUploadSignatureDto {
+    return this.cloudinaryService.getProductImageUploadSignature();
   }
 
   @Post('logout')
