@@ -6,6 +6,7 @@ import {
   JoinTable,
 } from 'typeorm';
 import { ProductCategory } from 'src/categories/entities/product-category.entity';
+import { decimalTransformer } from 'src/utils/decimal.transformer';
 
 @Entity({ schema: 'bally', name: 'product' })
 export class Product {
@@ -24,7 +25,13 @@ export class Product {
   @Column({ name: 'qty_in_stock', type: 'int', default: 0, nullable: false })
   qtyInStock: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: false,
+    transformer: decimalTransformer,
+  })
   price: number;
 
   @ManyToMany(() => ProductCategory, (cat) => cat.products)

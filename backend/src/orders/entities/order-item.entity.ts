@@ -1,6 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from './order.entity';
 import { Product } from 'src/products/entities/product.entity';
+import { decimalTransformer } from 'src/utils/decimal.transformer';
 
 @Entity({ schema: 'bally', name: 'order_items' })
 export class OrderItem {
@@ -18,7 +19,14 @@ export class OrderItem {
   @Column({ name: 'product_name', type: 'text', nullable: false })
   productName: string;
 
-  @Column({ name: 'unit_price', type: 'decimal', precision: 10, scale: 2, nullable: false })
+  @Column({
+    name: 'unit_price',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: false,
+    transformer: decimalTransformer,
+  })
   unitPrice: number;
 
   @Column({ type: 'int', nullable: false })

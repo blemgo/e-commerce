@@ -1,12 +1,9 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { CartService } from 'src/cart/cart.service';
 import { AddressService } from 'src/address/address.service';
+import { ProductsService } from 'src/products/products.service';
 import { Product } from 'src/products/entities/product.entity';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
@@ -17,6 +14,7 @@ export class OrdersService {
     private readonly dataSource: DataSource,
     private readonly cartService: CartService,
     private readonly addressService: AddressService,
+    private readonly productsService: ProductsService,
     @InjectRepository(Order)
     private ordersRepository: Repository<Order>,
   ) {}
@@ -45,25 +43,18 @@ export class OrdersService {
       const snapshots: { product: Product; quantity: number }[] = [];
 
       for (const item of cart.items) {
-        const product = await queryRunner.manager.findOne(Product, {
-          where: { id: item.product.id },
-          lock: { mode: 'pessimistic_write' },
-        });
-
-        if (!product) {
-          throw new NotFoundException(`Product not found: ${item.product.id}`);
-        }
-
-        if (product.qtyInStock < item.quantity) {
-          throw new BadRequestException(`Insufficient stock for "${product.name}"`);
-        }
+        const product = await this.productsService.getProductWithSufficientStock(
+          item.product.id,
+          item.quantity,
+          queryRunner.manager,
+        );
 
         snapshots.push({ product, quantity: item.quantity });
       }
 
       const totalAmount = Number(
         snapshots
-          .reduce((sum, { product, quantity }) => sum + Number(product.price) * quantity, 0)
+          .reduce((sum, { product, quantity }) => sum + product.price * quantity, 0)
           .toFixed(2),
       );
 
@@ -80,12 +71,16 @@ export class OrdersService {
             order: { id: order.id },
             product: { id: product.id },
             productName: product.name,
-            unitPrice: Number(Number(product.price).toFixed(2)),
+            unitPrice: Number(product.price.toFixed(2)),
             quantity,
           }),
         );
 
-        await queryRunner.manager.decrement(Product, { id: product.id }, 'qtyInStock', quantity);
+        await this.productsService.decrementStock(
+          product.id,
+          quantity,
+          queryRunner.manager,
+        );
       }
 
       await this.cartService.deleteCart(userId, queryRunner.manager);

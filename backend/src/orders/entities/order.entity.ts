@@ -12,6 +12,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Address } from 'src/address/entities/address.entity';
 import { OrderItem } from './order-item.entity';
 import { OrderStatus } from './order-status.enum';
+import { decimalTransformer } from 'src/utils/decimal.transformer';
 
 @Entity({ schema: 'bally', name: 'orders' })
 export class Order {
@@ -35,7 +36,14 @@ export class Order {
   })
   status: OrderStatus;
 
-  @Column({ name: 'total_amount', type: 'decimal', precision: 10, scale: 2, nullable: false })
+  @Column({
+    name: 'total_amount',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: false,
+    transformer: decimalTransformer,
+  })
   totalAmount: number;
 
   @OneToMany(() => OrderItem, (item) => item.order)
