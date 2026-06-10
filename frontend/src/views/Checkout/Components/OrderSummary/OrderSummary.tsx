@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
-import Badge from '@mui/material/Badge';
 import Typography from '@mui/material/Typography';
+import { OrderItem } from '@components/OrderItem';
 import type { CartItem } from '@types';
 import { orderSummaryStyles } from './OrderSummary.styles';
 
@@ -18,20 +18,13 @@ const OrderSummary = ({ items }: OrderSummaryProps) => {
     <Box sx={orderSummaryStyles.container}>
       <Box sx={orderSummaryStyles.items}>
         {items.map(item => (
-          <Box key={item.id} sx={orderSummaryStyles.itemRow}>
-            <Badge badgeContent={item.quantity} sx={orderSummaryStyles.qtyBadge}>
-              <Box
-                component="img"
-                src={item.product.productImage}
-                alt={item.product.name}
-                sx={orderSummaryStyles.thumbnail}
-              />
-            </Badge>
-            <Typography sx={orderSummaryStyles.itemName}>{item.product.name}</Typography>
-            <Typography sx={orderSummaryStyles.itemPrice}>
-              €{(item.product.price * item.quantity).toFixed(2)}
-            </Typography>
-          </Box>
+          <OrderItem
+            key={item.id}
+            image={item.product.productImage}
+            name={item.product.name}
+            quantity={item.quantity}
+            price={item.product.price * item.quantity}
+          />
         ))}
       </Box>
 
