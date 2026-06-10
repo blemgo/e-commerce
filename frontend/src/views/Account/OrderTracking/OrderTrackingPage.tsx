@@ -9,8 +9,8 @@ import { OrderItem } from '@components/OrderItem';
 import { OrderStatusChip } from '@components/OrderStatusChip';
 import { useGetOrder } from '@api/hooks/orders/useGetOrder';
 import { formatDate } from '@/utils/formatDate';
+import { formatAddressLine1, formatAddressLine2 } from '@/utils/formatAddress';
 import { OrderStatus } from '@types';
-import type { Address } from '@types';
 import { orderTrackingStyles } from './OrderTrackingPage.styles';
 
 const TRACKING_STEPS = [
@@ -18,19 +18,6 @@ const TRACKING_STEPS = [
   { status: OrderStatus.SHIPPED, label: 'Shipped' },
   { status: OrderStatus.DELIVERED, label: 'Delivered' },
 ];
-
-const addressLines = (address: Address): string[] => {
-  const cityLine = [address.city, address.region, address.postalCode]
-    .filter(Boolean)
-    .join(', ');
-
-  return [
-    address.addressLine1,
-    address.addressLine2,
-    cityLine,
-    address.country.countryName,
-  ].filter((line): line is string => Boolean(line));
-};
 
 const OrderTrackingPage = () => {
   const { orderId = '' } = useParams();
@@ -101,11 +88,12 @@ const OrderTrackingPage = () => {
         <Box sx={orderTrackingStyles.side}>
           <Box sx={orderTrackingStyles.card}>
             <Typography sx={orderTrackingStyles.cardTitle}>Shipping to</Typography>
-            {addressLines(order.address).map(line => (
-              <Typography key={line} sx={orderTrackingStyles.addressLine}>
-                {line}
-              </Typography>
-            ))}
+            <Typography sx={orderTrackingStyles.addressLine}>
+              {formatAddressLine1(order.address)}
+            </Typography>
+            <Typography sx={orderTrackingStyles.addressLine}>
+              {formatAddressLine2(order.address)}
+            </Typography>
           </Box>
 
           <Box sx={orderTrackingStyles.card}>
