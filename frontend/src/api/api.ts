@@ -4,6 +4,7 @@ import type {
   AuthUser,
   Cart,
   CategoryNode,
+  ChangePasswordDTO,
   CheckoutDTO,
   Country,
   CreateAddressDTO,
@@ -12,7 +13,10 @@ import type {
   Order,
   Paginated,
   Product,
+  UpdateAddressDTO,
+  UpdateProfileDTO,
   UserAddress,
+  UserProfile,
 } from '@types';
 
 const getData = <T>(result: AxiosResponse<T>): T => result.data;
@@ -31,6 +35,17 @@ const auth = () => ({
   googleLogin: () => {
     window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
   },
+});
+
+const users = () => ({
+  getProfile: async (signal?: AbortSignal): Promise<UserProfile> =>
+    await axiosInstance.get<UserProfile>('/users/me', { signal }).then(getData),
+  updateProfile: async (updateProfileDTO: UpdateProfileDTO): Promise<UserProfile> =>
+    await axiosInstance.patch<UserProfile>('/users/me', updateProfileDTO).then(patchData),
+  changePassword: async (changePasswordDTO: ChangePasswordDTO): Promise<void> =>
+    await axiosInstance
+      .patch<void>('/users/me/password', changePasswordDTO)
+      .then(patchData),
 });
 
 const categories = () => ({
@@ -57,6 +72,8 @@ const cart = () => ({
 const orders = () => ({
   getOrders: async (signal?: AbortSignal): Promise<Order[]> =>
     await axiosInstance.get<Order[]>('/orders', { signal }).then(getData),
+  getOrder: async (id: string, signal?: AbortSignal): Promise<Order> =>
+    await axiosInstance.get<Order>(`/orders/${id}`, { signal }).then(getData),
   checkout: async (checkoutDTO: CheckoutDTO): Promise<Order> =>
     await axiosInstance.post<Order>('/orders/checkout', checkoutDTO).then(postData),
 });
@@ -68,6 +85,15 @@ const addresses = () => ({
     await axiosInstance.post<UserAddress[]>('/addresses', createAddressDTO).then(postData),
   setDefaultAddress: async (addressId: string): Promise<UserAddress[]> =>
     await axiosInstance.patch<UserAddress[]>(`/addresses/${addressId}/default`).then(patchData),
+  updateAddress: async (
+    addressId: string,
+    updateAddressDTO: UpdateAddressDTO,
+  ): Promise<UserAddress[]> =>
+    await axiosInstance
+      .patch<UserAddress[]>(`/addresses/${addressId}`, updateAddressDTO)
+      .then(patchData),
+  deleteAddress: async (addressId: string): Promise<UserAddress[]> =>
+    await axiosInstance.delete<UserAddress[]>(`/addresses/${addressId}`).then(getData),
 });
 
 const countries = () => ({
@@ -75,4 +101,4 @@ const countries = () => ({
     await axiosInstance.get<Country[]>('/countries', { signal }).then(getData),
 });
 
-export default { auth, categories, products, cart, orders, addresses, countries };
+export default { auth, users, categories, products, cart, orders, addresses, countries };
