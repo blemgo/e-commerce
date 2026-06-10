@@ -5,11 +5,14 @@ import type {
   Cart,
   CategoryNode,
   CheckoutDTO,
+  Country,
+  CreateAddressDTO,
   LocalLoginDTO,
   LocalRegisterDTO,
   Order,
   Paginated,
   Product,
+  UserAddress,
 } from '@types';
 
 const getData = <T>(result: AxiosResponse<T>): T => result.data;
@@ -58,4 +61,18 @@ const orders = () => ({
     await axiosInstance.post<Order>('/orders/checkout', checkoutDTO).then(postData),
 });
 
-export default { auth, categories, products, cart, orders };
+const addresses = () => ({
+  getAddresses: async (signal?: AbortSignal): Promise<UserAddress[]> =>
+    await axiosInstance.get<UserAddress[]>('/addresses', { signal }).then(getData),
+  createAddress: async (createAddressDTO: CreateAddressDTO): Promise<UserAddress[]> =>
+    await axiosInstance.post<UserAddress[]>('/addresses', createAddressDTO).then(postData),
+  setDefaultAddress: async (addressId: string): Promise<UserAddress[]> =>
+    await axiosInstance.patch<UserAddress[]>(`/addresses/${addressId}/default`).then(patchData),
+});
+
+const countries = () => ({
+  getCountries: async (signal?: AbortSignal): Promise<Country[]> =>
+    await axiosInstance.get<Country[]>('/countries', { signal }).then(getData),
+});
+
+export default { auth, categories, products, cart, orders, addresses, countries };
