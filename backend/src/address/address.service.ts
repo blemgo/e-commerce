@@ -4,6 +4,7 @@ import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Address } from './entities/address.entity';
 import { UserAddress } from './entities/user-address.entity';
 import { CreateAddressDto } from './dto/create-address.dto';
+import { AddressWithDefault } from './dto/address-with-default.dto';
 import { pgCodes } from 'src/utils/pg-codes';
 
 @Injectable()
@@ -14,18 +15,20 @@ export class AddressService {
     private userAddressRepository: Repository<UserAddress>,
   ) {}
 
-  async getUserAddresses(userId: string): Promise<UserAddress[]> {
-    return this.userAddressRepository.find({
+  async getUserAddresses(userId: string): Promise<AddressWithDefault[]> {
+    const links = await this.userAddressRepository.find({
       where: { userId },
       relations: { address: { country: true } },
       order: { isDefault: 'DESC' },
     });
+
+    return links.map(({ address, isDefault }) => ({ ...address, isDefault }));
   }
 
   async createAddress(
     userId: string,
     dto: CreateAddressDto,
-  ): Promise<UserAddress[]> {
+  ): Promise<AddressWithDefault[]> {
     const { countryId, isDefault, ...addressFields } = dto;
 
     try {
@@ -86,7 +89,7 @@ export class AddressService {
   async setDefaultAddress(
     userId: string,
     addressId: string,
-  ): Promise<UserAddress[]> {
+  ): Promise<AddressWithDefault[]> {
     await this.getUserAddress(userId, addressId);
 
     await this.dataSource.transaction(async (manager) => {
