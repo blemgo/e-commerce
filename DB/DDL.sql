@@ -8,11 +8,9 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 DROP TYPE IF EXISTS bally.user_role CASCADE;
 DROP TYPE IF EXISTS bally.auth_provider CASCADE;
-DROP TYPE IF EXISTS bally.order_status CASCADE;
 
 CREATE TYPE bally.user_role AS ENUM ('customer', 'admin');
 CREATE TYPE bally.auth_provider AS ENUM ('local', 'google');
-CREATE TYPE bally.order_status AS ENUM ('processing', 'shipped', 'delivered', 'cancelled');
 
 CREATE TABLE bally.users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -99,8 +97,6 @@ CREATE TABLE bally.cart_items (
 );
 
 -- ADDRESSES
-DROP TABLE IF EXISTS bally.order_items CASCADE;
-DROP TABLE IF EXISTS bally.orders CASCADE;
 DROP TABLE IF EXISTS bally.user_address CASCADE;
 DROP TABLE IF EXISTS bally.address CASCADE;
 DROP TABLE IF EXISTS bally.country CASCADE;
@@ -132,11 +128,17 @@ CREATE TABLE bally.user_address (
 );
 
 -- ORDERS
+DROP TABLE IF EXISTS bally.order_items CASCADE;
+DROP TABLE IF EXISTS bally.orders CASCADE;
+DROP TYPE IF EXISTS bally.order_status CASCADE;
+
+CREATE TYPE bally.order_status AS ENUM ('processing', 'shipped', 'delivered', 'cancelled');
+
 CREATE TABLE bally.orders (
     id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id      UUID NOT NULL REFERENCES bally.users(id) ON DELETE RESTRICT,
     address_id   UUID NOT NULL REFERENCES bally.address(id) ON DELETE RESTRICT,
-    status       order_status NOT NULL DEFAULT 'processing',
+    status       bally.order_status NOT NULL DEFAULT 'processing',
     total_amount DECIMAL(10, 2) NOT NULL,
     created_at   TIMESTAMP NOT NULL DEFAULT now(),
     updated_at   TIMESTAMP NOT NULL DEFAULT now()
