@@ -4,8 +4,10 @@ import type {
   AuthUser,
   Cart,
   CategoryNode,
+  CheckoutDTO,
   LocalLoginDTO,
   LocalRegisterDTO,
+  Order,
   Paginated,
   Product,
 } from '@types';
@@ -49,4 +51,11 @@ const cart = () => ({
     await axiosInstance.patch<Cart>(`/cart/items/${productId}`, { quantity }).then(patchData),
 });
 
-export default { auth, categories, products, cart };
+const orders = () => ({
+  getOrders: async (signal?: AbortSignal): Promise<Order[]> =>
+    await axiosInstance.get<Order[]>('/orders', { signal }).then(getData),
+  checkout: async (checkoutDTO: CheckoutDTO): Promise<Order> =>
+    await axiosInstance.post<Order>('/orders/checkout', checkoutDTO).then(postData),
+});
+
+export default { auth, categories, products, cart, orders };
