@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -10,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 import { AddressWithDefault } from './dto/address-with-default.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
@@ -40,5 +42,22 @@ export class AddressController {
     @Param('addressId', ParseUUIDPipe) addressId: string,
   ): Promise<AddressWithDefault[]> {
     return this.addressService.setDefaultAddress(userId, addressId);
+  }
+
+  @Patch(':addressId')
+  updateAddress(
+    @CurrentUser('id') userId: string,
+    @Param('addressId', ParseUUIDPipe) addressId: string,
+    @Body() dto: UpdateAddressDto,
+  ): Promise<AddressWithDefault[]> {
+    return this.addressService.updateAddress(userId, addressId, dto);
+  }
+
+  @Delete(':addressId')
+  removeAddress(
+    @CurrentUser('id') userId: string,
+    @Param('addressId', ParseUUIDPipe) addressId: string,
+  ): Promise<AddressWithDefault[]> {
+    return this.addressService.removeAddress(userId, addressId);
   }
 }
