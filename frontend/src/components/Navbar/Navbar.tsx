@@ -1,153 +1,31 @@
-import { useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Backdrop from '@mui/material/Backdrop';
-import Badge from '@mui/material/Badge';
-import SearchIcon from '@mui/icons-material/Search';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutlined';
-import { Link, useNavigate } from 'react-router-dom';
-import { useGetCategories } from '@api/hooks/categories/useGetCategories';
-import { SearchBar } from '@components/SearchBar';
-import { CartDrawer } from '@components/CartDrawer';
-import { CategoryDropdown } from '@components/CategoryDropdown';
+import { Link } from 'react-router-dom';
 import ballyLogo from '@/assets/bally-black.png';
-import type { CategoryNode } from '@types';
-import { useCartContext } from '@contexts/cart';
 import { navbarStyles } from './Navbar.styles';
 
-const CLOSE_DELAY_MS = 150;
+interface NavbarProps {
+  left?: ReactNode;
+  right?: ReactNode;
+}
 
-const Navbar = () => {
-  const { categories } = useGetCategories();
-  const { cart } = useCartContext();
-  const cartItemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
-  const navigate = useNavigate();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<CategoryNode | null>(null);
-  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const clearCloseTimer = () => {
-    if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-  };
-
-  const scheduleDropdownClose = () => {
-    clearCloseTimer();
-    closeTimerRef.current = setTimeout(() => {
-      setActiveCategory(null);
-    }, CLOSE_DELAY_MS);
-  };
-
-  const handleCategoryMouseEnter = (cat: CategoryNode) => {
-    if (cat.children.length === 0) return;
-    clearCloseTimer();
-    setSearchOpen(false);
-    setActiveCategory(cat);
-  };
-
-  const handleCategoryClick = (cat: CategoryNode) => {
-    setActiveCategory(null);
-    navigate(`/catalog?category=${cat.id}`);
-  };
-
-  const handleDropdownClose = () => {
-    clearCloseTimer();
-    setActiveCategory(null);
-  };
-
+const Navbar = ({ left, right }: NavbarProps) => {
   return (
-    <>
-      <AppBar position="sticky" color="transparent" sx={navbarStyles.appBar}>
-        <Toolbar sx={navbarStyles.toolbar}>
-          <Box sx={navbarStyles.left}>
-            {categories.map(cat => (
-              <Button
-                key={cat.id}
-                onMouseEnter={() => handleCategoryMouseEnter(cat)}
-                onMouseLeave={scheduleDropdownClose}
-                onClick={() => handleCategoryClick(cat)}
-                sx={{
-                  ...(navbarStyles.categoryButton as object),
-                  ...(activeCategory?.id === cat.id
-                    ? (navbarStyles.categoryButtonActive as object)
-                    : {}),
-                }}
-                disableRipple
-              >
-                {cat.name}
-              </Button>
-            ))}
-          </Box>
+    <AppBar position="sticky" color="transparent" sx={navbarStyles.appBar}>
+      <Toolbar sx={navbarStyles.toolbar}>
+        <Box sx={navbarStyles.left}>{left}</Box>
 
-          <Box sx={navbarStyles.center}>
-            <Link to="/">
-              <Box component="img" src={ballyLogo} alt="Bally" sx={navbarStyles.logo} />
-            </Link>
-          </Box>
+        <Box sx={navbarStyles.center}>
+          <Link to="/">
+            <Box component="img" src={ballyLogo} alt="Bally" sx={navbarStyles.logo} />
+          </Link>
+        </Box>
 
-          <Box sx={navbarStyles.right}>
-            <IconButton
-              onClick={() => setSearchOpen(prev => !prev)}
-              sx={navbarStyles.iconButton}
-              disableRipple
-            >
-              <SearchIcon sx={navbarStyles.icon} />
-            </IconButton>
-
-            <IconButton
-              onClick={() => setCartOpen(true)}
-              sx={navbarStyles.iconButton}
-              disableRipple
-            >
-              <Badge badgeContent={cartItemCount} color="primary" sx={navbarStyles.cartBadge}>
-                <ShoppingCartOutlinedIcon sx={navbarStyles.icon} />
-              </Badge>
-            </IconButton>
-
-            <IconButton
-              component={Link}
-              to="/user"
-              sx={navbarStyles.iconButton}
-              disableRipple
-            >
-              <PersonOutlineIcon sx={navbarStyles.icon} />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-
-      <Backdrop
-        open={searchOpen}
-        invisible
-        onClick={() => setSearchOpen(false)}
-        sx={navbarStyles.backdrop}
-      />
-
-      {searchOpen && <SearchBar />}
-
-      {activeCategory && (
-        <CategoryDropdown
-          key={activeCategory.id}
-          category={activeCategory}
-          onClose={handleDropdownClose}
-          onMouseEnter={clearCloseTimer}
-          onMouseLeave={scheduleDropdownClose}
-        />
-      )}
-
-      <CartDrawer
-        open={cartOpen}
-        onClose={() => setCartOpen(false)}
-        onCheckout={() => {
-          setCartOpen(false);
-          navigate('/checkout');
-        }}
-      />
-    </>
+        <Box sx={navbarStyles.right}>{right}</Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 

@@ -1,11 +1,15 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Layout } from '@views/Layout';
 import { AuthLayout } from '@views/AuthLayout';
-import { PAGES, AUTH_PAGES } from './constants';
+import { CATALOG_PAGES, PAGES, AUTH_PAGES } from './constants';
 
 const appRouter = createBrowserRouter([
   {
     element: <Layout />,
+    children: CATALOG_PAGES.map(({ path, element }) => ({ path, element })),
+  },
+  {
+    element: <Layout variant="basic" />,
     children: PAGES.map(({ path, element }) => ({ path, element })),
   },
   {

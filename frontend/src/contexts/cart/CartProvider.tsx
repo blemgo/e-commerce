@@ -58,7 +58,15 @@ const CartProvider = ({ children }: CartProviderProps) => {
     }
   };
 
-  const value = useMemo(() => ({ cart, setItemQuantity }), [cart]);
+  const refreshCart = async (): Promise<void> => {
+    if (!strategy) {
+      return;
+    }
+
+    setCart(await strategy.getCart());
+  };
+
+  const value = useMemo(() => ({ cart, setItemQuantity, refreshCart }), [cart, strategy]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
