@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import { SidePanel } from '@components/SidePanel';

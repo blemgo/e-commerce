@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { StyledInput } from '@/components/StyledInput';
-import { StyledButton } from '@/components/StyledButton';
+import { StyledButton } from '@/components/StyledButton/StyledButton';
 import { useProfileForm } from './hooks/useProfileForm';
 import { PasswordDialog } from './Components/PasswordDialog';
 import type { UserProfile } from '@types';
