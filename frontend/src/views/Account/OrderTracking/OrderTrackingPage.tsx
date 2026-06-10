@@ -6,7 +6,6 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import { LoadingScreen } from '@components/LoadingScreen';
 import { OrderItem } from '@components/OrderItem';
-import { OrderStatusChip } from '@components/OrderStatusChip';
 import { useGetOrder } from '@api/hooks/orders/useGetOrder';
 import { formatDate } from '@/utils/formatDate';
 import { formatAddressLine1, formatAddressLine2 } from '@/utils/formatAddress';
@@ -52,7 +51,6 @@ const OrderTrackingPage = () => {
       <Box sx={orderTrackingStyles.layout}>
         <Box sx={orderTrackingStyles.main}>
           <Box sx={orderTrackingStyles.card}>
-            <OrderStatusChip status={order.status} />
 
             {order.status === OrderStatus.CANCELLED ? (
               <Typography sx={orderTrackingStyles.cancelled}>
