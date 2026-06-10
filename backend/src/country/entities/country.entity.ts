@@ -5,6 +5,6 @@ export class Country {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'country_name', type: 'varchar', length: 120, nullable: false })
+  @Column({ name: 'country_name', type: 'text', nullable: false })
   countryName: string;
 }
