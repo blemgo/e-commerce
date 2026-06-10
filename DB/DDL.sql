@@ -6,6 +6,10 @@ DROP EXTENSION IF EXISTS "pgcrypto";
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
+DROP TYPE IF EXISTS bally.user_role CASCADE;
+DROP TYPE IF EXISTS bally.auth_provider CASCADE;
+DROP TYPE IF EXISTS bally.order_status CASCADE;
+
 CREATE TYPE bally.user_role AS ENUM ('customer', 'admin');
 CREATE TYPE bally.auth_provider AS ENUM ('local', 'google');
 CREATE TYPE bally.order_status AS ENUM ('processing', 'shipped', 'delivered', 'cancelled');
