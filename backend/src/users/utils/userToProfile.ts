@@ -6,5 +6,5 @@ export const userToProfile = (user: User): UserProfileDto => ({
   email: user.email,
   fullName: user.fullName,
   role: user.role,
-  authProvider: user.authProvider,
+  canChangePassword: user.passwordHash !== null,
 });
