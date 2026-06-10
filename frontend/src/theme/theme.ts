@@ -18,11 +18,6 @@ const theme = createTheme({
       main: '#181b20',
       contrastText: '#f4f4f4',
     },
-    info: {
-      main: '#ffffff',
-      dark: '#f7f8fa',
-      contrastText: '#ffffff',
-    },
   },
   typography: {
     fontFamily: '"Inter", "Heebo", sans-serif',
