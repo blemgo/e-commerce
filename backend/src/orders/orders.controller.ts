@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CheckoutDto } from './dto/checkout.dto';
 import { Order } from './entities/order.entity';
@@ -9,6 +9,11 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
+
+  @Get()
+  getUserOrders(@CurrentUser('id') userId: string): Promise<Order[]> {
+    return this.ordersService.getUserOrders(userId);
+  }
 
   @Post('checkout')
   checkout(

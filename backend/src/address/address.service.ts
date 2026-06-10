@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Address } from './entities/address.entity';
 import { UserAddress } from './entities/user-address.entity';
 import { CreateAddressDto } from './dto/create-address.dto';
@@ -65,17 +65,29 @@ export class AddressService {
     return this.getUserAddresses(userId);
   }
 
-  async setDefaultAddress(
+  async getUserAddress(
     userId: string,
     addressId: string,
-  ): Promise<UserAddress[]> {
-    const link = await this.userAddressRepository.findOne({
-      where: { userId, addressId },
-    });
+    manager?: EntityManager,
+  ): Promise<UserAddress> {
+    const repository = manager ? 
+      manager.getRepository(UserAddress)
+      : this.userAddressRepository;
+
+    const link = await repository.findOne({ where: { userId, addressId } });
 
     if (!link) {
       throw new NotFoundException('Address not found');
     }
+
+    return link;
+  }
+
+  async setDefaultAddress(
+    userId: string,
+    addressId: string,
+  ): Promise<UserAddress[]> {
+    await this.getUserAddress(userId, addressId);
 
     await this.dataSource.transaction(async (manager) => {
       await manager.update(UserAddress, { userId }, { isDefault: false });

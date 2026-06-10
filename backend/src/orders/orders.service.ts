@@ -3,9 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CartService } from 'src/cart/cart.service';
-import { Address } from 'src/address/entities/address.entity';
+import { AddressService } from 'src/address/address.service';
 import { Product } from 'src/products/entities/product.entity';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
@@ -15,7 +16,18 @@ export class OrdersService {
   constructor(
     private readonly dataSource: DataSource,
     private readonly cartService: CartService,
+    private readonly addressService: AddressService,
+    @InjectRepository(Order)
+    private ordersRepository: Repository<Order>,
   ) {}
+
+  async getUserOrders(userId: string): Promise<Order[]> {
+    return this.ordersRepository.find({
+      where: { user: { id: userId } },
+      relations: { items: { product: true }, address: { country: true } },
+      order: { createdAt: 'DESC' },
+    });
+  }
 
   async checkout(userId: string, addressId: string): Promise<Order> {
     const queryRunner = this.dataSource.createQueryRunner();
@@ -23,13 +35,11 @@ export class OrdersService {
     await queryRunner.startTransaction();
 
     try {
-      const address = await queryRunner.manager.findOne(Address, {
-        where: { id: addressId },
-      });
-
-      if (!address) {
-        throw new NotFoundException('Address not found');
-      }
+      await this.addressService.getUserAddress(
+        userId,
+        addressId,
+        queryRunner.manager,
+      );
 
       const cart = await this.cartService.getCartForCheckout(userId, queryRunner.manager);
       const snapshots: { product: Product; quantity: number }[] = [];
@@ -83,7 +93,7 @@ export class OrdersService {
 
       const savedOrder = await this.dataSource.manager.findOne(Order, {
         where: { id: order.id },
-        relations: { items: { product: true }, address: true },
+        relations: { items: { product: true }, address: { country: true } },
       });
 
       if (!savedOrder) {
