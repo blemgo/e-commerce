@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CheckoutDto } from './dto/checkout.dto';
 import { Order } from './entities/order.entity';
@@ -13,6 +21,14 @@ export class OrdersController {
   @Get()
   getUserOrders(@CurrentUser('id') userId: string): Promise<Order[]> {
     return this.ordersService.getUserOrders(userId);
+  }
+
+  @Get(':id')
+  getUserOrder(
+    @CurrentUser('id') userId: string,
+    @Param('id', ParseUUIDPipe) orderId: string,
+  ): Promise<Order> {
+    return this.ordersService.getUserOrder(userId, orderId);
   }
 
   @Post('checkout')

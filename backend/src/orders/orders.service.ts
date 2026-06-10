@@ -31,6 +31,19 @@ export class OrdersService {
     });
   }
 
+  async getUserOrder(userId: string, orderId: string): Promise<Order> {
+    const order = await this.ordersRepository.findOne({
+      where: { id: orderId, user: { id: userId } },
+      relations: { items: { product: true }, address: { country: true } },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    return order;
+  }
+
   async checkout(userId: string, addressId: string): Promise<Order> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
