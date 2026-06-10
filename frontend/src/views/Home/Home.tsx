@@ -1,22 +1,13 @@
-import { useState } from 'react';
-import { Container } from '@mui/material';
-import { ProductStack } from '@components/ProductStack';
-import { FilterBar } from '@components/FilterBar';
-import { AllFiltersModal } from '@components/AllFiltersModal';
+import { Navigate } from 'react-router-dom';
+import { useUserContext } from '@contexts/user';
+import { LoadingScreen } from '@components/LoadingScreen';
 
 const Home = () => {
-  const [allFiltersOpen, setAllFiltersOpen] = useState(false);
+  const { user, isInitializing } = useUserContext();
 
-  return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      <FilterBar onOpenAllFilters={() => setAllFiltersOpen(true)} />
-      <ProductStack />
-      <AllFiltersModal
-        open={allFiltersOpen}
-        onClose={() => setAllFiltersOpen(false)}
-      />
-    </Container>
-  );
+  if (isInitializing) return <LoadingScreen />;
+
+  return <Navigate to={user ? '/catalog' : '/login'} replace />;
 };
 
 export { Home };
