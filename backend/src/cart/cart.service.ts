@@ -85,17 +85,27 @@ export class CartService {
   }
 
   async getCartForCheckout(userId: string, manager: EntityManager): Promise<Cart> {
-    const cart = await manager.findOne(Cart, {
-      where: { user: { id: userId } },
-      relations: { items: { product: true } },
-      lock: { mode: 'pessimistic_write' },
-    });
+    const cart = await manager
+      .createQueryBuilder(Cart, 'cart')
+      .innerJoin('cart.user', 'user')
+      .where('user.id = :userId', { userId })
+      .setLock('pessimistic_write')
+      .getOne();
 
-    if (!cart || cart.items.length === 0) {
+    if (!cart) {
       throw new BadRequestException('Cart is empty');
     }
 
-    return cart;
+    const cartWithItems = await manager.findOne(Cart, {
+      where: { id: cart.id },
+      relations: { items: { product: true } },
+    });
+
+    if (!cartWithItems?.items.length) {
+      throw new BadRequestException('Cart is empty');
+    }
+
+    return cartWithItems;
   }
 
   async deleteCart(userId: string, manager: EntityManager): Promise<void> {
