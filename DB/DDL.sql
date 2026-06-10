@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS bally.users CASCADE;
+﻿DROP TABLE IF EXISTS bally.users CASCADE;
 DROP TYPE IF EXISTS bally.order_status;
 DROP TYPE IF EXISTS bally.user_role;
 DROP TYPE IF EXISTS bally.auth_provider;
@@ -8,13 +8,13 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TYPE bally.user_role AS ENUM ('customer', 'admin');
 CREATE TYPE bally.auth_provider AS ENUM ('local', 'google');
-CREATE TYPE bally.order_status AS ENUM ('pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled');
+CREATE TYPE bally.order_status AS ENUM ('processing', 'shipped', 'delivered', 'cancelled');
 
 CREATE TABLE bally.users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT NOT NULL,
     password_hash TEXT,
-    full_name VARCHAR(100) NOT NULL CHECK (full_name ~ '^[a-zA-Z\s]+$' && length(full_name) >= 2),
+    full_name TEXT NOT NULL CHECK (full_name ~ '^[a-zA-Z\s]+$' AND LENGTH(full_name) >= 2),
     role user_role NOT NULL DEFAULT 'customer',
     auth_provider auth_provider NOT NULL DEFAULT 'local',
     provider_id TEXT,
@@ -103,17 +103,17 @@ DROP TABLE IF EXISTS bally.country CASCADE;
 
 CREATE TABLE bally.country (
     id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    country_name VARCHAR(120) NOT NULL
+    country_name text NOT NULL
 );
 
 CREATE TABLE bally.address (
     id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    unit_number   VARCHAR(60),
-    street_number VARCHAR(60),
-    address_line1 VARCHAR(255) NOT NULL,
-    address_line2 VARCHAR(255),
-    city          VARCHAR(120) NOT NULL,
-    region        VARCHAR(120),
+    unit_number   text,
+    street_number text,
+    address_line1 text NOT NULL,
+    address_line2 text,
+    city          text NOT NULL,
+    region        text,
     postal_code   VARCHAR(20),
     country_id    UUID NOT NULL REFERENCES bally.country(id) ON DELETE RESTRICT
 );
@@ -132,7 +132,7 @@ CREATE TABLE bally.orders (
     id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id      UUID NOT NULL REFERENCES bally.users(id) ON DELETE RESTRICT,
     address_id   UUID NOT NULL REFERENCES bally.address(id) ON DELETE RESTRICT,
-    status       order_status NOT NULL DEFAULT 'pending',
+    status       order_status NOT NULL DEFAULT 'processing',
     total_amount DECIMAL(10, 2) NOT NULL,
     created_at   TIMESTAMP NOT NULL DEFAULT now(),
     updated_at   TIMESTAMP NOT NULL DEFAULT now()
@@ -144,7 +144,7 @@ CREATE TABLE bally.order_items (
     id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_id     UUID NOT NULL REFERENCES bally.orders(id) ON DELETE CASCADE,
     product_id   UUID NOT NULL REFERENCES bally.product(id) ON DELETE RESTRICT,
-    product_name VARCHAR(255) NOT NULL,
+    product_name text NOT NULL,
     unit_price   DECIMAL(10, 2) NOT NULL,
     quantity     INT NOT NULL
 );
