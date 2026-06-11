@@ -102,7 +102,7 @@ const CatalogNavBar = () => {
 
             <IconButton
               component={Link}
-              to="/user"
+              to="/account"
               sx={catalogNavBarStyles.iconButton}
               disableRipple
             >

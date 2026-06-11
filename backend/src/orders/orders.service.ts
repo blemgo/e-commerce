@@ -19,12 +19,29 @@ export class OrdersService {
     private ordersRepository: Repository<Order>,
   ) {}
 
+  private generateTrackingId(): string {
+    return `#${Math.floor(100000 + Math.random() * 900000)}`;
+  }
+
   async getUserOrders(userId: string): Promise<Order[]> {
     return this.ordersRepository.find({
       where: { user: { id: userId } },
       relations: { items: { product: true }, address: { country: true } },
       order: { createdAt: 'DESC' },
     });
+  }
+
+  async getUserOrder(userId: string, orderId: string): Promise<Order> {
+    const order = await this.ordersRepository.findOne({
+      where: { id: orderId, user: { id: userId } },
+      relations: { items: { product: true }, address: { country: true } },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    return order;
   }
 
   async checkout(userId: string, addressId: string): Promise<Order> {
@@ -61,6 +78,7 @@ export class OrdersService {
       const order = queryRunner.manager.create(Order, {
         user: { id: userId },
         address: { id: addressId },
+        trackingId: this.generateTrackingId(),
         totalAmount,
       });
       await queryRunner.manager.save(order);

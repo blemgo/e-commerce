@@ -30,3 +30,5 @@ export interface CreateAddressDTO {
   countryId: string;
   isDefault?: boolean;
 }
+
+export type UpdateAddressDTO = Omit<CreateAddressDTO, 'isDefault'>;

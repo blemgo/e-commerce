@@ -145,6 +145,7 @@ Table orders {
   user_id      uuid          [not null]
   address_id   uuid          [not null]
   status       order_status  [not null, default: 'processing']
+  tracking_id  text          [not null]
   total_amount decimal(10,2) [not null]
   created_at   timestamp     [not null, default: `now()`]
   updated_at   timestamp     [not null, default: `now()`]

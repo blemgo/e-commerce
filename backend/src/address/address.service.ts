@@ -3,7 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Address } from './entities/address.entity';
 import { UserAddress } from './entities/user-address.entity';
+import { Country } from 'src/country/entities/country.entity';
 import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 import { AddressWithDefault } from './dto/address-with-default.dto';
 import { pgCodes } from 'src/utils/pg-codes';
 
@@ -99,6 +101,63 @@ export class AddressService {
         { userId, addressId },
         { isDefault: true },
       );
+    });
+
+    return this.getUserAddresses(userId);
+  }
+
+  async updateAddress(
+    userId: string,
+    addressId: string,
+    dto: UpdateAddressDto,
+  ): Promise<AddressWithDefault[]> {
+    await this.getUserAddress(userId, addressId);
+
+    const { countryId, ...addressFields } = dto;
+    const addressRepository = this.dataSource.getRepository(Address);
+    const address = await addressRepository.findOneByOrFail({ id: addressId });
+
+    Object.assign(address, addressFields);
+
+    if (countryId) {
+      address.country = { id: countryId } as Country;
+    }
+
+    try {
+      await addressRepository.save(address);
+    } catch (error) {
+      if (error?.code === pgCodes.FOREIGN_KEY_VIOLATION) {
+        throw new BadRequestException('Country not found');
+      }
+
+      throw error;
+    }
+
+    return this.getUserAddresses(userId);
+  }
+
+  async removeAddress(
+    userId: string,
+    addressId: string,
+  ): Promise<AddressWithDefault[]> {
+    const link = await this.getUserAddress(userId, addressId);
+
+    await this.dataSource.transaction(async (manager) => {
+      await manager.delete(UserAddress, { userId, addressId });
+
+      if (link.isDefault) {
+        const nextDefault = await manager.findOne(UserAddress, {
+          where: { userId },
+        });
+
+        if (nextDefault) {
+          await manager.update(
+            UserAddress,
+            { userId, addressId: nextDefault.addressId },
+            { isDefault: true },
+          );
+        }
+      }
     });
 
     return this.getUserAddresses(userId);

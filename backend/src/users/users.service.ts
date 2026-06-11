@@ -1,10 +1,16 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { RegisterLocalUserDto } from './dto/register-local-user.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { UserProfileDto } from './dto/user-profile.dto';
+import { userToProfile } from './utils/userToProfile';
 import { GoogleProfileData } from './types/google-profile-data.type';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -34,6 +40,59 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async getUserById(userId: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  async getProfile(userId: string): Promise<UserProfileDto> {
+    return userToProfile(await this.getUserById(userId));
+  }
+
+  async updateProfile(
+    userId: string,
+    updateProfileDto: UpdateProfileDto,
+  ): Promise<UserProfileDto> {
+    const user = await this.getUserById(userId);
+    user.fullName = updateProfileDto.fullName;
+    await this.usersRepository.save(user);
+
+    return userToProfile(user);
+  }
+
+  async changePassword(
+    userId: string,
+    changePasswordDto: ChangePasswordDto,
+  ): Promise<void> {
+    const user = await this.getUserById(userId);
+
+    if (user.authProvider !== AuthProvider.LOCAL || !user.passwordHash) {
+      throw new BadRequestException(
+        'Password change is not available for this account',
+      );
+    }
+
+    const isCurrentValid = await bcrypt.compare(
+      changePasswordDto.currentPassword,
+      user.passwordHash,
+    );
+
+    if (!isCurrentValid) {
+      throw new UnauthorizedException('Current password is incorrect');
+    }
+
+    user.passwordHash = await bcrypt.hash(
+      changePasswordDto.newPassword,
+      env.BCRYPT_SALT,
+    );
+    await this.usersRepository.save(user);
   }
 
   async createLocalUser(

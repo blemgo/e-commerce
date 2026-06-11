@@ -7,6 +7,19 @@ export interface AuthUser {
   role: Role;
 }
 
+export interface UserProfile extends AuthUser {
+  canChangePassword: boolean;
+}
+
+export interface UpdateProfileDTO {
+  fullName: string;
+}
+
+export interface ChangePasswordDTO {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface LocalRegisterDTO {
   fullName: string;
   email: string;

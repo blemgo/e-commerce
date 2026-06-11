@@ -36,6 +36,9 @@ export class Order {
   })
   status: OrderStatus;
 
+  @Column({ name: 'tracking_id', type: 'text', nullable: false })
+  trackingId: string;
+
   @Column({
     name: 'total_amount',
     type: 'decimal',

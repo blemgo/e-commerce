@@ -1,9 +1,15 @@
+import { Navigate } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 import { Home } from '@views/Home';
 import { CatalogPage } from '@views/Catalog';
 import { ProductPage } from '@views/ProductPage';
 import { LoginPage } from '@views/Login';
 import { CheckoutPage } from '@views/Checkout';
-import { OrdersPage } from '@views/Orders';
+import { AccountLayout } from '@views/Account';
+import { ProfilePage } from '@views/Account/Profile';
+import { OrdersPage } from '@views/Account/Orders';
+import { OrderTrackingPage } from '@views/Account/OrderTracking';
+import { AddressesPage } from '@views/Account/Addresses';
 import { ProtectedRoute } from './ProtectedRoute';
 import type { Page } from './types';
 
@@ -23,16 +29,23 @@ export const PAGES: Page[] = [
     ),
     name: 'Checkout',
   },
-  {
-    path: '/orders',
-    element: (
-      <ProtectedRoute>
-        <OrdersPage />
-      </ProtectedRoute>
-    ),
-    name: 'Orders',
-  },
 ];
+
+export const ACCOUNT_ROUTE: RouteObject = {
+  path: '/account',
+  element: (
+    <ProtectedRoute>
+      <AccountLayout />
+    </ProtectedRoute>
+  ),
+  children: [
+    { index: true, element: <Navigate to="/account/profile" replace /> },
+    { path: 'profile', element: <ProfilePage /> },
+    { path: 'orders', element: <OrdersPage /> },
+    { path: 'orders/:orderId', element: <OrderTrackingPage /> },
+    { path: 'addresses', element: <AddressesPage /> },
+  ],
+};
 
 export const AUTH_PAGES: Page[] = [
   { path: '/login', element: <LoginPage />, name: 'Login' },
