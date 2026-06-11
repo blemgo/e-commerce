@@ -8,7 +8,6 @@ import { env } from 'src/config/env';
 import { RefreshTokensModule } from 'src/refresh-tokens/refresh-tokens.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
-import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
   controllers: [AuthController],
@@ -17,7 +16,6 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
     PassportModule,
     UsersModule,
     RefreshTokensModule,
-    CloudinaryModule,
     JwtModule.register({
       secret: env.JWT_SECRET,
       signOptions: { expiresIn: env.JWT_EXPIRES_IN },
