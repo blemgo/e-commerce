@@ -6,14 +6,19 @@ import type {
   CategoryNode,
   ChangePasswordDTO,
   CheckoutDTO,
+  CloudinaryUploadSignature,
   Country,
   CreateAddressDTO,
+  CreateProductDTO,
+  GetAllOrdersParams,
   LocalLoginDTO,
   LocalRegisterDTO,
   Order,
+  OrderStatus,
   Paginated,
   Product,
   UpdateAddressDTO,
+  UpdateProductDTO,
   UpdateProfileDTO,
   UserAddress,
   UserProfile,
@@ -60,6 +65,12 @@ const products = () => ({
       .then(getData),
   getProduct: async (id: string, signal?: AbortSignal): Promise<Product> =>
     await axiosInstance.get<Product>(`/products/${id}`, { signal }).then(getData),
+  createProduct: async (createProductDTO: CreateProductDTO): Promise<Product> =>
+    await axiosInstance.post<Product>('/products', createProductDTO).then(postData),
+  updateProduct: async (id: string, updateProductDTO: UpdateProductDTO): Promise<Product> =>
+    await axiosInstance.patch<Product>(`/products/${id}`, updateProductDTO).then(patchData),
+  deleteProduct: async (id: string): Promise<void> =>
+    await axiosInstance.delete(`/products/${id}`).then(() => undefined),
 });
 
 const cart = () => ({
@@ -76,6 +87,15 @@ const orders = () => ({
     await axiosInstance.get<Order>(`/orders/${id}`, { signal }).then(getData),
   checkout: async (checkoutDTO: CheckoutDTO): Promise<Order> =>
     await axiosInstance.post<Order>('/orders/checkout', checkoutDTO).then(postData),
+  getAllOrders: async (
+    params?: GetAllOrdersParams,
+    signal?: AbortSignal,
+  ): Promise<Paginated<Order>> =>
+    await axiosInstance
+      .get<Paginated<Order>>('/orders/all', { params, signal })
+      .then(getData),
+  updateOrderStatus: async (id: string, status: OrderStatus): Promise<Order> =>
+    await axiosInstance.patch<Order>(`/orders/${id}/status`, { status }).then(patchData),
 });
 
 const addresses = () => ({
@@ -101,4 +121,21 @@ const countries = () => ({
     await axiosInstance.get<Country[]>('/countries', { signal }).then(getData),
 });
 
-export default { auth, users, categories, products, cart, orders, addresses, countries };
+const cloudinary = () => ({
+  getUploadSignature: async (signal?: AbortSignal): Promise<CloudinaryUploadSignature> =>
+    await axiosInstance
+      .get<CloudinaryUploadSignature>('/cloudinary/upload-signature', { signal })
+      .then(getData),
+});
+
+export default {
+  auth,
+  users,
+  categories,
+  products,
+  cart,
+  orders,
+  addresses,
+  countries,
+  cloudinary,
+};
