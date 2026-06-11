@@ -1,4 +1,8 @@
-﻿DROP TABLE IF EXISTS bally.users CASCADE;
+﻿DROP SCHEMA IF EXISTS bally CASCADE;
+
+CREATE SCHEMA bally;
+
+DROP TABLE IF EXISTS bally.users CASCADE;
 DROP TYPE IF EXISTS bally.order_status;
 DROP TYPE IF EXISTS bally.user_role;
 DROP TYPE IF EXISTS bally.auth_provider;
@@ -17,8 +21,8 @@ CREATE TABLE bally.users (
     email TEXT NOT NULL,
     password_hash TEXT,
     full_name TEXT NOT NULL CHECK (full_name ~ '^[a-zA-Z\s]+$' AND LENGTH(full_name) >= 2),
-    role user_role NOT NULL DEFAULT 'customer',
-    auth_provider auth_provider NOT NULL DEFAULT 'local',
+    role bally.user_role NOT NULL DEFAULT 'customer',
+    auth_provider bally.auth_provider NOT NULL DEFAULT 'local',
     provider_id TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE(auth_provider, provider_id)
