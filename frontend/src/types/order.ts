@@ -32,3 +32,13 @@ export interface Order {
 export interface CheckoutDTO {
   addressId: string;
 }
+
+export interface UpdateOrderStatusDTO {
+  status: OrderStatus;
+}
+
+export interface GetAllOrdersParams {
+  status?: OrderStatus;
+  page?: number;
+  limit?: number;
+}

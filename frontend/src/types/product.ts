@@ -11,6 +11,19 @@ export interface Product {
   productImage?: string;
   qtyInStock: number;
   price: number;
+  isActive: boolean;
   categories: ProductCategory[];
 }
+
+export interface CreateProductDTO {
+  name: string;
+  description?: string;
+  productImage?: string;
+  qtyInStock?: number;
+  price: number;
+  isActive?: boolean;
+  categoryIds?: string[];
+}
+
+export type UpdateProductDTO = Partial<CreateProductDTO>;
 

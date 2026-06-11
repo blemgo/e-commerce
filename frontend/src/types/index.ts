@@ -1,6 +1,7 @@
 export * from './address';
 export * from './cart';
 export * from './category';
+export * from './cloudinary';
 export * from './order';
 export * from './pagination';
 export * from './product';
