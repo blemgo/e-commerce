@@ -34,6 +34,9 @@ export class Product {
   })
   price: number;
 
+  @Column({ name: 'is_active', type: 'boolean', default: true, nullable: false })
+  isActive: boolean;
+
   @ManyToMany(() => ProductCategory, (cat) => cat.products)
   @JoinTable({
     name: 'product_category_link',
