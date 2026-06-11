@@ -1,13 +1,9 @@
 import { SelectQueryBuilder } from 'typeorm';
 import { Product } from '../entities/product.entity';
 import { GetProductsQueryDto } from '../dto/get-products-query.dto';
+import { PaginatedResult } from 'src/common/interfaces/paginated-result.interface';
 
-export interface PaginatedProducts {
-  data: Product[];
-  totalCount: number;
-  page: number;
-  totalPages: number;
-}
+export type PaginatedProducts = PaginatedResult<Product>;
 
 export const applyQuery = (
   qb: SelectQueryBuilder<Product>,
