@@ -6,10 +6,12 @@ import { AddressService } from 'src/address/address.service';
 import { ProductsService } from 'src/products/products.service';
 import { Product } from 'src/products/entities/product.entity';
 import { PaginatedResult } from 'src/common/interfaces/paginated-result.interface';
+import { userToAuthorizedUser } from 'src/auth/utils/userToAuthorizedUser';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { OrderStatus } from './entities/order-status.enum';
 import { GetAllOrdersQueryDto } from './dto/get-all-orders-query.dto';
+import { AdminOrder } from './dto/admin-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -36,11 +38,11 @@ export class OrdersService {
 
   async getAllOrders(
     query: GetAllOrdersQueryDto,
-  ): Promise<PaginatedResult<Order>> {
+  ): Promise<PaginatedResult<AdminOrder>> {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
 
-    const [data, totalCount] = await this.ordersRepository.findAndCount({
+    const [orders, totalCount] = await this.ordersRepository.findAndCount({
       where: query.status ? { status: query.status } : {},
       relations: {
         user: true,
@@ -51,6 +53,11 @@ export class OrdersService {
       skip: (page - 1) * limit,
       take: limit,
     });
+
+    const data: AdminOrder[] = orders.map((order) => ({
+      ...order,
+      user: userToAuthorizedUser(order.user),
+    }));
 
     return { data, totalCount, page, totalPages: Math.ceil(totalCount / limit) };
   }

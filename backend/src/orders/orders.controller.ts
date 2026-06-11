@@ -13,6 +13,7 @@ import { OrdersService } from './orders.service';
 import { CheckoutDto } from './dto/checkout.dto';
 import { GetAllOrdersQueryDto } from './dto/get-all-orders-query.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
+import { AdminOrder } from './dto/admin-order.dto';
 import { Order } from './entities/order.entity';
 import { PaginatedResult } from 'src/common/interfaces/paginated-result.interface';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -33,7 +34,7 @@ export class OrdersController {
   @Get('all')
   getAllOrders(
     @Query() query: GetAllOrdersQueryDto,
-  ): Promise<PaginatedResult<Order>> {
+  ): Promise<PaginatedResult<AdminOrder>> {
     return this.ordersService.getAllOrders(query);
   }
 
