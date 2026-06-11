@@ -18,7 +18,6 @@ export const applyQuery = (
   }
 
   if (query.minPrice) {
-    console.log('minPrice', query.minPrice);
     qb.andWhere(MIN_PRICE_QUERY, { minPrice: query.minPrice });
   }
 
