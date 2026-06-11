@@ -1,5 +1,6 @@
 import type { Address } from './address';
 import type { Product } from './product';
+import type { AuthUser } from './user';
 
 export const OrderStatus = {
   PROCESSING: 'processing',
@@ -25,6 +26,7 @@ export interface Order {
   totalAmount: number;
   items: OrderItem[];
   address: Address;
+  user?: AuthUser;
   createdAt: string;
   updatedAt: string;
 }
