@@ -110,6 +110,10 @@ export class ProductsService {
       throw new NotFoundException('Product not found');
     }
 
+    if (!product.isActive) {
+      throw new BadRequestException(`"${product.name}" is no longer available`);
+    }
+
     if (product.qtyInStock < quantity) {
       throw new BadRequestException(`Insufficient stock for "${product.name}"`);
     }
