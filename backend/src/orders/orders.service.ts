@@ -5,8 +5,11 @@ import { CartService } from 'src/cart/cart.service';
 import { AddressService } from 'src/address/address.service';
 import { ProductsService } from 'src/products/products.service';
 import { Product } from 'src/products/entities/product.entity';
+import { PaginatedResult } from 'src/common/interfaces/paginated-result.interface';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
+import { OrderStatus } from './entities/order-status.enum';
+import { GetAllOrdersQueryDto } from './dto/get-all-orders-query.dto';
 
 @Injectable()
 export class OrdersService {
@@ -29,6 +32,41 @@ export class OrdersService {
       relations: { items: { product: true }, address: { country: true } },
       order: { createdAt: 'DESC' },
     });
+  }
+
+  async getAllOrders(
+    query: GetAllOrdersQueryDto,
+  ): Promise<PaginatedResult<Order>> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 20;
+
+    const [data, totalCount] = await this.ordersRepository.findAndCount({
+      where: query.status ? { status: query.status } : {},
+      relations: {
+        user: true,
+        items: { product: true },
+        address: { country: true },
+      },
+      order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return { data, totalCount, page, totalPages: Math.ceil(totalCount / limit) };
+  }
+
+  async updateStatus(orderId: string, status: OrderStatus): Promise<Order> {
+    const order = await this.ordersRepository.findOne({
+      where: { id: orderId },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    order.status = status;
+
+    return this.ordersRepository.save(order);
   }
 
   async getUserOrder(userId: string, orderId: string): Promise<Order> {
