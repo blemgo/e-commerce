@@ -1,25 +1,30 @@
-import { Outlet, useNavigate } from 'react-router-dom';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutlined';
-import LogoutIcon from '@mui/icons-material/Logout';
-import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
-import { SidePanel } from '@components/SidePanel';
-import type { SidePanelItem } from '@components/SidePanel';
-import { useUserContext } from '@contexts/user';
-import { Role } from '@types';
-import { accountLayoutStyles } from './AccountLayout.styles';
+import { Outlet, useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutlined";
+import LogoutIcon from "@mui/icons-material/Logout";
+import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
+import { SidePanel } from "@components/SidePanel";
+import type { SidePanelItem } from "@components/SidePanel";
+import { useUserContext } from "@contexts/user";
+import { Role } from "@types";
+import { accountLayoutStyles } from "./AccountLayout.styles";
+import { IconedRedirect } from "@/components/IconedRedirect";
 
 const ACCOUNT_ITEMS: SidePanelItem[] = [
   {
-    label: 'Orders & tracking',
+    label: "Orders & tracking",
     icon: <Inventory2OutlinedIcon />,
-    path: '/account/orders',
+    path: "/account/orders",
   },
-  { label: 'Addresses', icon: <PlaceOutlinedIcon />, path: '/account/addresses' },
-  { label: 'Profile', icon: <PersonOutlineIcon />, path: '/account/profile' },
+  {
+    label: "Addresses",
+    icon: <PlaceOutlinedIcon />,
+    path: "/account/addresses",
+  },
+  { label: "Profile", icon: <PersonOutlineIcon />, path: "/account/profile" },
 ];
 
 const AccountLayout = () => {
@@ -28,21 +33,17 @@ const AccountLayout = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   const footer = (
     <Box sx={accountLayoutStyles.footer}>
       {user?.role === Role.ADMIN && (
-        <Button
-          fullWidth
-          startIcon={<AdminPanelSettingsOutlinedIcon />}
-          onClick={() => navigate('/admin')}
-          sx={accountLayoutStyles.adminButton}
-          disableElevation
-        >
-          Admin panel
-        </Button>
+        <IconedRedirect
+          icon={<AdminPanelSettingsOutlinedIcon />}
+          to="/admin"
+          title="Admin Panel"
+        />
       )}
 
       <Button
