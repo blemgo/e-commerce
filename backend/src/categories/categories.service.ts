@@ -22,7 +22,9 @@ export class CategoriesService {
     private productCategoryRepository: Repository<ProductCategory>,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryNodeDto[]> {
+  async create(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<CategoryNodeDto[]> {
     const { parentCategoryId } = createCategoryDto;
 
     if (parentCategoryId) {
