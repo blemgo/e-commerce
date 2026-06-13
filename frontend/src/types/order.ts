@@ -38,9 +38,3 @@ export interface CheckoutDTO {
 export interface UpdateOrderStatusDTO {
   status: OrderStatus;
 }
-
-export interface GetAllOrdersParams {
-  status?: OrderStatus;
-  page?: number;
-  limit?: number;
-}

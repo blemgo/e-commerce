@@ -1,6 +1,7 @@
 import type { AxiosResponse } from 'axios';
 import axiosInstance from './axiosInstance';
 import cloudinaryInstance from './cloudinaryInstance';
+import type { OrderFilters } from '@api/hooks/orders/useOrderFilters';
 import type {
   AuthUser,
   Cart,
@@ -12,7 +13,6 @@ import type {
   Country,
   CreateAddressDTO,
   CreateProductDTO,
-  GetAllOrdersParams,
   LocalLoginDTO,
   LocalRegisterDTO,
   Order,
@@ -90,7 +90,7 @@ const orders = () => ({
   checkout: async (checkoutDTO: CheckoutDTO): Promise<Order> =>
     await axiosInstance.post<Order>('/orders/checkout', checkoutDTO).then(postData),
   getAllOrders: async (
-    params?: GetAllOrdersParams,
+    params?: Partial<OrderFilters>,
     signal?: AbortSignal,
   ): Promise<Paginated<Order>> =>
     await axiosInstance
