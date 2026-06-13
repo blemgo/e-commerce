@@ -7,7 +7,7 @@ import { ProductCategory } from './entities/product-category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { CategoryNode } from './interfaces/CategoryNode';
+import { CategoryNodeDto } from './dto/category-node.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import {
   categoryRowsToTree,
@@ -22,7 +22,7 @@ export class CategoriesService {
     private productCategoryRepository: Repository<ProductCategory>,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryNode[]> {
+  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryNodeDto[]> {
     const { parentCategoryId } = createCategoryDto;
 
     if (parentCategoryId) {
@@ -36,7 +36,7 @@ export class CategoriesService {
     return this.getCategoryTree();
   }
 
-  async getCategoryTree(): Promise<CategoryNode[]> {
+  async getCategoryTree(): Promise<CategoryNodeDto[]> {
     const categoryRows = await this.productCategoryRepository.find();
 
     return categoryRowsToTree(categoryRows);
@@ -66,7 +66,7 @@ export class CategoriesService {
   async update(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
-  ): Promise<CategoryNode[]> {
+  ): Promise<CategoryNodeDto[]> {
     const category = await this.findOne(id);
     const { parentCategoryId } = updateCategoryDto;
 
@@ -80,7 +80,7 @@ export class CategoriesService {
     return this.getCategoryTree();
   }
 
-  async remove(id: string): Promise<CategoryNode[]> {
+  async remove(id: string): Promise<CategoryNodeDto[]> {
     const category = await this.findOne(id);
 
     await this.productCategoryRepository.remove(category);
