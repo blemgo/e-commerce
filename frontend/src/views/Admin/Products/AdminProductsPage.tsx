@@ -6,11 +6,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
-import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import { AdminHeader } from "@components/AdminHeader";
-import { CategoryBar } from "@components/CategoryBar";
-import { SearchBar } from "@components/SearchBar";
+import { AdminFilterBar } from "@components/AdminFilterBar";
 import { PaginatedView } from "@components/PaginatedView";
 import { StyledButton } from "@components/StyledButton";
 import { useProductFilters } from "@api/hooks/products/useProductFilters";
@@ -21,7 +19,6 @@ import { ProductTable } from "./Components/ProductTable";
 import { ProductForm } from "./Components/ProductForm";
 import { useUploadProduct } from "./hooks/useUploadProduct";
 import { useRemoveProduct } from "./hooks/useRemoveProduct";
-import { adminProductsPageStyles } from "./AdminProductsPage.styles";
 
 const ADMIN_PARAMS = { includeInactive: true };
 
@@ -34,8 +31,12 @@ const AdminProductsPage: React.FC = () => {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editing, setEditing] = useState<Product | undefined>(undefined);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<Product | undefined>(undefined);
+
+  const categoryOptions = categories.map(category => ({
+    label: category.name,
+    value: category.id,
+  }));
 
   const openCreate = () => {
     setEditing(undefined);
@@ -85,33 +86,23 @@ const AdminProductsPage: React.FC = () => {
   }
 
   const actions = (
-    <>
-      <IconButton onClick={() => setIsSearchOpen(open => !open)}>
-        <SearchIcon />
-      </IconButton>
-      <IconButton onClick={openCreate} color="secondary">
-        <AddIcon />
-      </IconButton>
-    </>
+    <IconButton onClick={openCreate} color="secondary">
+      <AddIcon />
+    </IconButton>
   );
 
   return (
     <Box>
       <AdminHeader title="Products" actions={actions} />
 
-      {isSearchOpen && (
-        <Box sx={adminProductsPageStyles.searchContainer}>
-          <SearchBar />
-        </Box>
-      )}
-
-      <Box sx={adminProductsPageStyles.categoryBar}>
-        <CategoryBar
-          categories={categories}
-          activeId={filters.category ?? undefined}
-          onChange={id => setFilters({ category: id ?? null, page: null })}
-        />
-      </Box>
+      <AdminFilterBar
+        options={categoryOptions}
+        value={filters.category}
+        onValueChange={value => setFilters({ category: value, page: 1 })}
+        search={filters.name ?? ""}
+        onSearchChange={search => setFilters({ name: search || null, page: 1 })}
+        searchPlaceholder="Search products..."
+      />
 
       <PaginatedView
         loading={loading}
