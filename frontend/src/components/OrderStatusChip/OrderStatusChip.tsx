@@ -1,22 +1,14 @@
 import Chip from '@mui/material/Chip';
 import { OrderStatus } from '@types';
+import { ORDER_STATUS_CONFIG } from '@/utils/orderStatus';
 import { orderStatusChipStyles } from './OrderStatusChip.styles';
-
-type StatusColor = 'info' | 'warning' | 'success' | 'error';
-
-const STATUS_CONFIG: Record<OrderStatus, { label: string; color: StatusColor }> = {
-  [OrderStatus.PROCESSING]: { label: 'Processing', color: 'info' },
-  [OrderStatus.SHIPPED]: { label: 'Shipped', color: 'warning' },
-  [OrderStatus.DELIVERED]: { label: 'Delivered', color: 'success' },
-  [OrderStatus.CANCELLED]: { label: 'Cancelled', color: 'error' },
-};
 
 interface OrderStatusChipProps {
   status: OrderStatus;
 }
 
 const OrderStatusChip = ({ status }: OrderStatusChipProps) => {
-  const { label, color } = STATUS_CONFIG[status];
+  const { label, color } = ORDER_STATUS_CONFIG[status];
 
   return (
     <Chip
