@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useGetUploadSignature } from './useGetUploadSignature';
+import { useUploadImage } from './useUploadImage';
 
 export interface UseUploadProductImageReturn {
   uploadImage: (file: File) => Promise<string>;
@@ -6,15 +7,22 @@ export interface UseUploadProductImageReturn {
 }
 
 const useUploadProductImage = (): UseUploadProductImageReturn => {
-  const [isLoading] = useState(false);
+  const { getUploadSignature, isLoading: isSigning } = useGetUploadSignature();
+  const { uploadImage: uploadToCloudinary, isLoading: isUploading } = useUploadImage();
 
   const uploadImage = async (file: File): Promise<string> => {
-    void file;
+    const { signature, timestamp, apiKey, cloudName } = await getUploadSignature();
 
-    return '';
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('api_key', apiKey);
+    formData.append('timestamp', String(timestamp));
+    formData.append('signature', signature);
+
+    return await uploadToCloudinary(cloudName, formData);
   };
 
-  return { uploadImage, isLoading };
+  return { uploadImage, isLoading: isSigning || isUploading };
 };
 
 export { useUploadProductImage };
