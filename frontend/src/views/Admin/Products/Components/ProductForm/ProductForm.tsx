@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Box, MenuItem, Select, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { Box, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { AdminHeader } from "@components/AdminHeader";
 import { StyledButton } from "@components/StyledButton";
 import { StyledInput } from "@components/StyledInput";
 import { ImageUpload } from "@components/ImageUpload";
+import { CategorySelect } from "@components/CategorySelect";
 import type { CategoryNode, CreateProductDTO, Product } from "@types";
 import { productFormStyles } from "./ProductForm.styles";
 
@@ -15,12 +16,6 @@ interface ProductFormProps {
   isSaving: boolean;
 }
 
-const flattenCategories = (nodes: CategoryNode[]): { id: string; name: string }[] =>
-  nodes.flatMap(node => [
-    { id: node.id, name: node.name },
-    ...flattenCategories(node.children),
-  ]);
-
 const ProductForm = ({ product, categories, onSubmit, onCancel, isSaving }: ProductFormProps) => {
   const [name, setName] = useState(product?.name ?? "");
   const [description, setDescription] = useState(product?.description ?? "");
@@ -28,9 +23,9 @@ const ProductForm = ({ product, categories, onSubmit, onCancel, isSaving }: Prod
   const [qtyInStock, setQtyInStock] = useState(product ? String(product.qtyInStock) : "");
   const [isActive, setIsActive] = useState(product?.isActive ?? true);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [categoryId, setCategoryId] = useState(product?.categories[0]?.id ?? "");
-
-  const categoryOptions = flattenCategories(categories);
+  const [categoryIds, setCategoryIds] = useState<string[]>(
+    product?.categories.map(category => category.id) ?? [],
+  );
 
   const priceValue = Number(price);
   const hasImage = imageFile !== null || Boolean(product?.productImage);
@@ -45,7 +40,7 @@ const ProductForm = ({ product, categories, onSubmit, onCancel, isSaving }: Prod
         price: priceValue,
         qtyInStock: qtyInStock === "" ? undefined : Number(qtyInStock),
         isActive,
-        categoryIds: categoryId ? [categoryId] : undefined,
+        categoryIds: categoryIds.length ? categoryIds : undefined,
       },
       imageFile,
     );
@@ -117,21 +112,12 @@ const ProductForm = ({ product, categories, onSubmit, onCancel, isSaving }: Prod
               </Box>
 
               <Box>
-                <Typography sx={productFormStyles.fieldLabel}>Category</Typography>
-                <Select
-                  fullWidth
-                  value={categoryId}
-                  onChange={event => setCategoryId(event.target.value)}
-                  displayEmpty
-                  size="small"
-                >
-                  <MenuItem value="">No category</MenuItem>
-                  {categoryOptions.map(option => (
-                    <MenuItem key={option.id} value={option.id}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <Typography sx={productFormStyles.fieldLabel}>Categories</Typography>
+                <CategorySelect
+                  categories={categories}
+                  selectedIds={categoryIds}
+                  onChange={setCategoryIds}
+                />
               </Box>
 
               <Box>
