@@ -1,12 +1,18 @@
 import Box from "@mui/material/Box";
 import { AdminHeader } from "@components/AdminHeader";
+import { AdminFilterBar } from "@components/AdminFilterBar";
 import { PaginatedView } from "@components/PaginatedView";
 import { useGetAllOrders } from "@api/hooks/orders/useGetAllOrders";
 import { useUpdateOrderStatus } from "@api/hooks/orders/useUpdateOrderStatus";
 import { useOrderFilters } from "@api/hooks/orders/useOrderFilters";
-import type { OrderStatus } from "@types";
+import { OrderStatus } from "@types";
+import { ORDER_STATUS_CONFIG } from "@/utils/orderStatus";
 import { OrderTable } from "./Components/OrderTable";
-import { OrderFilters } from "./Components/OrderFilters";
+
+const STATUS_OPTIONS = Object.values(OrderStatus).map(status => ({
+  label: ORDER_STATUS_CONFIG[status].label,
+  value: status,
+}));
 
 const AdminOrdersPage: React.FC = () => {
   const [filters, setFilters] = useOrderFilters();
@@ -30,11 +36,13 @@ const AdminOrdersPage: React.FC = () => {
     <Box>
       <AdminHeader title="Orders" />
 
-      <OrderFilters
-        status={filters.status}
+      <AdminFilterBar
+        options={STATUS_OPTIONS}
+        value={filters.status}
+        onValueChange={value => setFilters({ status: value as OrderStatus | null, page: 1 })}
         search={filters.search ?? ""}
-        onStatusChange={status => setFilters({ status, page: 1 })}
         onSearchChange={search => setFilters({ search: search || null, page: 1 })}
+        searchPlaceholder="Search by order # or customer"
       />
 
       <PaginatedView
