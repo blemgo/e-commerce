@@ -22,7 +22,7 @@ const useGetCategories = (): UseGetCategoriesReturn => {
       try {
         const data = await api.categories().getCategoryTree(controller.signal);
         setCategories(data);
-      } catch (err) {
+      } catch {
         if (!controller.signal.aborted) {
           toast.error('Failed to load categories.');
         }
