@@ -17,7 +17,7 @@ const OrderItem: React.FC<OrderItemProps> = ({ image, name, quantity, price }: O
         <Box component="img" src={image} alt={name} sx={orderItemStyles.thumbnail} />
       </Badge>
       <Typography sx={orderItemStyles.name}>{name}</Typography>
-      <Typography sx={orderItemStyles.price}>€{price.toFixed(2)}</Typography>
+      <Typography sx={orderItemStyles.price}>₪{price.toFixed(2)}</Typography>
     </Box>
   );
 };

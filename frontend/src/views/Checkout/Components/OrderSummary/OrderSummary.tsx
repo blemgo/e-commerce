@@ -33,7 +33,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ items }: OrderSummaryProps)
           <Typography sx={orderSummaryStyles.footerLabel}>
             Subtotal · {totalQuantity} items
           </Typography>
-          <Typography sx={orderSummaryStyles.footerValue}>€{total}</Typography>
+          <Typography sx={orderSummaryStyles.footerValue}>₪{total}</Typography>
         </Box>
 
         <Box sx={orderSummaryStyles.footerRow}>
@@ -43,7 +43,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ items }: OrderSummaryProps)
 
         <Box sx={orderSummaryStyles.footerRow}>
           <Typography sx={orderSummaryStyles.totalLabel}>Total</Typography>
-          <Typography sx={orderSummaryStyles.totalValue}>€{total}</Typography>
+          <Typography sx={orderSummaryStyles.totalValue}>₪{total}</Typography>
         </Box>
       </Box>
     </Box>

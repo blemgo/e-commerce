@@ -49,7 +49,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, onStatusChange }: Order
               <TableCell>{countItems(order)}</TableCell>
 
               <TableCell>
-                <Typography sx={orderTableStyles.total}>{`$${order.totalAmount}`}</Typography>
+                <Typography sx={orderTableStyles.total}>{`₪${order.totalAmount}`}</Typography>
               </TableCell>
 
               <TableCell>

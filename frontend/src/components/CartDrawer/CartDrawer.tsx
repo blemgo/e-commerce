@@ -64,7 +64,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onClose, onCheckout }: Ca
       <Box sx={cartDrawerStyles.footer}>
         <Box sx={cartDrawerStyles.totalRow}>
           <Typography sx={cartDrawerStyles.totalLabel}>Estimated total</Typography>
-          <Typography sx={cartDrawerStyles.totalAmount}>€{totalPrice}</Typography>
+          <Typography sx={cartDrawerStyles.totalAmount}>₪{totalPrice}</Typography>
         </Box>
         <Typography sx={cartDrawerStyles.taxNote}>
           Taxes included. Discounts and <strong>shipping</strong> calculated at checkout.

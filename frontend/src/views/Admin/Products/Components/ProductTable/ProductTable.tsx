@@ -69,7 +69,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete 
               </TableCell>
 
               <TableCell>
-                <Typography sx={productTableStyles.price}>{`$${product.price}`}</Typography>
+                <Typography sx={productTableStyles.price}>{`₪${product.price}`}</Typography>
               </TableCell>
 
               <TableCell>{renderStock(product.qtyInStock)}</TableCell>

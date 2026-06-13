@@ -76,7 +76,7 @@ const OrdersPage: React.FC = () => {
                     <TableCell>
                       {count} item{count === 1 ? '' : 's'}
                     </TableCell>
-                    <TableCell>€{order.totalAmount.toFixed(2)}</TableCell>
+                    <TableCell>₪{order.totalAmount.toFixed(2)}</TableCell>
                     <TableCell align="right">
                       <OrderStatusChip status={order.status} />
                     </TableCell>

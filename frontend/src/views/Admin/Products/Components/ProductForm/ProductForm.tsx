@@ -133,7 +133,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, categories, onSubmit
               </Box>
 
               <Box>
-                <Typography sx={productFormStyles.fieldLabel}>Price ($)</Typography>
+                <Typography sx={productFormStyles.fieldLabel}>Price (₪)</Typography>
                 <StyledInput
                   type="number"
                   placeholder="0.00"

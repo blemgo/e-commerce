@@ -46,7 +46,7 @@ sx={productPageStyles.image}
 
       <Box sx={productPageStyles.infoSection}>
         <Typography sx={productPageStyles.name}>{product.name}</Typography>
-        <Typography sx={productPageStyles.price}>€{Number(product.price).toFixed(2)}</Typography>
+        <Typography sx={productPageStyles.price}>₪{Number(product.price).toFixed(2)}</Typography>
 
         <Button
           sx={productPageStyles.addToCartButton}

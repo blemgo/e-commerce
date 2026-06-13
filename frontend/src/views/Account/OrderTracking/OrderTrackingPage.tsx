@@ -101,7 +101,7 @@ const OrderTrackingPage: React.FC = () => {
                 Subtotal · {totalQuantity} item{totalQuantity === 1 ? '' : 's'}
               </Typography>
               <Typography sx={orderTrackingStyles.summaryValue}>
-                €{subtotal.toFixed(2)}
+                ₪{subtotal.toFixed(2)}
               </Typography>
             </Box>
             <Box sx={orderTrackingStyles.summaryRow}>
@@ -111,7 +111,7 @@ const OrderTrackingPage: React.FC = () => {
             <Box sx={orderTrackingStyles.summaryRow}>
               <Typography sx={orderTrackingStyles.totalLabel}>Total</Typography>
               <Typography sx={orderTrackingStyles.totalValue}>
-                €{order.totalAmount.toFixed(2)}
+                ₪{order.totalAmount.toFixed(2)}
               </Typography>
             </Box>
           </Box>
