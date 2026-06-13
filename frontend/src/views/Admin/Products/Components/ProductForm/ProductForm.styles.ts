@@ -43,8 +43,7 @@ export const productFormStyles: Record<string, SxProps<Theme>> = {
   },
   hiddenToggle: {
     "&.Mui-selected": {
-      color: "error.main",
-      borderColor: "error.main",
+      color: "error.contrastText",
       bgcolor: "error.light",
       "&:hover": {
         bgcolor: "error.light",
