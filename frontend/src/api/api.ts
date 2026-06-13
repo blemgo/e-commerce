@@ -12,6 +12,7 @@ import type {
   CloudinaryUploadSignature,
   Country,
   CreateAddressDTO,
+  CreateCategoryDTO,
   CreateProductDTO,
   LocalLoginDTO,
   LocalRegisterDTO,
@@ -20,6 +21,7 @@ import type {
   Paginated,
   Product,
   UpdateAddressDTO,
+  UpdateCategoryDTO,
   UpdateProductDTO,
   UpdateProfileDTO,
   UserAddress,
@@ -58,6 +60,17 @@ const users = () => ({
 const categories = () => ({
   getCategoryTree: async (signal?: AbortSignal): Promise<CategoryNode[]> =>
     await axiosInstance.get<CategoryNode[]>('/categories', { signal }).then(getData),
+  createCategory: async (createCategoryDTO: CreateCategoryDTO): Promise<CategoryNode[]> =>
+    await axiosInstance.post<CategoryNode[]>('/categories', createCategoryDTO).then(postData),
+  updateCategory: async (
+    id: string,
+    updateCategoryDTO: UpdateCategoryDTO,
+  ): Promise<CategoryNode[]> =>
+    await axiosInstance
+      .patch<CategoryNode[]>(`/categories/${id}`, updateCategoryDTO)
+      .then(patchData),
+  deleteCategory: async (id: string): Promise<CategoryNode[]> =>
+    await axiosInstance.delete<CategoryNode[]>(`/categories/${id}`).then(getData),
 });
 
 const products = () => ({
