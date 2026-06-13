@@ -132,9 +132,7 @@ export class ProductsService {
   async remove(id: string): Promise<void> {
     const product = await this.findOne(id);
 
-    product.isActive = false;
-
-    await this.productRepository.save(product);
+    await this.productRepository.remove(product);
   }
 
   private resolveCategories = async (
