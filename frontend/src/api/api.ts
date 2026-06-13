@@ -1,11 +1,13 @@
 import type { AxiosResponse } from 'axios';
 import axiosInstance from './axiosInstance';
+import cloudinaryInstance from './cloudinaryInstance';
 import type {
   AuthUser,
   Cart,
   CategoryNode,
   ChangePasswordDTO,
   CheckoutDTO,
+  CloudinaryUploadResult,
   CloudinaryUploadSignature,
   Country,
   CreateAddressDTO,
@@ -126,6 +128,16 @@ const cloudinary = () => ({
     await axiosInstance
       .get<CloudinaryUploadSignature>('/cloudinary/upload-signature', { signal })
       .then(getData),
+  uploadImage: async (
+    cloudName: string,
+    formData: FormData,
+  ): Promise<CloudinaryUploadResult> =>
+    await cloudinaryInstance
+      .post<CloudinaryUploadResult>(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        formData,
+      )
+      .then(postData),
 });
 
 export default {

@@ -4,3 +4,7 @@ export interface CloudinaryUploadSignature {
   apiKey: string;
   cloudName: string;
 }
+
+export interface CloudinaryUploadResult {
+  secure_url: string;
+}
