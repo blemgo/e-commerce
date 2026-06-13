@@ -9,15 +9,15 @@ import { OrderStatus } from "@types";
 import { ORDER_STATUS_CONFIG } from "@/utils/orderStatus";
 import { OrderTable } from "./Components/OrderTable";
 
-const STATUS_OPTIONS = Object.values(OrderStatus).map(status => ({
-  label: ORDER_STATUS_CONFIG[status].label,
-  value: status,
-}));
-
 const AdminOrdersPage: React.FC = () => {
   const [filters, setFilters] = useOrderFilters();
   const { paginatedOrders, setPaginatedOrders, loading } = useGetAllOrders(filters);
   const { updateOrderStatus } = useUpdateOrderStatus();
+
+  const statusOptions = Object.values(OrderStatus).map(status => ({
+    label: ORDER_STATUS_CONFIG[status].label,
+    value: status,
+  }));
 
   const handleStatusChange = async (orderId: string, status: OrderStatus) => {
     try {
@@ -37,7 +37,7 @@ const AdminOrdersPage: React.FC = () => {
       <AdminHeader title="Orders" />
 
       <AdminFilterBar
-        options={STATUS_OPTIONS}
+        options={statusOptions}
         value={filters.status}
         onValueChange={value => setFilters({ status: value as OrderStatus | null, page: 1 })}
         search={filters.search ?? ""}
