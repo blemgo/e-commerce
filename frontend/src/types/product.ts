@@ -1,6 +1,6 @@
 export interface ProductCategory {
   id: string;
-  name: string;
+  categoryName: string;
   parentCategoryId?: string;
 }
 

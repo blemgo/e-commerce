@@ -13,7 +13,7 @@ export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus];
 
 export interface OrderItem {
   id: string;
-  product: Product;
+  product: Product | null;
   productName: string;
   unitPrice: number;
   quantity: number;
