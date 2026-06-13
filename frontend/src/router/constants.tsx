@@ -12,6 +12,7 @@ import { OrderTrackingPage } from '@views/Account/OrderTracking';
 import { AddressesPage } from '@views/Account/Addresses';
 import { AdminLayout } from '@views/Admin';
 import { AdminProductsPage } from '@views/Admin/Products';
+import { AdminCategoriesPage } from '@views/Admin/Categories';
 import { AdminOrdersPage } from '@views/Admin/Orders';
 import { ProtectedRoute } from './ProtectedRoute';
 import { Role } from '@types';
@@ -61,6 +62,7 @@ export const ADMIN_ROUTE: RouteObject = {
   children: [
     { index: true, element: <Navigate to="/admin/products" replace /> },
     { path: 'products', element: <AdminProductsPage /> },
+    { path: 'categories', element: <AdminCategoriesPage /> },
     { path: 'orders', element: <AdminOrdersPage /> },
   ],
 };
