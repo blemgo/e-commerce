@@ -73,7 +73,7 @@ const OrderTrackingPage = () => {
               {order.items.map(item => (
                 <OrderItem
                   key={item.id}
-                  image={item.product.productImage}
+                  image={item.product?.productImage}
                   name={item.productName}
                   quantity={item.quantity}
                   price={item.unitPrice * item.quantity}

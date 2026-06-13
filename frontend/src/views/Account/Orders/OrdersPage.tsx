@@ -59,10 +59,10 @@ const OrdersPage = () => {
                   >
                     <TableCell>
                       <Box sx={ordersPageStyles.orderCell}>
-                        {order.items[0]?.product.productImage && (
+                        {order.items[0]?.product?.productImage && (
                           <Box
                             component="img"
-                            src={order.items[0].product.productImage}
+                            src={order.items[0].product?.productImage}
                             alt=""
                             sx={ordersPageStyles.thumbnail}
                           />
