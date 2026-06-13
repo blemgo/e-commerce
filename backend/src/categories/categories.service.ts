@@ -22,16 +22,18 @@ export class CategoriesService {
     private productCategoryRepository: Repository<ProductCategory>,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<ProductCategory> {
+  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryNode[]> {
     const { parentCategoryId } = createCategoryDto;
 
     if (parentCategoryId) {
       await this.findOne(parentCategoryId);
     }
 
-    const category = this.productCategoryRepository.create(createCategoryDto);
+    await this.productCategoryRepository.save(
+      this.productCategoryRepository.create(createCategoryDto),
+    );
 
-    return this.productCategoryRepository.save(category);
+    return this.getCategoryTree();
   }
 
   async getCategoryTree(): Promise<CategoryNode[]> {
@@ -64,7 +66,7 @@ export class CategoriesService {
   async update(
     id: string,
     updateCategoryDto: UpdateCategoryDto,
-  ): Promise<ProductCategory> {
+  ): Promise<CategoryNode[]> {
     const category = await this.findOne(id);
     const { parentCategoryId } = updateCategoryDto;
 
@@ -73,14 +75,17 @@ export class CategoriesService {
     }
 
     Object.assign(category, updateCategoryDto);
+    await this.productCategoryRepository.save(category);
 
-    return this.productCategoryRepository.save(category);
+    return this.getCategoryTree();
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string): Promise<CategoryNode[]> {
     const category = await this.findOne(id);
 
     await this.productCategoryRepository.remove(category);
+
+    return this.getCategoryTree();
   }
 
   private validateParent = async (
