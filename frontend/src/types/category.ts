@@ -3,3 +3,10 @@ export interface CategoryNode {
   name: string;
   children: CategoryNode[];
 }
+
+export interface CreateCategoryDTO {
+  categoryName: string;
+  parentCategoryId?: string | null;
+}
+
+export type UpdateCategoryDTO = Partial<CreateCategoryDTO>;
