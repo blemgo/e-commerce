@@ -5,6 +5,7 @@ import type { CategoryNode } from '@types';
 
 export interface UseGetCategoriesReturn {
   categories: CategoryNode[];
+  setCategories: React.Dispatch<React.SetStateAction<CategoryNode[]>>;
   loading: boolean;
 }
 
@@ -37,7 +38,7 @@ const useGetCategories = (): UseGetCategoriesReturn => {
     return () => controller.abort();
   }, []);
 
-  return { categories, loading };
+  return { categories, setCategories, loading };
 };
 
 export { useGetCategories };
