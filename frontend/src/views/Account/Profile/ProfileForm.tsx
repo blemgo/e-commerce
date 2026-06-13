@@ -6,16 +6,19 @@ import { StyledInput } from '@/components/StyledInput';
 import { StyledButton } from '@/components/StyledButton/StyledButton';
 import { useProfileForm } from './hooks/useProfileForm';
 import { PasswordDialog } from './Components/PasswordDialog';
-import type { UserProfile } from '@types';
+import { useUserContext } from '@contexts/user';
 import { profileFormStyles } from './ProfileForm.styles';
 
 interface ProfileFormProps {
-  profile: UserProfile;
+  canChangePassword: boolean;
 }
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ profile }: ProfileFormProps) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({
+  canChangePassword,
+}: ProfileFormProps) => {
   const { fullName, setFullName, isDirty, isValid, save, isSaving } =
-    useProfileForm(profile);
+    useProfileForm();
+  const { user } = useUserContext();
   const [passwordOpen, setPasswordOpen] = useState(false);
 
   return (
@@ -39,10 +42,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile }: ProfileFormProps) 
 
         <Box sx={profileFormStyles.field}>
           <Typography sx={profileFormStyles.label}>Email address</Typography>
-          <Typography sx={profileFormStyles.readonly}>{profile.email}</Typography>
+          <Typography sx={profileFormStyles.readonly}>{user?.email}</Typography>
         </Box>
 
-        {profile.canChangePassword && (
+        {canChangePassword && (
           <Box sx={profileFormStyles.field}>
             <Typography sx={profileFormStyles.label}>Password</Typography>
             <Button

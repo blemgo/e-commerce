@@ -9,7 +9,7 @@ const ProfilePage: React.FC = () => {
     return <LoadingScreen />;
   }
 
-  return <ProfileForm profile={profile} />;
+  return <ProfileForm canChangePassword={profile.canChangePassword} />;
 };
 
 export { ProfilePage };
