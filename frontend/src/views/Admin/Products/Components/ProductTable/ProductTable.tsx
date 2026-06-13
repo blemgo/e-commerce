@@ -36,7 +36,7 @@ const renderStock = (qty: number) => {
 
 const tableHeadCells = [ "Product", "Category", "Price", "Stock", "Status" ];
 
-const ProductTable = ({ products, onEdit, onDelete }: ProductTableProps) => {
+const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete }: ProductTableProps) => {
   return (
     <TableContainer sx={productTableStyles.container}>
       <Table>

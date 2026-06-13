@@ -16,7 +16,7 @@ interface CartDrawerProps {
   onCheckout: () => void;
 }
 
-const CartDrawer = ({ open, onClose, onCheckout }: CartDrawerProps) => {
+const CartDrawer: React.FC<CartDrawerProps> = ({ open, onClose, onCheckout }: CartDrawerProps) => {
   const { cart, setItemQuantity } = useCartContext();
   const { appendCartItem } = useAppendCartItem();
 

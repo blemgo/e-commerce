@@ -11,7 +11,7 @@ interface ProductCardProps {
   onProductAdd: (product: Product) => void;
 }
 
-const ProductCard = ({ product, onProductAdd }: ProductCardProps) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onProductAdd }: ProductCardProps) => {
   const navigate = useNavigate();
   const [added, setAdded] = useState(false);
   const [imgError, setImgError] = useState(false);

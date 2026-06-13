@@ -18,7 +18,7 @@ const TRACKING_STEPS = [
   { status: OrderStatus.DELIVERED, label: 'Delivered' },
 ];
 
-const OrderTrackingPage = () => {
+const OrderTrackingPage: React.FC = () => {
   const { orderId = '' } = useParams();
   const { order, loading } = useGetOrder(orderId);
 

@@ -12,7 +12,7 @@ interface PaginatedViewProps {
   children: React.ReactNode;
 }
 
-const PaginatedView = ({
+const PaginatedView: React.FC<PaginatedViewProps> = ({
   loading,
   isEmpty,
   emptyMessage,

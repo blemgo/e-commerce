@@ -21,7 +21,7 @@ const ADMIN_ITEMS: SidePanelItem[] = [
   },
 ];
 
-const AdminLayout = () => {
+const AdminLayout: React.FC = () => {
   const footer = (
     <IconedRedirect
       icon={<PersonOutlineIcon />}

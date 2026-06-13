@@ -5,7 +5,7 @@ import { FilterBar } from '@components/FilterBar';
 import { AllFiltersModal } from '@components/AllFiltersModal';
 import { catalogPageStyles } from './CatalogPage.styles';
 
-const CatalogPage = () => {
+const CatalogPage: React.FC = () => {
   const [allFiltersOpen, setAllFiltersOpen] = useState(false);
 
   return (

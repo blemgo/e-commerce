@@ -28,7 +28,7 @@ const flattenWithPath = (nodes: CategoryNode[], ancestors: string[] = []): Categ
 const formatPath = (option: CategoryOption): string =>
   [...option.path, option.name].join(" › ");
 
-const CategorySelect : React.FC<CategorySelectProps> = ({ categories, selectedIds, onChange }) => {
+const CategorySelect: React.FC<CategorySelectProps> = ({ categories, selectedIds, onChange }) => {
   const options = useMemo(() => flattenWithPath(categories), [categories]);
 
   const value = useMemo(

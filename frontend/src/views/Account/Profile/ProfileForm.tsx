@@ -13,7 +13,7 @@ interface ProfileFormProps {
   profile: UserProfile;
 }
 
-const ProfileForm = ({ profile }: ProfileFormProps) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({ profile }: ProfileFormProps) => {
   const { fullName, setFullName, isDirty, isValid, save, isSaving } =
     useProfileForm(profile);
   const [passwordOpen, setPasswordOpen] = useState(false);

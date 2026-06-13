@@ -14,7 +14,7 @@ interface AddressCardProps {
   onRemove: () => void;
 }
 
-const AddressCard = ({ address, onEdit, onSetDefault, onRemove }: AddressCardProps) => {
+const AddressCard: React.FC<AddressCardProps> = ({ address, onEdit, onSetDefault, onRemove }: AddressCardProps) => {
   return (
     <Box sx={addressCardStyles.card}>
       <Box sx={addressCardStyles.header}>

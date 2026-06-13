@@ -16,7 +16,7 @@ interface PasswordDialogProps {
 
 const emptyForm = { current: '', next: '', confirm: '' };
 
-const PasswordDialog = ({ open, onClose }: PasswordDialogProps) => {
+const PasswordDialog: React.FC<PasswordDialogProps> = ({ open, onClose }: PasswordDialogProps) => {
   const { changePassword, isLoading } = useChangePassword();
   const [form, setForm] = useState(emptyForm);
 

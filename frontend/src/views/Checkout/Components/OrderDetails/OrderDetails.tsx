@@ -32,7 +32,7 @@ interface OrderDetailsProps {
 
 const emptyCard = { number: '', name: '', expiry: '', cvc: '' };
 
-const OrderDetails = ({
+const OrderDetails: React.FC<OrderDetailsProps> = ({
   addresses,
   loading,
   selectedAddressId,

@@ -8,7 +8,7 @@ interface AdminHeaderProps {
   actions?: ReactNode;
 }
 
-const AdminHeader = ({ title, actions }: AdminHeaderProps) => {
+const AdminHeader: React.FC<AdminHeaderProps> = ({ title, actions }: AdminHeaderProps) => {
   return (
     <Box sx={adminHeaderStyles.container}>
       <Typography variant="h4" sx={adminHeaderStyles.title}>

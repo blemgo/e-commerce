@@ -16,7 +16,7 @@ interface ProductFormProps {
   isSaving: boolean;
 }
 
-const ProductForm = ({ product, categories, onSubmit, onCancel, isSaving }: ProductFormProps) => {
+const ProductForm: React.FC<ProductFormProps> = ({ product, categories, onSubmit, onCancel, isSaving }: ProductFormProps) => {
   const [name, setName] = useState(product?.name ?? "");
   const [description, setDescription] = useState(product?.description ?? "");
   const [price, setPrice] = useState(product ? String(product.price) : "");

@@ -11,7 +11,7 @@ interface OrderStatusSelectProps {
   disabled?: boolean;
 }
 
-const OrderStatusSelect = ({ status, onChange, disabled = false }: OrderStatusSelectProps) => {
+const OrderStatusSelect: React.FC<OrderStatusSelectProps> = ({ status, onChange, disabled = false }: OrderStatusSelectProps) => {
   return (
     <Select
       value={status}

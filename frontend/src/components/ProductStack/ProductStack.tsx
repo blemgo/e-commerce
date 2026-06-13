@@ -6,7 +6,7 @@ import { PaginatedView } from '@components/PaginatedView';
 import type { Product } from '@types';
 import { useAppendCartItem } from '@contexts/cart/hooks/useAppendCartItem';
 
-const ProductStack = () => {
+const ProductStack: React.FC = () => {
   const [filters, setFilters] = useProductFilters();
   const { paginatedProducts, loading } = useGetProducts(filters);
   const { appendCartItem } = useAppendCartItem();

@@ -10,7 +10,7 @@ interface OrderItemProps {
   price: number;
 }
 
-const OrderItem = ({ image, name, quantity, price }: OrderItemProps) => {
+const OrderItem: React.FC<OrderItemProps> = ({ image, name, quantity, price }: OrderItemProps) => {
   return (
     <Box sx={orderItemStyles.row}>
       <Badge badgeContent={quantity} sx={orderItemStyles.qtyBadge}>

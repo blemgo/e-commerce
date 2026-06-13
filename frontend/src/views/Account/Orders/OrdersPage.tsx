@@ -16,7 +16,7 @@ import { ordersPageStyles } from './OrdersPage.styles';
 const itemCount = (order: Order): number =>
   order.items.reduce((sum, item) => sum + item.quantity, 0);
 
-const OrdersPage = () => {
+const OrdersPage: React.FC = () => {
   const { orders, loading } = useGetOrders();
   const navigate = useNavigate();
 

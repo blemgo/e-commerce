@@ -14,7 +14,7 @@ interface CartItemProps {
   onDelete: () => void;
 }
 
-const CartItem = ({ item, onAdd, onRemove, onDelete }: CartItemProps) => {
+const CartItem: React.FC<CartItemProps> = ({ item, onAdd, onRemove, onDelete }: CartItemProps) => {
   const { product, quantity } = item;
   const total = (product.price * quantity).toFixed(2);
 

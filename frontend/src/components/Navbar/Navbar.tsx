@@ -11,7 +11,7 @@ interface NavbarProps {
   right?: ReactNode;
 }
 
-const Navbar = ({ left, right }: NavbarProps) => {
+const Navbar: React.FC<NavbarProps> = ({ left, right }: NavbarProps) => {
   return (
     <AppBar position="sticky" color="transparent" sx={navbarStyles.appBar}>
       <Toolbar sx={navbarStyles.toolbar}>

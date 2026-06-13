@@ -45,7 +45,7 @@ const getSortValue = (filters: ProductFilters): string => {
   return match?.label ?? 'Newest';
 };
 
-const FilterBar = ({ onOpenAllFilters }: FilterBarProps) => {
+const FilterBar: React.FC<FilterBarProps> = ({ onOpenAllFilters }: FilterBarProps) => {
   const [filters, setFilters] = useProductFilters();
 
   const toggleQuickFilter = (qf: QuickFilter) => {

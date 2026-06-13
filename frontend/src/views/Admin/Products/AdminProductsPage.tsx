@@ -25,7 +25,7 @@ import { adminProductsPageStyles } from "./AdminProductsPage.styles";
 
 const ADMIN_PARAMS = { includeInactive: true };
 
-const AdminProductsPage = () => {
+const AdminProductsPage: React.FC = () => {
   const [filters, setFilters] = useProductFilters();
   const { paginatedProducts, setPaginatedProducts, loading } = useGetProducts(filters, ADMIN_PARAMS);
   const { categories } = useGetCategories();

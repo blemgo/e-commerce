@@ -15,7 +15,7 @@ type AuthView = 'signIn' | 'signUp';
 
 const LOGIN_UNAUTHORIZED_MESSAGE = 'Incorrect email or password.';
 
-const LoginPage = () => {
+const LoginPage: React.FC = () => {
   const [authView, setAuthView] = useState<AuthView>('signIn');
   const [loginError, setLoginError] = useState<string | null>(null);
   const { setUser } = useUserContext();

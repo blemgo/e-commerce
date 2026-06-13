@@ -11,7 +11,7 @@ interface IconedRedirectProps {
   to: string;
 }
 
-const IconedRedirect = ({ icon, title, to }: IconedRedirectProps) => {
+const IconedRedirect: React.FC<IconedRedirectProps> = ({ icon, title, to }: IconedRedirectProps) => {
   const navigate = useNavigate();
 
   return (

@@ -27,7 +27,7 @@ const ACCOUNT_ITEMS: SidePanelItem[] = [
   { label: "Profile", icon: <PersonOutlineIcon />, path: "/account/profile" },
 ];
 
-const AccountLayout = () => {
+const AccountLayout: React.FC = () => {
   const { user, logout } = useUserContext();
   const navigate = useNavigate();
 

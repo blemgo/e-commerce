@@ -11,7 +11,7 @@ import { useAppendCartItem } from '@contexts/cart/hooks/useAppendCartItem';
 import { LoadingScreen } from '@components/LoadingScreen';
 import { productPageStyles } from './ProductPage.styles';
 
-const ProductPage = () => {
+const ProductPage: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
   const { product, loading } = useGetProduct(productId!);

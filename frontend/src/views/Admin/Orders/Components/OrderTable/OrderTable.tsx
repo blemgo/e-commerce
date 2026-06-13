@@ -20,7 +20,7 @@ const formatDate = (iso: string): string =>
 const countItems = (order: Order): number =>
   order.items.reduce((total, item) => total + item.quantity, 0);
 
-const OrderTable = ({ orders, onStatusChange }: OrderTableProps) => {
+const OrderTable: React.FC<OrderTableProps> = ({ orders, onStatusChange }: OrderTableProps) => {
   return (
     <TableContainer sx={orderTableStyles.container}>
       <Table>

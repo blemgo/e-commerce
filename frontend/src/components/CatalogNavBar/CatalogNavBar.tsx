@@ -18,7 +18,7 @@ import { catalogNavBarStyles } from './CatalogNavBar.styles';
 
 const CLOSE_DELAY_MS = 150;
 
-const CatalogNavBar = () => {
+const CatalogNavBar: React.FC = () => {
   const { categories } = useGetCategories();
   const { cart } = useCartContext();
   const cartItemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;

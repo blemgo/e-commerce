@@ -7,7 +7,7 @@ import { useUpdateOrderStatus } from "@api/hooks/orders/useUpdateOrderStatus";
 import type { OrderStatus } from "@types";
 import { OrderTable } from "./Components/OrderTable";
 
-const AdminOrdersPage = () => {
+const AdminOrdersPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const { paginatedOrders, setPaginatedOrders, loading } = useGetAllOrders({ page });
   const { updateOrderStatus } = useUpdateOrderStatus();

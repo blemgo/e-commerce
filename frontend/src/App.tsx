@@ -6,7 +6,7 @@ import theme from './theme/theme';
 import { CartProvider } from '@contexts/cart';
 import { UserProvider } from '@contexts/user';
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

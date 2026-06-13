@@ -8,7 +8,7 @@ interface CategoryBarProps {
   onChange: (id: string | undefined) => void;
 }
 
-const CategoryBar = ({ categories, activeId, onChange }: CategoryBarProps) => {
+const CategoryBar: React.FC<CategoryBarProps> = ({ categories, activeId, onChange }: CategoryBarProps) => {
   const value = activeId ?? 'all';
 
   const handleChange = (_: React.SyntheticEvent, newValue: string) => {

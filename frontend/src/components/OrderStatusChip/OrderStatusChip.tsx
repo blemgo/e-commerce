@@ -7,7 +7,7 @@ interface OrderStatusChipProps {
   status: OrderStatus;
 }
 
-const OrderStatusChip = ({ status }: OrderStatusChipProps) => {
+const OrderStatusChip: React.FC<OrderStatusChipProps> = ({ status }: OrderStatusChipProps) => {
   const { label, color } = ORDER_STATUS_CONFIG[status];
 
   return (

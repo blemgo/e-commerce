@@ -8,7 +8,7 @@ interface OrderSummaryProps {
   items: CartItem[];
 }
 
-const OrderSummary = ({ items }: OrderSummaryProps) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ items }: OrderSummaryProps) => {
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
   const total = items
     .reduce((sum, item) => sum + item.product.price * item.quantity, 0)

@@ -15,7 +15,7 @@ interface ImageUploadProps {
   onFileSelected: (file: File) => void;
 }
 
-const ImageUpload = ({ imageUrl, onFileSelected }: ImageUploadProps) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ imageUrl, onFileSelected }: ImageUploadProps) => {
   const [preview, setPreview] = useState<string | undefined>(imageUrl);
   const inputRef = useRef<HTMLInputElement>(null);
   const objectUrlRef = useRef<string | undefined>(undefined);
