@@ -1,12 +1,10 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import ImageOutlinedIcon from "@mui/icons-material/ImageOutlined";
-import { useUploadProductImage } from "@api/hooks/cloudinary/useUploadProductImage";
 import { imageUploadStyles } from "./ImageUpload.styles";
 
 const ACCEPTED_TYPES = ["image/png", "image/jpeg"];
@@ -14,15 +12,24 @@ const MAX_BYTES = 8 * 1024 * 1024;
 
 interface ImageUploadProps {
   imageUrl?: string;
-  onUploaded: (url: string) => void;
+  onFileSelected: (file: File) => void;
 }
 
-const ImageUpload = ({ imageUrl, onUploaded }: ImageUploadProps) => {
-  const { uploadImage, isLoading } = useUploadProductImage();
+const ImageUpload = ({ imageUrl, onFileSelected }: ImageUploadProps) => {
   const [preview, setPreview] = useState<string | undefined>(imageUrl);
   const inputRef = useRef<HTMLInputElement>(null);
+  const objectUrlRef = useRef<string | undefined>(undefined);
 
-  const handleFile = async (file: File) => {
+  // Cleanup object url when unmount
+  useEffect(() => {
+    return () => {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
+    };
+  }, []);
+
+  const handleFile = (file: File) => {
     if (!ACCEPTED_TYPES.includes(file.type)) {
       toast.error("Only PNG or JPG images are allowed.");
 
@@ -35,10 +42,14 @@ const ImageUpload = ({ imageUrl, onUploaded }: ImageUploadProps) => {
       return;
     }
 
-    setPreview(URL.createObjectURL(file));
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+    }
 
-    const url = await uploadImage(file);
-    onUploaded(url);
+    const url = URL.createObjectURL(file);
+    objectUrlRef.current = url;
+    setPreview(url);
+    onFileSelected(file);
   };
 
   const handleDrop = (event: React.DragEvent) => {
@@ -65,9 +76,7 @@ const ImageUpload = ({ imageUrl, onUploaded }: ImageUploadProps) => {
       onDragOver={event => event.preventDefault()}
       onDrop={handleDrop}
     >
-      {isLoading ? (
-        <CircularProgress color="secondary" />
-      ) : preview ? (
+      {preview ? (
         <Box component="img" src={preview} alt="Product preview" sx={imageUploadStyles.preview} />
       ) : (
         <>

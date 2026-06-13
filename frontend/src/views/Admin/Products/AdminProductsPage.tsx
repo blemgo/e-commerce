@@ -19,7 +19,7 @@ import { useGetCategories } from "@api/hooks/categories/useGetCategories";
 import type { CreateProductDTO, Product } from "@types";
 import { ProductTable } from "./Components/ProductTable";
 import { ProductForm } from "./Components/ProductForm";
-import { useSubmitProduct } from "./hooks/useSubmitProduct";
+import { useUploadProduct } from "./hooks/useUploadProduct";
 import { useRemoveProduct } from "./hooks/useRemoveProduct";
 import { adminProductsPageStyles } from "./AdminProductsPage.styles";
 
@@ -29,7 +29,7 @@ const AdminProductsPage = () => {
   const [filters, setFilters] = useProductFilters();
   const { paginatedProducts, setPaginatedProducts, loading } = useGetProducts(filters, ADMIN_PARAMS);
   const { categories } = useGetCategories();
-  const { submitProduct, isSaving } = useSubmitProduct(setPaginatedProducts);
+  const { uploadProduct, isSaving } = useUploadProduct(setPaginatedProducts);
   const { removeProduct, isRemoving } = useRemoveProduct(setPaginatedProducts);
 
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -47,16 +47,28 @@ const AdminProductsPage = () => {
     setIsFormOpen(true);
   };
 
-  const handleSubmit = async (dto: CreateProductDTO) => {
-    if (await submitProduct(editing, dto)) {
-      setIsFormOpen(false);
+  const handleSubmit = async (dto: CreateProductDTO, imageFile: File | null) => {
+    try {
+      await uploadProduct(editing, dto, imageFile);
+    } catch {
+      return;
     }
+
+    setIsFormOpen(false);
   };
 
   const handleConfirmDelete = async () => {
-    if (pendingDelete && (await removeProduct(pendingDelete))) {
-      setPendingDelete(undefined);
+    if (!pendingDelete) {
+      return;
     }
+
+    try {
+      await removeProduct(pendingDelete);
+    } catch {
+      return;
+    }
+
+    setPendingDelete(undefined);
   };
 
   if (isFormOpen) {

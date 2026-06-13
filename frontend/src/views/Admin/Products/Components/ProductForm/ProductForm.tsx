@@ -10,7 +10,7 @@ import { productFormStyles } from "./ProductForm.styles";
 interface ProductFormProps {
   product?: Product;
   categories: CategoryNode[];
-  onSubmit: (dto: CreateProductDTO) => void;
+  onSubmit: (dto: CreateProductDTO, imageFile: File | null) => void;
   onCancel: () => void;
   isSaving: boolean;
 }
@@ -27,32 +27,48 @@ const ProductForm = ({ product, categories, onSubmit, onCancel, isSaving }: Prod
   const [price, setPrice] = useState(product ? String(product.price) : "");
   const [qtyInStock, setQtyInStock] = useState(product ? String(product.qtyInStock) : "");
   const [isActive, setIsActive] = useState(product?.isActive ?? true);
-  const [productImage, setProductImage] = useState(product?.productImage ?? "");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [categoryId, setCategoryId] = useState(product?.categories[0]?.id ?? "");
 
   const categoryOptions = flattenCategories(categories);
 
   const priceValue = Number(price);
-  const canSave = name.trim().length > 0 && price !== "" && !isNaN(priceValue) && priceValue >= 0;
+  const hasImage = imageFile !== null || Boolean(product?.productImage);
+  const canSave =
+    name.trim().length > 0 && price !== "" && !isNaN(priceValue) && priceValue >= 0 && hasImage;
 
-  const handleSave = () => {
-    onSubmit({
-      name: name.trim(),
-      description: description.trim() || undefined,
-      productImage: productImage || undefined,
-      price: priceValue,
-      qtyInStock: qtyInStock === "" ? undefined : Number(qtyInStock),
-      isActive,
-      categoryIds: categoryId ? [categoryId] : undefined,
-    });
+  const handleSubmit = () => {
+    onSubmit(
+      {
+        name: name.trim(),
+        description: description.trim() || undefined,
+        price: priceValue,
+        qtyInStock: qtyInStock === "" ? undefined : Number(qtyInStock),
+        isActive,
+        categoryIds: categoryId ? [categoryId] : undefined,
+      },
+      imageFile,
+    );
   };
 
   const actions = (
     <>
-      <StyledButton variant="outlined" color="secondary" disabled={isSaving} loading={false} onClick={onCancel}>
+      <StyledButton
+        variant="outlined"
+        color="secondary"
+        disabled={isSaving}
+        loading={false}
+        onClick={onCancel}
+      >
         Cancel
       </StyledButton>
-      <StyledButton variant="contained" color="secondary" disabled={!canSave} loading={isSaving} onClick={handleSave}>
+      <StyledButton
+        variant="contained"
+        color="secondary"
+        disabled={!canSave || isSaving}
+        loading={isSaving}
+        onClick={handleSubmit}
+      >
         Submit
       </StyledButton>
     </>
@@ -66,7 +82,7 @@ const ProductForm = ({ product, categories, onSubmit, onCancel, isSaving }: Prod
         <Box sx={productFormStyles.leftColumn}>
           <Box sx={productFormStyles.card}>
             <Typography sx={productFormStyles.cardTitle}>Product image</Typography>
-            <ImageUpload imageUrl={productImage} onUploaded={setProductImage} />
+            <ImageUpload imageUrl={product?.productImage} onFileSelected={setImageFile} />
 
             <Box sx={productFormStyles.visibilitySection}>
               <Typography sx={productFormStyles.sectionLabel}>Visibility</Typography>
