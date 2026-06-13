@@ -12,6 +12,7 @@ import { OrderItem } from './entities/order-item.entity';
 import { OrderStatus } from './entities/order-status.enum';
 import { GetAllOrdersQueryDto } from './dto/get-all-orders-query.dto';
 import { AdminOrder } from './dto/admin-order.dto';
+import { applyQuery } from './utils/orderQueryHelpers';
 
 @Injectable()
 export class OrdersService {
@@ -42,17 +43,17 @@ export class OrdersService {
     const page = query.page ?? 1;
     const limit = query.limit ?? 20;
 
-    const [orders, totalCount] = await this.ordersRepository.findAndCount({
-      where: query.status ? { status: query.status } : {},
-      relations: {
-        user: true,
-        items: { product: true },
-        address: { country: true },
-      },
-      order: { createdAt: 'DESC' },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+    const qb = this.ordersRepository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.user', 'user')
+      .leftJoinAndSelect('order.items', 'item')
+      .orderBy('order.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    applyQuery(qb, query);
+
+    const [orders, totalCount] = await qb.getManyAndCount();
 
     const data: AdminOrder[] = orders.map((order) => ({
       ...order,
