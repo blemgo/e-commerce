@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
 import { stripNulls } from '@/utils/stripNulls';
-import type { GetAllOrdersParams, Order, Paginated } from '@types';
+import type { Order, Paginated } from '@types';
+import type { OrderFilters } from './useOrderFilters';
 
 export interface UseGetAllOrdersReturn {
   paginatedOrders: Paginated<Order> | null;
@@ -10,7 +11,7 @@ export interface UseGetAllOrdersReturn {
   loading: boolean;
 }
 
-const useGetAllOrders = (params: GetAllOrdersParams): UseGetAllOrdersReturn => {
+const useGetAllOrders = (filters: OrderFilters): UseGetAllOrdersReturn => {
   const [paginatedOrders, setPaginatedOrders] = useState<Paginated<Order> | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -21,7 +22,7 @@ const useGetAllOrders = (params: GetAllOrdersParams): UseGetAllOrdersReturn => {
       setLoading(true);
 
       try {
-        const data = await api.orders().getAllOrders(stripNulls(params), controller.signal);
+        const data = await api.orders().getAllOrders(stripNulls(filters), controller.signal);
         setPaginatedOrders(data);
       } catch (err) {
         if (!controller.signal.aborted) {
@@ -38,7 +39,7 @@ const useGetAllOrders = (params: GetAllOrdersParams): UseGetAllOrdersReturn => {
 
     return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(params)]);
+  }, [JSON.stringify(filters)]);
 
   return { paginatedOrders, setPaginatedOrders, loading };
 };

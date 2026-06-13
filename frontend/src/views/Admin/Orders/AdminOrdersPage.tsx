@@ -1,15 +1,16 @@
-import { useState } from "react";
 import Box from "@mui/material/Box";
 import { AdminHeader } from "@components/AdminHeader";
 import { PaginatedView } from "@components/PaginatedView";
 import { useGetAllOrders } from "@api/hooks/orders/useGetAllOrders";
 import { useUpdateOrderStatus } from "@api/hooks/orders/useUpdateOrderStatus";
+import { useOrderFilters } from "@api/hooks/orders/useOrderFilters";
 import type { OrderStatus } from "@types";
 import { OrderTable } from "./Components/OrderTable";
+import { OrderFilters } from "./Components/OrderFilters";
 
 const AdminOrdersPage: React.FC = () => {
-  const [page, setPage] = useState(1);
-  const { paginatedOrders, setPaginatedOrders, loading } = useGetAllOrders({ page });
+  const [filters, setFilters] = useOrderFilters();
+  const { paginatedOrders, setPaginatedOrders, loading } = useGetAllOrders(filters);
   const { updateOrderStatus } = useUpdateOrderStatus();
 
   const handleStatusChange = async (orderId: string, status: OrderStatus) => {
@@ -29,13 +30,20 @@ const AdminOrdersPage: React.FC = () => {
     <Box>
       <AdminHeader title="Orders" />
 
+      <OrderFilters
+        status={filters.status}
+        search={filters.search ?? ""}
+        onStatusChange={status => setFilters({ status, page: 1 })}
+        onSearchChange={search => setFilters({ search: search || null, page: 1 })}
+      />
+
       <PaginatedView
         loading={loading}
         isEmpty={!paginatedOrders?.data.length}
         emptyMessage="No orders found."
         page={paginatedOrders?.page ?? 1}
         totalPages={paginatedOrders?.totalPages ?? 1}
-        onPageChange={setPage}
+        onPageChange={page => setFilters({ page })}
       >
         <OrderTable orders={paginatedOrders?.data ?? []} onStatusChange={handleStatusChange} />
       </PaginatedView>
