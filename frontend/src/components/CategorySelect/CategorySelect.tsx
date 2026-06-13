@@ -6,27 +6,13 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import type { CategoryNode } from "@types";
 import { categorySelectStyles } from "./CategorySelect.styles";
+import { flattenWithPath, formatPath } from "./categoryOptions";
 
 interface CategorySelectProps {
   categories: CategoryNode[];
   selectedIds: string[];
   onChange: (ids: string[]) => void;
 }
-
-interface CategoryOption {
-  id: string;
-  name: string;
-  path: string[];
-}
-
-const flattenWithPath = (nodes: CategoryNode[], ancestors: string[] = []): CategoryOption[] =>
-  nodes.flatMap(node => [
-    { id: node.id, name: node.name, path: ancestors },
-    ...flattenWithPath(node.children, [...ancestors, node.name]),
-  ]);
-
-const formatPath = (option: CategoryOption): string =>
-  [...option.path, option.name].join(" › ");
 
 const CategorySelect: React.FC<CategorySelectProps> = ({ categories, selectedIds, onChange }) => {
   const options = useMemo(() => flattenWithPath(categories), [categories]);
