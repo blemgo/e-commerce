@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { Cart } from '@types';
 
 export interface UseSetCartItemQuantityReturn {
@@ -17,7 +18,7 @@ const useSetCartItemQuantity = (): UseSetCartItemQuantityReturn => {
     try {
       return await api.cart().setItemQuantity(productId, quantity);
     } catch (error) {
-      toast.error('Failed to update cart.');
+      toast.error(getApiErrorMessage(error, 'Failed to update cart.'));
       throw error;
     } finally {
       setIsLoading(false);

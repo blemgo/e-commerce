@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { LocalRegisterDTO, AuthUser } from '@types';
 
 export interface UseLocalRegisterReturn {
@@ -18,8 +19,8 @@ const useLocalRegister = (): UseLocalRegisterReturn => {
       const response = await api.auth().localRegister(dto);
 
       return response;
-    } catch {
-      toast.error('Registration failed. Please try again.');
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, 'Registration failed. Please try again.'));
 
       throw new Error('Registration failed');
     } finally {

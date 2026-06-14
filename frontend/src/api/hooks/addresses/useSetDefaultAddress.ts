@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { UserAddress } from '@types';
 
 export interface UseSetDefaultAddressReturn {
@@ -17,7 +18,7 @@ const useSetDefaultAddress = (): UseSetDefaultAddressReturn => {
     try {
       return await api.addresses().setDefaultAddress(addressId);
     } catch (error) {
-      toast.error('Failed to update default address.');
+      toast.error(getApiErrorMessage(error, 'Failed to update default address.'));
       throw error;
     } finally {
       setIsLoading(false);

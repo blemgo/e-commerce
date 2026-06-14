@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 
 export interface UseDeleteProductReturn {
   deleteProduct: (id: string) => Promise<void>;
@@ -16,7 +17,7 @@ const useDeleteProduct = (): UseDeleteProductReturn => {
     try {
       await api.products().deleteProduct(id);
     } catch (error) {
-      toast.error('Failed to delete product.');
+      toast.error(getApiErrorMessage(error, 'Failed to delete product.'));
       throw error;
     } finally {
       setIsLoading(false);

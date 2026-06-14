@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { UpdateAddressDTO, UserAddress } from '@types';
 
 export interface UseUpdateAddressReturn {
@@ -23,7 +24,7 @@ const useUpdateAddress = (): UseUpdateAddressReturn => {
     try {
       return await api.addresses().updateAddress(addressId, updateAddressDTO);
     } catch (error) {
-      toast.error('Failed to update address.');
+      toast.error(getApiErrorMessage(error, 'Failed to update address.'));
       throw error;
     } finally {
       setIsLoading(false);

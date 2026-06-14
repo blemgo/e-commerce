@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { Order, OrderStatus } from '@types';
 
 export interface UseUpdateOrderStatusReturn {
@@ -17,7 +18,7 @@ const useUpdateOrderStatus = (): UseUpdateOrderStatusReturn => {
     try {
       return await api.orders().updateOrderStatus(id, status);
     } catch (error) {
-      toast.error('Failed to update order status.');
+      toast.error(getApiErrorMessage(error, 'Failed to update order status.'));
       throw error;
     } finally {
       setIsLoading(false);

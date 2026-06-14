@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { CloudinaryUploadSignature } from '@types';
 
 export interface UseGetUploadSignatureReturn {
@@ -17,7 +18,7 @@ const useGetUploadSignature = (): UseGetUploadSignatureReturn => {
     try {
       return await api.cloudinary().getUploadSignature();
     } catch (error) {
-      toast.error('Failed to prepare image upload.');
+      toast.error(getApiErrorMessage(error, 'Failed to prepare image upload.'));
       throw error;
     } finally {
       setIsLoading(false);

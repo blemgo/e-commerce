@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { Order } from '@types';
 
 export interface UseCheckoutReturn {
@@ -17,7 +18,7 @@ const useCheckout = (): UseCheckoutReturn => {
     try {
       return await api.orders().checkout({ addressId });
     } catch (error) {
-      toast.error('Checkout failed.');
+      toast.error(getApiErrorMessage(error, 'Checkout failed.'));
       throw error;
     } finally {
       setIsLoading(false);

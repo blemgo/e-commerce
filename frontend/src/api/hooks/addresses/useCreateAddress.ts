@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { CreateAddressDTO, UserAddress } from '@types';
 
 export interface UseCreateAddressReturn {
@@ -19,7 +20,7 @@ const useCreateAddress = (): UseCreateAddressReturn => {
     try {
       return await api.addresses().createAddress(createAddressDTO);
     } catch (error) {
-      toast.error('Failed to create address.');
+      toast.error(getApiErrorMessage(error, 'Failed to create address.'));
       throw error;
     } finally {
       setIsLoading(false);

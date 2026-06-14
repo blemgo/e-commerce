@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { Product, UpdateProductDTO } from '@types';
 
 export interface UseUpdateProductReturn {
@@ -20,7 +21,7 @@ const useUpdateProduct = (): UseUpdateProductReturn => {
     try {
       return await api.products().updateProduct(id, updateProductDTO);
     } catch (error) {
-      toast.error('Failed to update product.');
+      toast.error(getApiErrorMessage(error, 'Failed to update product.'));
       throw error;
     } finally {
       setIsLoading(false);

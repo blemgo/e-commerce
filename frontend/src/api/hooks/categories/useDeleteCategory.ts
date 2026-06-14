@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { CategoryNode } from '@types';
 
 export interface UseDeleteCategoryReturn {
@@ -17,7 +18,7 @@ const useDeleteCategory = (): UseDeleteCategoryReturn => {
     try {
       return await api.categories().deleteCategory(id);
     } catch (error) {
-      toast.error('Failed to delete category.');
+      toast.error(getApiErrorMessage(error, 'Failed to delete category.'));
       throw error;
     } finally {
       setIsLoading(false);

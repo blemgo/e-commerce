@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { CategoryNode, UpdateCategoryDTO } from '@types';
 
 export interface UseUpdateCategoryReturn {
@@ -20,7 +21,7 @@ const useUpdateCategory = (): UseUpdateCategoryReturn => {
     try {
       return await api.categories().updateCategory(id, updateCategoryDTO);
     } catch (error) {
-      toast.error('Failed to update category.');
+      toast.error(getApiErrorMessage(error, 'Failed to update category.'));
       throw error;
     } finally {
       setIsLoading(false);

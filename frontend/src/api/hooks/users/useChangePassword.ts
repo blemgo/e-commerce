@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { ChangePasswordDTO } from '@types';
 
 export interface UseChangePasswordReturn {
@@ -19,7 +20,7 @@ const useChangePassword = (): UseChangePasswordReturn => {
     try {
       await api.users().changePassword(changePasswordDTO);
     } catch (error) {
-      toast.error('Failed to change password.');
+      toast.error(getApiErrorMessage(error, 'Failed to change password.'));
       throw error;
     } finally {
       setIsLoading(false);

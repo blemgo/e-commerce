@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { UserAddress } from '@types';
 
 export interface UseDeleteAddressReturn {
@@ -17,7 +18,7 @@ const useDeleteAddress = (): UseDeleteAddressReturn => {
     try {
       return await api.addresses().deleteAddress(addressId);
     } catch (error) {
-      toast.error('Failed to remove address.');
+      toast.error(getApiErrorMessage(error, 'Failed to remove address.'));
       throw error;
     } finally {
       setIsLoading(false);

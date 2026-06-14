@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { UpdateProfileDTO, UserProfile } from '@types';
 
 export interface UseUpdateProfileReturn {
@@ -19,7 +20,7 @@ const useUpdateProfile = (): UseUpdateProfileReturn => {
     try {
       return await api.users().updateProfile(updateProfileDTO);
     } catch (error) {
-      toast.error('Failed to update profile.');
+      toast.error(getApiErrorMessage(error, 'Failed to update profile.'));
       throw error;
     } finally {
       setIsLoading(false);

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { CategoryNode, CreateCategoryDTO } from '@types';
 
 export interface UseCreateCategoryReturn {
@@ -19,7 +20,7 @@ const useCreateCategory = (): UseCreateCategoryReturn => {
     try {
       return await api.categories().createCategory(createCategoryDTO);
     } catch (error) {
-      toast.error('Failed to create category.');
+      toast.error(getApiErrorMessage(error, 'Failed to create category.'));
       throw error;
     } finally {
       setIsLoading(false);

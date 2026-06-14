@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '@api/api';
+import { getApiErrorMessage } from '@api/utils/getApiErrorMessage';
 import type { CreateProductDTO, Product } from '@types';
 
 export interface UseCreateProductReturn {
@@ -17,7 +18,7 @@ const useCreateProduct = (): UseCreateProductReturn => {
     try {
       return await api.products().createProduct(createProductDTO);
     } catch (error) {
-      toast.error('Failed to create product.');
+      toast.error(getApiErrorMessage(error, 'Failed to create product.'));
       throw error;
     } finally {
       setIsLoading(false);
