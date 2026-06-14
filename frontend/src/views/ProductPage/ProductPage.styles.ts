@@ -14,9 +14,9 @@ export const productPageStyles: Record<string, SxProps<Theme>> = {
     overflow: 'hidden',
   },
   image: {
-    width: '850px',
-    height: '850px',
-    objectFit: 'cover',
+    width: 'auto',
+    height: '100%',
+    objectFit: 'contain',
     display: 'block',
     flexShrink: 0,
   },
