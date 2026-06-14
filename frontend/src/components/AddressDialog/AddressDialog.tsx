@@ -1,17 +1,13 @@
 import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { useGetCountries } from '@api/hooks/countries/useGetCountries';
+import { Modal } from '@components/Modal';
 import { StyledInput } from '@/components/StyledInput';
 import type { CreateAddressDTO, UserAddress } from '@types';
 import { addressDialogStyles } from './AddressDialog.styles';
@@ -93,31 +89,40 @@ const AddressDialog: React.FC<AddressDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{isEdit ? 'Edit address' : 'Add a new address'}</DialogTitle>
-      <DialogContent sx={addressDialogStyles.content}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={isEdit ? 'Edit address' : 'Add a new address'}
+      onSubmit={handleSubmit}
+      submitLabel="Save"
+      submitDisabled={!isValid}
+      isLoading={isLoading}
+      fullWidth
+      maxWidth="sm"
+    >
+      <Box sx={addressDialogStyles.content}>
         <StyledInput
           type="text"
-          placeholder="Address line 1"
+          label="Address line 1"
           value={form.addressLine1}
           onChange={setField('addressLine1')}
         />
         <StyledInput
           type="text"
-          placeholder="Address line 2"
+          label="Address line 2"
           value={form.addressLine2}
           onChange={setField('addressLine2')}
         />
         <Box sx={addressDialogStyles.fieldRow}>
           <StyledInput
             type="text"
-            placeholder="Street number"
+            label="Street number"
             value={form.streetNumber}
             onChange={setField('streetNumber')}
           />
           <StyledInput
             type="text"
-            placeholder="Unit number"
+            label="Unit number"
             value={form.unitNumber}
             onChange={setField('unitNumber')}
           />
@@ -125,13 +130,13 @@ const AddressDialog: React.FC<AddressDialogProps> = ({
         <Box sx={addressDialogStyles.fieldRow}>
           <StyledInput
             type="text"
-            placeholder="City"
+            label="City"
             value={form.city}
             onChange={setField('city')}
           />
           <StyledInput
             type="text"
-            placeholder="Region"
+            label="Region"
             value={form.region}
             onChange={setField('region')}
           />
@@ -139,7 +144,7 @@ const AddressDialog: React.FC<AddressDialogProps> = ({
         <Box sx={addressDialogStyles.fieldRow}>
           <StyledInput
             type="text"
-            placeholder="Postal code"
+            label="Postal code"
             value={form.postalCode}
             onChange={setField('postalCode')}
           />
@@ -171,21 +176,8 @@ const AddressDialog: React.FC<AddressDialogProps> = ({
             label="Set as default"
           />
         )}
-      </DialogContent>
-      <DialogActions sx={addressDialogStyles.actions}>
-        <Button onClick={onClose} disableRipple>
-          Cancel
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={!isValid || isLoading}
-          disableElevation
-        >
-          Save
-        </Button>
-      </DialogActions>
-    </Dialog>
+      </Box>
+    </Modal>
   );
 };
 

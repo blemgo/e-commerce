@@ -4,7 +4,8 @@ import { inputStyles } from '@/components/StyledInput/Input.styles';
 
 interface StyledInputProps {
   type: string;
-  placeholder: string;
+  placeholder?: string;
+  label?: string;
   value: string;
   onChange: (value: string) => void;
   error?: boolean;
@@ -15,6 +16,7 @@ interface StyledInputProps {
 const StyledInput: React.FC<StyledInputProps> = ({
   type,
   placeholder,
+  label,
   value,
   onChange,
   error = false,
@@ -27,6 +29,7 @@ const StyledInput: React.FC<StyledInputProps> = ({
       size="small"
       type={type}
       placeholder={placeholder}
+      label={label}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       error={error}

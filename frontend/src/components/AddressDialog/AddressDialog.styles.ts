@@ -11,8 +11,4 @@ export const addressDialogStyles: Record<string, SxProps<Theme>> = {
     display: 'flex',
     gap: 1.5,
   },
-  actions: {
-    px: 3,
-    pb: 2.5,
-  },
 };

@@ -1,16 +1,8 @@
-import {
-  Dialog,
-  DialogContent,
-  Typography,
-  TextField,
-  MenuItem,
-  Button,
-  Box,
-  Slider,
-} from '@mui/material';
+import { Typography, TextField, MenuItem, Box, Slider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useProductFilters } from '@api/hooks/products/useProductFilters';
 import type { ProductFilters } from '@api/hooks/products/useProductFilters';
+import { Modal } from '@components/Modal';
 import { StyledInput } from '@components/StyledInput';
 import { allFiltersModalStyles } from './AllFiltersModal.styles';
 
@@ -62,16 +54,17 @@ const AllFiltersModal: React.FC<AllFiltersModalProps> = ({ open, onClose }: AllF
   };
 
   return (
-    <Dialog
+    <Modal
       open={open}
       onClose={onClose}
-      slotProps={{ paper: { sx: allFiltersModalStyles.paper } }}
+      title="All Filters"
+      onSubmit={handleApply}
+      submitLabel="Apply"
+      onCancel={handleClear}
+      cancelLabel="Clear all"
+      fullWidth
     >
-      <DialogContent sx={allFiltersModalStyles.dialogContent}>
-        <Typography variant="h6" sx={allFiltersModalStyles.title}>
-          All Filters
-        </Typography>
-
+      <Box>
         <Box sx={allFiltersModalStyles.section}>
           <Typography variant="body2" sx={allFiltersModalStyles.label}>
             Price range
@@ -147,17 +140,8 @@ const AllFiltersModal: React.FC<AllFiltersModalProps> = ({ open, onClose }: AllF
             </TextField>
           </Box>
         </Box>
-
-        <Box sx={allFiltersModalStyles.actions}>
-          <Button variant="text" color="inherit" onClick={handleClear}>
-            Clear all
-          </Button>
-          <Button variant="contained" color="secondary" onClick={handleApply}>
-            Apply
-          </Button>
-        </Box>
-      </DialogContent>
-    </Dialog>
+      </Box>
+    </Modal>
   );
 };
 

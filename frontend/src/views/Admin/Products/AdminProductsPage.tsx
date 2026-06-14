@@ -1,16 +1,12 @@
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogActions from "@mui/material/DialogActions";
+import Typography from "@mui/material/Typography";
 import AddIcon from "@mui/icons-material/Add";
 import { AdminHeader } from "@components/AdminHeader";
 import { AdminFilterBar } from "@components/AdminFilterBar";
 import { PaginatedView } from "@components/PaginatedView";
-import { StyledButton } from "@components/StyledButton";
+import { Modal } from "@components/Modal";
 import { useProductFilters } from "@api/hooks/products/useProductFilters";
 import { useGetProducts } from "@api/hooks/products/useGetProducts";
 import { useGetCategories } from "@api/hooks/categories/useGetCategories";
@@ -119,34 +115,19 @@ const AdminProductsPage: React.FC = () => {
         />
       </PaginatedView>
 
-      <Dialog open={Boolean(pendingDelete)} onClose={() => setPendingDelete(undefined)}>
-        <DialogTitle>Delete product</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {`"${pendingDelete?.name}" will be permanently deleted. This cannot be undone.`}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <StyledButton
-            variant="text"
-            color="secondary"
-            disabled={isRemoving}
-            loading={false}
-            onClick={() => setPendingDelete(undefined)}
-          >
-            Cancel
-          </StyledButton>
-          <StyledButton
-            variant="contained"
-            color="error"
-            disabled={false}
-            loading={isRemoving}
-            onClick={handleConfirmDelete}
-          >
-            Delete
-          </StyledButton>
-        </DialogActions>
-      </Dialog>
+      <Modal
+        open={Boolean(pendingDelete)}
+        onClose={() => setPendingDelete(undefined)}
+        title="Delete product"
+        onSubmit={handleConfirmDelete}
+        submitLabel="Delete"
+        submitColor="error"
+        isLoading={isRemoving}
+      >
+        <Typography>
+          {`"${pendingDelete?.name}" will be permanently deleted. This cannot be undone.`}
+        </Typography>
+      </Modal>
     </Box>
   );
 };

@@ -1,11 +1,8 @@
 import { useState } from "react";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
+import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
-import { StyledButton } from "@components/StyledButton";
+import { Modal } from "@components/Modal";
 import { StyledInput } from "@components/StyledInput";
 import { flattenWithPath, formatPath } from "@components/CategorySelect/categoryOptions";
 import type { CategoryNode, CreateCategoryDTO } from "@types";
@@ -43,13 +40,21 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   };
 
   return (
-    <Dialog open onClose={onCancel} fullWidth maxWidth="xs">
-      <DialogTitle>{editing ? "Edit category" : "New category"}</DialogTitle>
-
-      <DialogContent sx={categoryFormStyles.content}>
+    <Modal
+      open
+      onClose={onCancel}
+      title={editing ? "Edit category" : "New category"}
+      onSubmit={handleSubmit}
+      submitLabel="Save"
+      submitDisabled={!canSave}
+      isLoading={isSaving}
+      fullWidth
+      maxWidth="xs"
+    >
+      <Box sx={categoryFormStyles.content}>
         <StyledInput
           type="text"
-          placeholder="Category name"
+          label="Category name"
           value={name}
           onChange={setName}
         />
@@ -69,29 +74,8 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             </MenuItem>
           ))}
         </TextField>
-      </DialogContent>
-
-      <DialogActions>
-        <StyledButton
-          variant="text"
-          color="secondary"
-          disabled={isSaving}
-          loading={false}
-          onClick={onCancel}
-        >
-          Cancel
-        </StyledButton>
-        <StyledButton
-          variant="contained"
-          color="secondary"
-          disabled={!canSave || isSaving}
-          loading={isSaving}
-          onClick={handleSubmit}
-        >
-          Save
-        </StyledButton>
-      </DialogActions>
-    </Dialog>
+      </Box>
+    </Modal>
   );
 };
 

@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 import { toast } from 'react-toastify';
+import { Modal } from '@components/Modal';
 import { StyledInput } from '@/components/StyledInput';
 import { useChangePassword } from '@api/hooks/users/useChangePassword';
 import { passwordDialogStyles } from './PasswordDialog.styles';
@@ -48,44 +45,40 @@ const PasswordDialog: React.FC<PasswordDialogProps> = ({ open, onClose }: Passwo
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
-      <DialogTitle>Update password</DialogTitle>
-      <DialogContent sx={passwordDialogStyles.content}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Update password"
+      onSubmit={handleSubmit}
+      submitLabel="Update"
+      submitDisabled={!isValid}
+      isLoading={isLoading}
+      fullWidth
+      maxWidth="xs"
+    >
+      <Box sx={passwordDialogStyles.content}>
         <StyledInput
           type="password"
-          placeholder="Current password"
+          label="Current password"
           value={form.current}
           onChange={setField('current')}
         />
         <StyledInput
           type="password"
-          placeholder="New password"
+          label="New password"
           value={form.next}
           onChange={setField('next')}
         />
         <StyledInput
           type="password"
-          placeholder="Confirm new password"
+          label="Confirm new password"
           value={form.confirm}
           onChange={setField('confirm')}
           error={mismatch}
           helperText={mismatch ? 'Passwords do not match' : undefined}
         />
-      </DialogContent>
-      <DialogActions sx={passwordDialogStyles.actions}>
-        <Button onClick={onClose} disableRipple>
-          Cancel
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={!isValid || isLoading}
-          disableElevation
-        >
-          Update
-        </Button>
-      </DialogActions>
-    </Dialog>
+      </Box>
+    </Modal>
   );
 };
 

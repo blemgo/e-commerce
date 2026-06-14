@@ -7,8 +7,4 @@ export const passwordDialogStyles: Record<string, SxProps<Theme>> = {
     gap: 1.5,
     pt: 1,
   },
-  actions: {
-    px: 3,
-    pb: 2.5,
-  },
 };
