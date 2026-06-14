@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
 import api from '@api/api';
 import type { Product } from '@types';
 
@@ -23,7 +22,7 @@ const useGetProduct = (productId: string): UseGetProductReturn => {
         setProduct(data);
       } catch (err) {
         if (!controller.signal.aborted) {
-          toast.error('Failed to load product.');
+          console.error(err);
         }
       } finally {
         if (!controller.signal.aborted) {

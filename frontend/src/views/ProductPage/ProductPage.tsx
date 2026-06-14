@@ -5,7 +5,6 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
-import { toast } from 'react-toastify';
 import { useGetProduct } from '@api/hooks/products/useGetProduct';
 import { useAppendCartItem } from '@contexts/cart/hooks/useAppendCartItem';
 import { LoadingScreen } from '@components/LoadingScreen';
@@ -20,8 +19,7 @@ const ProductPage: React.FC = () => {
 
   useEffect(() => {
     if (!loading && !product) {
-      toast.error('Product not found.');
-      navigate('/');
+      navigate('/404');
     }
   }, [loading, product]);
 
