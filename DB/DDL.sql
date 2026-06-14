@@ -1,4 +1,8 @@
-﻿DROP TABLE IF EXISTS bally.users CASCADE;
+﻿DROP SCHEMA IF EXISTS bally CASCADE;
+
+CREATE SCHEMA bally;
+
+DROP TABLE IF EXISTS bally.users CASCADE;
 DROP TYPE IF EXISTS bally.order_status;
 DROP TYPE IF EXISTS bally.user_role;
 DROP TYPE IF EXISTS bally.auth_provider;
@@ -17,8 +21,8 @@ CREATE TABLE bally.users (
     email TEXT NOT NULL,
     password_hash TEXT,
     full_name TEXT NOT NULL CHECK (full_name ~ '^[a-zA-Z\s]+$' AND LENGTH(full_name) >= 2),
-    role user_role NOT NULL DEFAULT 'customer',
-    auth_provider auth_provider NOT NULL DEFAULT 'local',
+    role bally.user_role NOT NULL DEFAULT 'customer',
+    auth_provider bally.auth_provider NOT NULL DEFAULT 'local',
     provider_id TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE(auth_provider, provider_id)
@@ -60,7 +64,8 @@ CREATE TABLE bally.product (
     description    text,
     product_image  text,
     qty_in_stock   int  NOT NULL DEFAULT 0,
-    price          decimal(10,2) NOT NULL
+    price          decimal(10,2) NOT NULL,
+    is_active      boolean NOT NULL DEFAULT true
 );
 
 CREATE TABLE bally.product_category_link (
@@ -150,7 +155,7 @@ CREATE INDEX idx_orders_user_id ON bally.orders(user_id);
 CREATE TABLE bally.order_items (
     id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_id     UUID NOT NULL REFERENCES bally.orders(id) ON DELETE CASCADE,
-    product_id   UUID NOT NULL REFERENCES bally.product(id) ON DELETE RESTRICT,
+    product_id   UUID REFERENCES bally.product(id) ON DELETE SET NULL,
     product_name text NOT NULL,
     unit_price   DECIMAL(10, 2) NOT NULL,
     quantity     INT NOT NULL

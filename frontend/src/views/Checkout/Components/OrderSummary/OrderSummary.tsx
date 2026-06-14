@@ -8,7 +8,7 @@ interface OrderSummaryProps {
   items: CartItem[];
 }
 
-const OrderSummary = ({ items }: OrderSummaryProps) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ items }: OrderSummaryProps) => {
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
   const total = items
     .reduce((sum, item) => sum + item.product.price * item.quantity, 0)
@@ -33,7 +33,7 @@ const OrderSummary = ({ items }: OrderSummaryProps) => {
           <Typography sx={orderSummaryStyles.footerLabel}>
             Subtotal · {totalQuantity} items
           </Typography>
-          <Typography sx={orderSummaryStyles.footerValue}>€{total}</Typography>
+          <Typography sx={orderSummaryStyles.footerValue}>₪{total}</Typography>
         </Box>
 
         <Box sx={orderSummaryStyles.footerRow}>
@@ -43,7 +43,7 @@ const OrderSummary = ({ items }: OrderSummaryProps) => {
 
         <Box sx={orderSummaryStyles.footerRow}>
           <Typography sx={orderSummaryStyles.totalLabel}>Total</Typography>
-          <Typography sx={orderSummaryStyles.totalValue}>€{total}</Typography>
+          <Typography sx={orderSummaryStyles.totalValue}>₪{total}</Typography>
         </Box>
       </Box>
     </Box>

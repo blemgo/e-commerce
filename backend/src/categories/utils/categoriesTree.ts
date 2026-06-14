@@ -1,17 +1,22 @@
 import { ProductCategory } from '../entities/product-category.entity';
-import { CategoryNode } from '../interfaces/CategoryNode';
+import { CategoryNodeDto } from '../dto/category-node.dto';
 
 export const categoryRowsToTree = (
   categoryRows: ProductCategory[],
-): CategoryNode[] => {
-  const idMap = new Map<string, CategoryNode>(
+): CategoryNodeDto[] => {
+  const idMap = new Map<string, CategoryNodeDto>(
     categoryRows.map((row) => [
       row.id,
-      { id: row.id, name: row.categoryName, children: [] },
+      {
+        id: row.id,
+        name: row.categoryName,
+        parentId: row.parentCategoryId,
+        children: [],
+      },
     ]),
   );
 
-  const rootNodes: CategoryNode[] = [];
+  const rootNodes: CategoryNodeDto[] = [];
 
   // Map each category to its parent node / roots
   categoryRows.forEach((row) => {
@@ -29,9 +34,9 @@ export const categoryRowsToTree = (
 };
 
 export const findNode = (
-  tree: CategoryNode[],
+  tree: CategoryNodeDto[],
   id: string,
-): CategoryNode | null => {
+): CategoryNodeDto | null => {
   for (const node of tree) {
     if (node.id === id) return node;
 
@@ -43,7 +48,7 @@ export const findNode = (
   return null;
 };
 
-export const getDescendantIds = (node: CategoryNode): string[] => {
+export const getDescendantIds = (node: CategoryNodeDto): string[] => {
   const descendantIds: string[] = [node.id];
 
   node.children.forEach((child) => {

@@ -10,7 +10,7 @@ import { useAddressBook } from './hooks/useAddressBook';
 import type { CreateAddressDTO, UserAddress } from '@types';
 import { addressesPageStyles } from './AddressesPage.styles';
 
-const AddressesPage = () => {
+const AddressesPage: React.FC = () => {
   const { addresses, loading, isSubmitting, create, update, setDefault, remove } =
     useAddressBook();
   const [dialogOpen, setDialogOpen] = useState(false);

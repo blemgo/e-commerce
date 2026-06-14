@@ -43,10 +43,17 @@ export class ProductsService {
     return this.findOne(saved.id);
   }
 
-  async findAll(query: GetProductsQueryDto): Promise<PaginatedProducts> {
+  async findAll(
+    query: GetProductsQueryDto,
+    includeInactive = false,
+  ): Promise<PaginatedProducts> {
     const qb = this.productRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.categories', 'category');
+
+    if (!includeInactive) {
+      qb.andWhere('product.isActive = :isActive', { isActive: true });
+    }
 
     await applyCategoryFilter(qb, query, (categoryId) =>
       this.categoriesService.getDescendantCategoryIds(categoryId),
@@ -101,6 +108,10 @@ export class ProductsService {
 
     if (!product) {
       throw new NotFoundException('Product not found');
+    }
+
+    if (!product.isActive) {
+      throw new BadRequestException(`"${product.name}" is no longer available`);
     }
 
     if (product.qtyInStock < quantity) {

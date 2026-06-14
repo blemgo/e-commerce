@@ -11,7 +11,7 @@ import { useAppendCartItem } from '@contexts/cart/hooks/useAppendCartItem';
 import { LoadingScreen } from '@components/LoadingScreen';
 import { productPageStyles } from './ProductPage.styles';
 
-const ProductPage = () => {
+const ProductPage: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
   const { product, loading } = useGetProduct(productId!);
@@ -46,7 +46,7 @@ sx={productPageStyles.image}
 
       <Box sx={productPageStyles.infoSection}>
         <Typography sx={productPageStyles.name}>{product.name}</Typography>
-        <Typography sx={productPageStyles.price}>€{Number(product.price).toFixed(2)}</Typography>
+        <Typography sx={productPageStyles.price}>₪{Number(product.price).toFixed(2)}</Typography>
 
         <Button
           sx={productPageStyles.addToCartButton}

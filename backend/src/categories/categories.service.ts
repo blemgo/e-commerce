@@ -1,9 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ProductCategory } from './entities/product-category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { CategoryNode } from './interfaces/CategoryNode';
+import { CategoryNodeDto } from './dto/category-node.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import {
   categoryRowsToTree,
@@ -18,11 +22,23 @@ export class CategoriesService {
     private productCategoryRepository: Repository<ProductCategory>,
   ) {}
 
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  async create(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<CategoryNodeDto[]> {
+    const { parentCategoryId } = createCategoryDto;
+
+    if (parentCategoryId) {
+      await this.findOne(parentCategoryId);
+    }
+
+    await this.productCategoryRepository.save(
+      this.productCategoryRepository.create(createCategoryDto),
+    );
+
+    return this.getCategoryTree();
   }
 
-  async getCategoryTree(): Promise<CategoryNode[]> {
+  async getCategoryTree(): Promise<CategoryNodeDto[]> {
     const categoryRows = await this.productCategoryRepository.find();
 
     return categoryRowsToTree(categoryRows);
@@ -49,11 +65,51 @@ export class CategoriesService {
     return node ? getDescendantIds(node) : [categoryId];
   }
 
-  update(id: string, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(
+    id: string,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<CategoryNodeDto[]> {
+    const category = await this.findOne(id);
+    const { parentCategoryId } = updateCategoryDto;
+
+    if (parentCategoryId !== undefined) {
+      await this.validateParent(id, parentCategoryId);
+    }
+
+    Object.assign(category, updateCategoryDto);
+    await this.productCategoryRepository.save(category);
+
+    return this.getCategoryTree();
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} category`;
+  async remove(id: string): Promise<CategoryNodeDto[]> {
+    const category = await this.findOne(id);
+
+    await this.productCategoryRepository.remove(category);
+
+    return this.getCategoryTree();
   }
+
+  private validateParent = async (
+    categoryId: string,
+    parentCategoryId: string | null,
+  ): Promise<void> => {
+    if (parentCategoryId === null) {
+      return;
+    }
+
+    if (parentCategoryId === categoryId) {
+      throw new BadRequestException('A category cannot be its own parent');
+    }
+
+    await this.findOne(parentCategoryId);
+
+    const descendantIds = await this.getDescendantCategoryIds(categoryId);
+
+    if (descendantIds.includes(parentCategoryId)) {
+      throw new BadRequestException(
+        'Cannot move a category under one of its descendants',
+      );
+    }
+  };
 }

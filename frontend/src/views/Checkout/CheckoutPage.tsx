@@ -8,7 +8,7 @@ import { useCheckoutAddresses } from './hooks/useCheckoutAddresses';
 import { usePlaceOrder } from './hooks/usePlaceOrder';
 import { checkoutPageStyles } from './CheckoutPage.styles';
 
-const CheckoutPage = () => {
+const CheckoutPage: React.FC = () => {
   const { cart } = useCartContext();
   const {
     addresses,

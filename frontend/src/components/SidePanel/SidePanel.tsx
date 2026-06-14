@@ -18,7 +18,7 @@ interface SidePanelProps {
   footer?: ReactNode;
 }
 
-const SidePanel = ({ items, footer }: SidePanelProps) => {
+const SidePanel: React.FC<SidePanelProps> = ({ items, footer }: SidePanelProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 

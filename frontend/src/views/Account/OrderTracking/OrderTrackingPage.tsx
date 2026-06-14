@@ -18,7 +18,7 @@ const TRACKING_STEPS = [
   { status: OrderStatus.DELIVERED, label: 'Delivered' },
 ];
 
-const OrderTrackingPage = () => {
+const OrderTrackingPage: React.FC = () => {
   const { orderId = '' } = useParams();
   const { order, loading } = useGetOrder(orderId);
 
@@ -73,7 +73,7 @@ const OrderTrackingPage = () => {
               {order.items.map(item => (
                 <OrderItem
                   key={item.id}
-                  image={item.product.productImage}
+                  image={item.product?.productImage}
                   name={item.productName}
                   quantity={item.quantity}
                   price={item.unitPrice * item.quantity}
@@ -101,7 +101,7 @@ const OrderTrackingPage = () => {
                 Subtotal · {totalQuantity} item{totalQuantity === 1 ? '' : 's'}
               </Typography>
               <Typography sx={orderTrackingStyles.summaryValue}>
-                €{subtotal.toFixed(2)}
+                ₪{subtotal.toFixed(2)}
               </Typography>
             </Box>
             <Box sx={orderTrackingStyles.summaryRow}>
@@ -111,7 +111,7 @@ const OrderTrackingPage = () => {
             <Box sx={orderTrackingStyles.summaryRow}>
               <Typography sx={orderTrackingStyles.totalLabel}>Total</Typography>
               <Typography sx={orderTrackingStyles.totalValue}>
-                €{order.totalAmount.toFixed(2)}
+                ₪{order.totalAmount.toFixed(2)}
               </Typography>
             </Box>
           </Box>

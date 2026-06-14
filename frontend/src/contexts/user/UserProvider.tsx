@@ -7,7 +7,7 @@ import { setOnUnauthenticated } from '@api/interceptors/authInterceptor';
 import type { AuthUser } from '@types';
 import type { UserProviderProps } from './UserTypes';
 
-const UserProvider = ({ children }: UserProviderProps) => {
+const UserProvider: React.FC<UserProviderProps> = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const { isInitializing } = useInitAuth(setUser);
 

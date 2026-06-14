@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductsService, PaginatedProducts } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -15,6 +16,10 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { GetProductsQueryDto } from './dto/get-products-query.dto';
 import { Product } from './entities/product.entity';
 import { AdminOnly } from 'src/auth/decorators/admin-only.decorator';
+import { OptionalJwtAuthGuard } from 'src/auth/guards/optional-jwt-auth.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { AuthorizedUser } from 'src/auth/dto/authorized-user.dto';
+import { Role } from 'src/users/entities/enums/role.enum';
 
 @Controller('products')
 export class ProductsController {
@@ -26,9 +31,16 @@ export class ProductsController {
     return this.productsService.create(createProductDto);
   }
 
+  @UseGuards(OptionalJwtAuthGuard)
   @Get()
-  findAll(@Query() query: GetProductsQueryDto): Promise<PaginatedProducts> {
-    return this.productsService.findAll(query);
+  findAll(
+    @Query() query: GetProductsQueryDto,
+    @CurrentUser() user?: AuthorizedUser,
+  ): Promise<PaginatedProducts> {
+    const includeInactive =
+      user?.role === Role.ADMIN && Boolean(query.includeInactive);
+
+    return this.productsService.findAll(query, includeInactive);
   }
 
   @Get(':id')

@@ -53,7 +53,7 @@ const toForm = (address: UserAddress): typeof emptyForm => ({
 const optionalField = (value: string): string | undefined =>
   value.trim() ? value.trim() : undefined;
 
-const AddressDialog = ({
+const AddressDialog: React.FC<AddressDialogProps> = ({
   open,
   onClose,
   onSubmit,

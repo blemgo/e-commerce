@@ -10,7 +10,12 @@ import { ProfilePage } from '@views/Account/Profile';
 import { OrdersPage } from '@views/Account/Orders';
 import { OrderTrackingPage } from '@views/Account/OrderTracking';
 import { AddressesPage } from '@views/Account/Addresses';
+import { AdminLayout } from '@views/Admin';
+import { AdminProductsPage } from '@views/Admin/Products';
+import { AdminCategoriesPage } from '@views/Admin/Categories';
+import { AdminOrdersPage } from '@views/Admin/Orders';
 import { ProtectedRoute } from './ProtectedRoute';
+import { Role } from '@types';
 import type { Page } from './types';
 
 export const CATALOG_PAGES: Page[] = [
@@ -44,6 +49,21 @@ export const ACCOUNT_ROUTE: RouteObject = {
     { path: 'orders', element: <OrdersPage /> },
     { path: 'orders/:orderId', element: <OrderTrackingPage /> },
     { path: 'addresses', element: <AddressesPage /> },
+  ],
+};
+
+export const ADMIN_ROUTE: RouteObject = {
+  path: '/admin',
+  element: (
+    <ProtectedRoute roles={Role.ADMIN}>
+      <AdminLayout />
+    </ProtectedRoute>
+  ),
+  children: [
+    { index: true, element: <Navigate to="/admin/products" replace /> },
+    { path: 'products', element: <AdminProductsPage /> },
+    { path: 'categories', element: <AdminCategoriesPage /> },
+    { path: 'orders', element: <AdminOrdersPage /> },
   ],
 };
 

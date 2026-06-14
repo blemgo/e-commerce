@@ -1,6 +1,6 @@
 import type { SxProps, Theme } from '@mui/material';
 
-export const productStackStyles: Record<string, SxProps<Theme>> = {
+export const paginatedViewStyles: Record<string, SxProps<Theme>> = {
   emptyState: {
     textAlign: 'center',
     py: 8,
