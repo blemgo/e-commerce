@@ -8,7 +8,7 @@ interface LayoutProps {
   variant?: 'catalog' | 'basic';
 }
 
-const Layout = ({ variant = 'catalog' }: LayoutProps) => {
+const Layout: React.FC<LayoutProps> = ({ variant = 'catalog' }: LayoutProps) => {
   return (
     <Box sx={layoutStyles.wrapper}>
       {variant === 'catalog' ? <CatalogNavBar /> : <Navbar />}

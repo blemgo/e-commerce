@@ -1,5 +1,6 @@
 import type { Address } from './address';
 import type { Product } from './product';
+import type { AuthUser } from './user';
 
 export const OrderStatus = {
   PROCESSING: 'processing',
@@ -12,7 +13,7 @@ export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus];
 
 export interface OrderItem {
   id: string;
-  product: Product;
+  product: Product | null;
   productName: string;
   unitPrice: number;
   quantity: number;
@@ -25,10 +26,15 @@ export interface Order {
   totalAmount: number;
   items: OrderItem[];
   address: Address;
+  user?: AuthUser;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CheckoutDTO {
   addressId: string;
+}
+
+export interface UpdateOrderStatusDTO {
+  status: OrderStatus;
 }

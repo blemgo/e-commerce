@@ -14,7 +14,7 @@ interface CartItemProps {
   onDelete: () => void;
 }
 
-const CartItem = ({ item, onAdd, onRemove, onDelete }: CartItemProps) => {
+const CartItem: React.FC<CartItemProps> = ({ item, onAdd, onRemove, onDelete }: CartItemProps) => {
   const { product, quantity } = item;
   const total = (product.price * quantity).toFixed(2);
 
@@ -30,10 +30,10 @@ const CartItem = ({ item, onAdd, onRemove, onDelete }: CartItemProps) => {
       <Box sx={cartItemStyles.details}>
         <Box sx={cartItemStyles.topRow}>
           <Typography sx={cartItemStyles.name}>{product.name}</Typography>
-          <Typography sx={cartItemStyles.totalPrice}>€{total}</Typography>
+          <Typography sx={cartItemStyles.totalPrice}>₪{total}</Typography>
         </Box>
 
-        <Typography sx={cartItemStyles.unitPrice}>€{product.price}</Typography>
+        <Typography sx={cartItemStyles.unitPrice}>₪{product.price}</Typography>
 
         <Box sx={cartItemStyles.controls}>
           <IconButton onClick={onRemove} sx={cartItemStyles.qtyButton} disableRipple>

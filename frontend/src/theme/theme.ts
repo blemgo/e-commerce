@@ -14,10 +14,6 @@ const theme = createTheme({
       default: '#ffffff',
       paper: '#f4f5f7',
     },
-    warning: {
-      main: '#181b20',
-      contrastText: '#f4f4f4',
-    },
   },
   typography: {
     fontFamily: '"Inter", "Heebo", sans-serif',

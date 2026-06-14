@@ -24,7 +24,7 @@ type ModalState = Pick<ProductFilters, 'minPrice' | 'maxPrice' | 'sortBy' | 'sor
 const PRICE_MIN = 0;
 const PRICE_MAX = 200;
 
-const AllFiltersModal = ({ open, onClose }: AllFiltersModalProps) => {
+const AllFiltersModal: React.FC<AllFiltersModalProps> = ({ open, onClose }: AllFiltersModalProps) => {
   const [filters, setFilters] = useProductFilters();
   const [filterValues, setFilterValues] = useState<ModalState>({
     minPrice: null,

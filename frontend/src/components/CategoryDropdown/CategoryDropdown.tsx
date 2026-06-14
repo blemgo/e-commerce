@@ -17,7 +17,7 @@ interface CategoryRowProps {
   onClose: () => void;
 }
 
-const CategoryRow = ({ node, depth, expandedIds, onToggle, onClose }: CategoryRowProps) => {
+const CategoryRow: React.FC<CategoryRowProps> = ({ node, depth, expandedIds, onToggle, onClose }: CategoryRowProps) => {
   const isExpanded = expandedIds.has(node.id);
   const hasChildren = node.children.length > 0;
 
@@ -76,7 +76,7 @@ interface CategoryDropdownProps {
   onMouseLeave: () => void;
 }
 
-const CategoryDropdown = ({
+const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   category,
   onClose,
   onMouseEnter,

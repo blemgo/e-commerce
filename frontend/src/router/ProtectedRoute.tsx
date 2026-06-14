@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
   children: ReactNode;
 }
 
-const ProtectedRoute = ({ roles, children }: ProtectedRouteProps) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ roles, children }: ProtectedRouteProps) => {
   const { user } = useUserContext();
 
   if (!user) {

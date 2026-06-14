@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useUpdateProfile } from '@api/hooks/users/useUpdateProfile';
 import { useUserContext } from '@contexts/user';
-import type { UserProfile } from '@types';
 
 export interface UseProfileFormReturn {
   fullName: string;
@@ -13,32 +12,24 @@ export interface UseProfileFormReturn {
   isSaving: boolean;
 }
 
-const useProfileForm = (profile: UserProfile): UseProfileFormReturn => {
+const useProfileForm = (): UseProfileFormReturn => {
   const { updateProfile, isLoading: isSaving } = useUpdateProfile();
   const { user, setUser } = useUserContext();
-  const [fullName, setFullName] = useState(profile.fullName);
+  const [fullName, setFullName] = useState(user?.fullName ?? '');
 
   const trimmed = fullName.trim();
   const isValid = trimmed.length >= 2;
-  const isDirty = trimmed !== profile.fullName;
+  const isDirty = trimmed !== user?.fullName;
 
   const save = async (): Promise<void> => {
-    if (!isValid || !isDirty) {
+    if (!isValid || !isDirty || !user) {
       return;
     }
 
-    let updated: UserProfile;
+    const updated = await updateProfile({ fullName: trimmed });
 
-    try {
-      updated = await updateProfile({ fullName: trimmed });
-    } catch {
-      return;
-    }
-
-    if (user) {
-      setUser({ ...user, fullName: updated.fullName });
-    }
-
+    setUser({ ...user, fullName: updated.fullName });
+    setFullName(updated.fullName);
     toast.success('Profile updated.');
   };
 

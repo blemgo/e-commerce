@@ -11,7 +11,10 @@ export interface UseGetProductsReturn {
   loading: boolean;
 }
 
-const useGetProducts = (filters: ProductFilters): UseGetProductsReturn => {
+const useGetProducts = (
+  filters: ProductFilters,
+  extraParams?: Record<string, unknown>,
+): UseGetProductsReturn => {
   const [paginatedProducts, setPaginatedProducts] = useState<Paginated<Product> | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +25,9 @@ const useGetProducts = (filters: ProductFilters): UseGetProductsReturn => {
       setLoading(true);
 
       try {
-        const data = await api.products().getProducts(stripNulls(filters), controller.signal);
+        const params = { ...stripNulls(filters), ...extraParams };
+        
+        const data = await api.products().getProducts(params, controller.signal);
         setPaginatedProducts(data);
       } catch (err) {
         if (!controller.signal.aborted) {
@@ -39,7 +44,7 @@ const useGetProducts = (filters: ProductFilters): UseGetProductsReturn => {
 
     return () => controller.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(filters)]);
+  }, [JSON.stringify(filters), JSON.stringify(extraParams)]);
 
   return { paginatedProducts, setPaginatedProducts, loading };
 };

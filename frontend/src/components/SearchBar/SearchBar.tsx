@@ -8,7 +8,7 @@ import { searchBarStyles } from './SearchBar.styles';
 
 const allNull = Object.fromEntries(Object.keys(productFiltersParsers).map(key => [key, null]));
 
-const SearchBar = () => {
+const SearchBar: React.FC = () => {
   const [, setFilters] = useProductFilters();
   const [localValue, setLocalValue] = useState('');
 

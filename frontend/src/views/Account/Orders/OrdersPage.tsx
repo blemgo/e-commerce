@@ -16,7 +16,7 @@ import { ordersPageStyles } from './OrdersPage.styles';
 const itemCount = (order: Order): number =>
   order.items.reduce((sum, item) => sum + item.quantity, 0);
 
-const OrdersPage = () => {
+const OrdersPage: React.FC = () => {
   const { orders, loading } = useGetOrders();
   const navigate = useNavigate();
 
@@ -59,10 +59,10 @@ const OrdersPage = () => {
                   >
                     <TableCell>
                       <Box sx={ordersPageStyles.orderCell}>
-                        {order.items[0]?.product.productImage && (
+                        {order.items[0]?.product?.productImage && (
                           <Box
                             component="img"
-                            src={order.items[0].product.productImage}
+                            src={order.items[0].product?.productImage}
                             alt=""
                             sx={ordersPageStyles.thumbnail}
                           />
@@ -76,7 +76,7 @@ const OrdersPage = () => {
                     <TableCell>
                       {count} item{count === 1 ? '' : 's'}
                     </TableCell>
-                    <TableCell>€{order.totalAmount.toFixed(2)}</TableCell>
+                    <TableCell>₪{order.totalAmount.toFixed(2)}</TableCell>
                     <TableCell align="right">
                       <OrderStatusChip status={order.status} />
                     </TableCell>

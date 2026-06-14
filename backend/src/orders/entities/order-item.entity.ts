@@ -12,9 +12,9 @@ export class OrderItem {
   @JoinColumn({ name: 'order_id' })
   order: Order;
 
-  @ManyToOne(() => Product, { onDelete: 'RESTRICT', nullable: false })
+  @ManyToOne(() => Product, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'product_id' })
-  product: Product;
+  product: Product | null;
 
   @Column({ name: 'product_name', type: 'text', nullable: false })
   productName: string;

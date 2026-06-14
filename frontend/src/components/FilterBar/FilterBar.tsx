@@ -16,12 +16,12 @@ interface QuickFilter {
 
 const QUICK_FILTERS: QuickFilter[] = [
   {
-    label: 'Under $50',
+    label: 'Under ₪50',
     patch: { maxPrice: 50 },
     isActive: f => f.maxPrice === 50,
   },
   {
-    label: 'Under $100',
+    label: 'Under ₪100',
     patch: { maxPrice: 100 },
     isActive: f => f.maxPrice === 100,
   },
@@ -45,7 +45,7 @@ const getSortValue = (filters: ProductFilters): string => {
   return match?.label ?? 'Newest';
 };
 
-const FilterBar = ({ onOpenAllFilters }: FilterBarProps) => {
+const FilterBar: React.FC<FilterBarProps> = ({ onOpenAllFilters }: FilterBarProps) => {
   const [filters, setFilters] = useProductFilters();
 
   const toggleQuickFilter = (qf: QuickFilter) => {

@@ -9,7 +9,7 @@ export const productFiltersParsers = {
   sortBy: parseAsStringEnum<'name' | 'price'>(['name', 'price']),
   sortOrder: parseAsStringEnum<'ASC' | 'DESC'>(['ASC', 'DESC']),
   page: parseAsInteger.withDefault(1),
-  limit: parseAsInteger.withDefault(8),
+  limit: parseAsInteger.withDefault(12),
 };
 
 export type ProductFilters = inferParserType<typeof productFiltersParsers>;

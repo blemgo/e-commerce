@@ -87,7 +87,8 @@ Table product {
   SKU           text          [not null]
   qty_in_stock  int           [not null, default: 0]
   price         decimal(10,2) [not null]
- 
+  is_active     boolean       [not null, default: true]
+
   indexes {
     name
     SKU [unique]

@@ -6,7 +6,7 @@ import type { CartProviderProps } from './CartTypes';
 import type { CartStrategy } from './strategies/CartStrategy';
 import { useUserCartStrategy } from './strategies/userCartStrategy';
 
-const CartProvider = ({ children }: CartProviderProps) => {
+const CartProvider: React.FC<CartProviderProps> = ({ children }: CartProviderProps) => {
   const { user } = useUserContext();
   const userStrategy = useUserCartStrategy();
   const [cart, setCart] = useState<Cart | null>(null);

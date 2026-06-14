@@ -16,7 +16,7 @@ interface CartDrawerProps {
   onCheckout: () => void;
 }
 
-const CartDrawer = ({ open, onClose, onCheckout }: CartDrawerProps) => {
+const CartDrawer: React.FC<CartDrawerProps> = ({ open, onClose, onCheckout }: CartDrawerProps) => {
   const { cart, setItemQuantity } = useCartContext();
   const { appendCartItem } = useAppendCartItem();
 
@@ -64,7 +64,7 @@ const CartDrawer = ({ open, onClose, onCheckout }: CartDrawerProps) => {
       <Box sx={cartDrawerStyles.footer}>
         <Box sx={cartDrawerStyles.totalRow}>
           <Typography sx={cartDrawerStyles.totalLabel}>Estimated total</Typography>
-          <Typography sx={cartDrawerStyles.totalAmount}>€{totalPrice}</Typography>
+          <Typography sx={cartDrawerStyles.totalAmount}>₪{totalPrice}</Typography>
         </Box>
         <Typography sx={cartDrawerStyles.taxNote}>
           Taxes included. Discounts and <strong>shipping</strong> calculated at checkout.

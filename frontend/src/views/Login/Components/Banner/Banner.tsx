@@ -3,7 +3,7 @@ import ballyLogo from '../../../../assets/bally-white.png';
 import registerImage from '../../../../assets/register.png';
 import { bannerStyles } from './Banner.styles';
 
-const Banner = () => {
+const Banner: React.FC = () => {
   return (
     <Box sx={bannerStyles.root}>
       <Box sx={bannerStyles.header}>

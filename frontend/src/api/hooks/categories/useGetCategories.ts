@@ -5,6 +5,7 @@ import type { CategoryNode } from '@types';
 
 export interface UseGetCategoriesReturn {
   categories: CategoryNode[];
+  setCategories: React.Dispatch<React.SetStateAction<CategoryNode[]>>;
   loading: boolean;
 }
 
@@ -21,7 +22,7 @@ const useGetCategories = (): UseGetCategoriesReturn => {
       try {
         const data = await api.categories().getCategoryTree(controller.signal);
         setCategories(data);
-      } catch (err) {
+      } catch {
         if (!controller.signal.aborted) {
           toast.error('Failed to load categories.');
         }
@@ -37,7 +38,7 @@ const useGetCategories = (): UseGetCategoriesReturn => {
     return () => controller.abort();
   }, []);
 
-  return { categories, loading };
+  return { categories, setCategories, loading };
 };
 
 export { useGetCategories };
