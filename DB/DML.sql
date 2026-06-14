@@ -29,7 +29,7 @@ FROM unnest(ARRAY[
     'Germany',
     'France',
     'Japan',
-    'Singapore',
+    'Singapore'
 ]) AS c;
 
 -- USERS
@@ -79,25 +79,29 @@ VALUES
     ('Womens Wear', (SELECT id FROM bally.product_category WHERE category_name = 'Fashion' LIMIT 1));
 
 -- PRODUCTS
-INSERT INTO bally.product (name, description, product_image, qty_in_stock, price)
-SELECT
-    (ARRAY[
-        'Trail Sneakers',
-        'Urban Backpack',
-        'Wireless Earbuds',
-        'Smart Watch',
-        'Yoga Mat',
-        'Desk Lamp',
-        'Coffee Grinder',
-        'Gaming Mouse',
-        'Denim Jacket',
-        'Running Shorts'
-    ])[1 + floor(random() * 10)::int] || ' ' || g.i AS name,
-    'Sample product description ' || g.i AS description,
-    'https://picsum.photos/seed/product' || g.i || '/600/600' AS product_image,
-    (5 + floor(random() * 200))::int AS qty_in_stock,
-    round((10 + random() * 490)::numeric, 2) AS price
-FROM generate_series(1, 80) AS g(i);
+-- Scraped from racerworldwide.net Spring/Summer 26 collection.
+INSERT INTO bally.product (name, product_image, qty_in_stock, price)
+VALUES
+    ('Biker Leather Jacket', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/BikerLeatherJacketLB3_cropFF_m1.jpg?v=1779444596', 18, 320.00),
+    ('Fitted Lambskin Jacket', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/slimleatherjacket_front2.jpg?v=1779358536', 7, 320.00),
+    ('Plaid Twill Work Shirt', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Plaid_Twill_Shirt_FL_3_FF.jpg?v=1779440250', 143, 115.00),
+    ('Bleached Studded Denim', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Studded_Jeans_LB_1_FF.jpg?v=1779441867', 64, 145.00),
+    ('Coated Fitted Knit Hoodie', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Waxed_Wide_Rib_Hoodie_Knit_LB_2_crop_FF_f33be629-2433-419a-87d3-628a3686c6cc.jpg?v=1779440175', 31, 120.00),
+    ('Fitted Knit Hoodie', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Black_Wide_Rib_Hoodie_Knit_LB_3_crop_FF.jpg?v=1779440528', 88, 100.00),
+    ('Teeth Chain Necklace', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Real_Teeth_Necklace_FL_1_FF.jpg?v=1779385424', 25, 110.00),
+    ('Black Racer Boxers 2 Pack', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/BoxerTrunksFL_black_FF_1.jpg?v=1779386280', 176, 40.00),
+    ('Denim Racer Boxers 2 Pack', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Boxer_Trunks_FL_jeans_FF_1.jpg?v=1779384985', 112, 50.00),
+    ('Grey Racer Boxers 2 Pack', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/studdedjeans_crop1_b009de50-48d8-414a-91d4-66b84e6cfd1d.jpg?v=1779386088', 159, 40.00),
+    ('Racer x Remagine 1998 Boot', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Soccer_Sneakers_FL_7_FF.jpg?v=1775484041', 12, 260.00),
+    ('Pyramid Embossed Denim', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Baggy_Embossed_Jeans_LB_3_FF_new_m1.jpg?v=1776357816', 47, 160.00),
+    ('Bat-Wing Transformer Hoodie', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Bat_Wing_Hoodie_LB_12_FF.jpg?v=1775376745', 53, 160.00),
+    ('Bat-Wing Sweatpants', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Bat_Wing_Pants_LB_2_FF.jpg?v=1775374771', 39, 140.00),
+    ('Coffee Grinder 42', 'https://fastly.picsum.photos/id/1025/600/600.jpg?hmac=QxUzH7h9kBHUn--LQyNnjygtja2kCvjMxEmZT-z912U', 39, 49.00);
+    -- ('Everyday Jersey Blazer Jacket', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Blazer_Jersey_LB_1_FF.jpg?v=1779439655', 21, 180.00),
+    -- ('Racer Worldwide Oversized Long Sleeve', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Oversized_LS_LB_5_FF.jpg?v=1779440710', 97, 95.00),
+    -- ('Racer Worldwide Oversized T-Shirt', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Oversized_Tee_LB_5_FF.jpg?v=1779440829', 204, 65.00),
+    -- ('Racer Logo T-Shirt', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Racer_Logo_Tee_LB_FF.jpg?v=1779440906', 231, 50.00),
+    -- ('Racer Worldwide Classic Hoodie', 'https://cdn.shopify.com/s/files/1/0106/3144/6628/files/Classic_Hoodie_LB_FF.jpg?v=1779441032', 74, 115.00);
 
 -- PRODUCT-CATEGORY LINKS (1-2 categories per product)
 INSERT INTO bally.product_category_link (product_id, product_category_id)
