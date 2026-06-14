@@ -14,6 +14,7 @@ import { AdminLayout } from '@views/Admin';
 import { AdminProductsPage } from '@views/Admin/Products';
 import { AdminCategoriesPage } from '@views/Admin/Categories';
 import { AdminOrdersPage } from '@views/Admin/Orders';
+import { NotFoundPage } from '@views/NotFound';
 import { ProtectedRoute } from './ProtectedRoute';
 import { Role } from '@types';
 import type { Page } from './types';
@@ -34,6 +35,11 @@ export const PAGES: Page[] = [
     ),
     name: 'Checkout',
   },
+  {
+    path: '*',
+    element: <NotFoundPage />,
+    name: 'Not Found',
+  }
 ];
 
 export const ACCOUNT_ROUTE: RouteObject = {
