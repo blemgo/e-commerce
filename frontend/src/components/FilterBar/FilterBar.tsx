@@ -30,7 +30,7 @@ const QUICK_FILTERS: QuickFilter[] = [
 type SortOption = { label: string; sortBy: ProductFilters['sortBy']; sortOrder: ProductFilters['sortOrder'] };
 
 const SORT_OPTIONS: SortOption[] = [
-  { label: 'Newest', sortBy: null, sortOrder: null },
+  { label: 'Featured', sortBy: null, sortOrder: null },
   { label: 'Price: Low to High', sortBy: 'price', sortOrder: 'ASC' },
   { label: 'Price: High to Low', sortBy: 'price', sortOrder: 'DESC' },
   { label: 'Name A–Z', sortBy: 'name', sortOrder: 'ASC' },
