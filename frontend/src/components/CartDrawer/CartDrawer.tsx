@@ -61,23 +61,25 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ open, onClose, onCheckout }: Ca
         )}
       </Box>
 
-      <Box sx={cartDrawerStyles.footer}>
-        <Box sx={cartDrawerStyles.totalRow}>
-          <Typography sx={cartDrawerStyles.totalLabel}>Estimated total</Typography>
-          <Typography sx={cartDrawerStyles.totalAmount}>₪{totalPrice}</Typography>
+      {items.length > 0 && (
+        <Box sx={cartDrawerStyles.footer}>
+          <Box sx={cartDrawerStyles.totalRow}>
+            <Typography sx={cartDrawerStyles.totalLabel}>Estimated total</Typography>
+            <Typography sx={cartDrawerStyles.totalAmount}>₪{totalPrice}</Typography>
+          </Box>
+          <Typography sx={cartDrawerStyles.taxNote}>
+            Taxes included. Discounts and <strong>shipping</strong> calculated at checkout.
+          </Typography>
+          <Button
+            onClick={onCheckout}
+            sx={cartDrawerStyles.checkoutButton}
+            disableRipple
+            disableElevation
+          >
+            Check out
+          </Button>
         </Box>
-        <Typography sx={cartDrawerStyles.taxNote}>
-          Taxes included. Discounts and <strong>shipping</strong> calculated at checkout.
-        </Typography>
-        <Button
-          onClick={onCheckout}
-          sx={cartDrawerStyles.checkoutButton}
-          disableRipple
-          disableElevation
-        >
-          Check out
-        </Button>
-      </Box>
+      )}
     </Drawer>
   );
 };
