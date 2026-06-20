@@ -11,7 +11,7 @@ import type { SidePanelItem } from "@shared/components/SidePanel";
 import { useUserContext } from "@contexts/user";
 import { Role } from "@shared/types";
 import { accountLayoutStyles } from "./AccountLayout.styles";
-import { IconedRedirect } from "@/components/IconedRedirect";
+import { IconedRedirect } from "@shared/components/IconedRedirect";
 
 const ACCOUNT_ITEMS: SidePanelItem[] = [
   {

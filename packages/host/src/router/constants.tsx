@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Navigate } from 'react-router-dom';
 import type { RouteObject } from 'react-router-dom';
 import { Home } from '@views/Home';
@@ -10,14 +11,13 @@ import { ProfilePage } from '@views/Account/Profile';
 import { OrdersPage } from '@views/Account/Orders';
 import { OrderTrackingPage } from '@views/Account/OrderTracking';
 import { AddressesPage } from '@views/Account/Addresses';
-import { AdminLayout } from '@views/Admin';
-import { AdminProductsPage } from '@views/Admin/Products';
-import { AdminCategoriesPage } from '@views/Admin/Categories';
-import { AdminOrdersPage } from '@views/Admin/Orders';
 import { NotFoundPage } from '@views/NotFound';
+import { LoadingScreen } from '@shared/components/LoadingScreen';
 import { ProtectedRoute } from './ProtectedRoute';
 import { Role } from '@shared/types';
 import type { Page } from './types';
+
+const AdminApp = lazy(() => import('admin/AdminApp'));
 
 export const CATALOG_PAGES: Page[] = [
   { path: '/', element: <Home />, name: 'Home' },
@@ -59,18 +59,14 @@ export const ACCOUNT_ROUTE: RouteObject = {
 };
 
 export const ADMIN_ROUTE: RouteObject = {
-  path: '/admin',
+  path: '/admin/*',
   element: (
     <ProtectedRoute roles={Role.ADMIN}>
-      <AdminLayout />
+      <Suspense fallback={<LoadingScreen />}>
+        <AdminApp />
+      </Suspense>
     </ProtectedRoute>
   ),
-  children: [
-    { index: true, element: <Navigate to="/admin/products" replace /> },
-    { path: 'products', element: <AdminProductsPage /> },
-    { path: 'categories', element: <AdminCategoriesPage /> },
-    { path: 'orders', element: <AdminOrdersPage /> },
-  ],
 };
 
 export const AUTH_PAGES: Page[] = [

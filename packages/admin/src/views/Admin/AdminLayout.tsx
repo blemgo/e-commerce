@@ -6,7 +6,7 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutlined";
 import { SidePanel } from "@shared/components/SidePanel";
 import type { SidePanelItem } from "@shared/components/SidePanel";
-import { IconedRedirect } from "@components/IconedRedirect";
+import { IconedRedirect } from "@shared/components/IconedRedirect";
 import { adminLayoutStyles } from "./AdminLayout.styles";
 
 const ADMIN_ITEMS: SidePanelItem[] = [
