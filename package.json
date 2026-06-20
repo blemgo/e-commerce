@@ -6,9 +6,13 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace @bally/host",
+    "dev": "concurrently -n admin,host -c magenta,blue npm:dev:admin npm:dev:host",
     "dev:host": "npm run dev --workspace @bally/host",
+    "dev:admin": "npm run dev --workspace @bally/admin",
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
   }
 }
