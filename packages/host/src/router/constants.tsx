@@ -16,7 +16,7 @@ import { AdminCategoriesPage } from '@views/Admin/Categories';
 import { AdminOrdersPage } from '@views/Admin/Orders';
 import { NotFoundPage } from '@views/NotFound';
 import { ProtectedRoute } from './ProtectedRoute';
-import { Role } from '@types';
+import { Role } from '@shared/types';
 import type { Page } from './types';
 
 export const CATALOG_PAGES: Page[] = [

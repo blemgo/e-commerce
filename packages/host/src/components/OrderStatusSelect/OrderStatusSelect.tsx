@@ -1,8 +1,8 @@
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import { OrderStatus } from "@types";
-import { ORDER_STATUS_CONFIG } from "@/utils/orderStatus";
+import { OrderStatus } from "@shared/types";
+import { ORDER_STATUS_CONFIG } from "@shared/utils/orderStatus";
 import { orderStatusSelectStyles, statusColorStyles } from "./OrderStatusSelect.styles";
 
 interface OrderStatusSelectProps {

@@ -6,10 +6,10 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { useGetCountries } from '@api/hooks/countries/useGetCountries';
-import { Modal } from '@components/Modal';
-import { StyledInput } from '@/components/StyledInput';
-import type { CreateAddressDTO, UserAddress } from '@types';
+import { useGetCountries } from '@shared/api/hooks/countries/useGetCountries';
+import { Modal } from '@shared/components/Modal';
+import { StyledInput } from '@shared/components/StyledInput';
+import type { CreateAddressDTO, UserAddress } from '@shared/types';
 import { addressDialogStyles } from './AddressDialog.styles';
 
 interface AddressDialogProps {

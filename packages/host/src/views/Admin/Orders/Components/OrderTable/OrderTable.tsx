@@ -6,7 +6,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import { OrderStatusSelect } from "@components/OrderStatusSelect";
-import type { Order, OrderStatus } from "@types";
+import type { Order, OrderStatus } from "@shared/types";
 import { orderTableStyles } from "./OrderTable.styles";
 
 interface OrderTableProps {

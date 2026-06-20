@@ -7,12 +7,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutlined';
 import { Link, useNavigate } from 'react-router-dom';
-import { useGetCategories } from '@api/hooks/categories/useGetCategories';
+import { useGetCategories } from '@shared/api/hooks/categories/useGetCategories';
 import { Navbar } from '@components/Navbar';
 import { SearchBar } from '@components/SearchBar';
 import { CartDrawer } from '@components/CartDrawer';
 import { CategoryDropdown } from '@components/CategoryDropdown';
-import type { CategoryNode } from '@types';
+import type { CategoryNode } from '@shared/types';
 import { useCartContext } from '@contexts/cart';
 import { catalogNavBarStyles } from './CatalogNavBar.styles';
 

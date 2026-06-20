@@ -4,12 +4,12 @@ import { Banner } from './Components/Banner/Banner';
 import { loginStyles } from './Login.styles';
 import { SignIn } from '@/components/SignIn/SignIn';
 import { SignUp } from '@/components/SignUp';
-import useLocalLogin from '@/api/hooks/auth/useLocalLogin';
-import useLocalRegister from '@/api/hooks/auth/useLocalRegister';
+import useLocalLogin from '@shared/api/hooks/auth/useLocalLogin';
+import useLocalRegister from '@shared/api/hooks/auth/useLocalRegister';
 import { useUserContext } from '@/contexts/user';
 import { useNavigate } from 'react-router-dom';
-import api from '@api/api';
-import { isUnauthorizedError } from '@/utils/getResponseStatus';
+import api from '@shared/api/api';
+import { isUnauthorizedError } from '@shared/utils/getResponseStatus';
 
 type AuthView = 'signIn' | 'signUp';
 

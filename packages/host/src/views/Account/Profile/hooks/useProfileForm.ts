@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { useUpdateProfile } from '@api/hooks/users/useUpdateProfile';
+import { useUpdateProfile } from '@shared/api/hooks/users/useUpdateProfile';
 import { useUserContext } from '@contexts/user';
 
 export interface UseProfileFormReturn {

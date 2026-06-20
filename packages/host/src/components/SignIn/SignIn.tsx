@@ -12,10 +12,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import GoogleIcon from '@mui/icons-material/Google';
-import { StyledButton } from '@components/StyledButton/StyledButton';
-import { StyledInput } from '@components/StyledInput/StyledInput';
+import { StyledButton } from '@shared/components/StyledButton/StyledButton';
+import { StyledInput } from '@shared/components/StyledInput/StyledInput';
 import { DismissibleDangerAlert } from '@components/DismissibleDangerAlert';
-import { validateEmail, validatePassword } from '@/utils/authValidation';
+import { validateEmail, validatePassword } from '@shared/utils/authValidation';
 import { signInStyles } from './SignIn.styles';
 
 interface SignInProps {

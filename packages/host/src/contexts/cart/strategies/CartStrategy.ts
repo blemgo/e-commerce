@@ -1,4 +1,4 @@
-import type { Cart } from '@types';
+import type { Cart } from '@shared/types';
 
 export interface CartStrategy {
   getCart: () => Promise<Cart>;

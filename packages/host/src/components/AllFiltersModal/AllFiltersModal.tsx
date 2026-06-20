@@ -1,9 +1,9 @@
 import { Typography, TextField, MenuItem, Box, Slider } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useProductFilters } from '@api/hooks/products/useProductFilters';
-import type { ProductFilters } from '@api/hooks/products/useProductFilters';
-import { Modal } from '@components/Modal';
-import { StyledInput } from '@components/StyledInput';
+import { useProductFilters } from '@shared/api/hooks/products/useProductFilters';
+import type { ProductFilters } from '@shared/api/hooks/products/useProductFilters';
+import { Modal } from '@shared/components/Modal';
+import { StyledInput } from '@shared/components/StyledInput';
 import { allFiltersModalStyles } from './AllFiltersModal.styles';
 
 interface AllFiltersModalProps {

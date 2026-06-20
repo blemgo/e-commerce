@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useUserContext } from '@contexts/user';
-import type { Role } from '@types';
+import type { Role } from '@shared/types';
 
 interface ProtectedRouteProps {
   roles?: Role | Role[];

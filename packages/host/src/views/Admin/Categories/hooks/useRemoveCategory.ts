@@ -1,5 +1,5 @@
-import { useDeleteCategory } from "@api/hooks/categories/useDeleteCategory";
-import type { CategoryNode } from "@types";
+import { useDeleteCategory } from "@shared/api/hooks/categories/useDeleteCategory";
+import type { CategoryNode } from "@shared/types";
 
 export interface UseRemoveCategoryReturn {
   removeCategory: (category: CategoryNode) => Promise<void>;

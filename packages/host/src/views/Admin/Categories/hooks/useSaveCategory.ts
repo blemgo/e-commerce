@@ -1,6 +1,6 @@
-import { useCreateCategory } from "@api/hooks/categories/useCreateCategory";
-import { useUpdateCategory } from "@api/hooks/categories/useUpdateCategory";
-import type { CategoryNode, CreateCategoryDTO } from "@types";
+import { useCreateCategory } from "@shared/api/hooks/categories/useCreateCategory";
+import { useUpdateCategory } from "@shared/api/hooks/categories/useUpdateCategory";
+import type { CategoryNode, CreateCategoryDTO } from "@shared/types";
 
 export interface UseSaveCategoryReturn {
   saveCategory: (

@@ -4,12 +4,12 @@ import Typography from '@mui/material/Typography';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-import { LoadingScreen } from '@components/LoadingScreen';
+import { LoadingScreen } from '@shared/components/LoadingScreen';
 import { OrderItem } from '@components/OrderItem';
-import { useGetOrder } from '@api/hooks/orders/useGetOrder';
-import { formatDate } from '@/utils/formatDate';
-import { formatAddressLine1, formatAddressLine2 } from '@/utils/formatAddress';
-import { OrderStatus } from '@types';
+import { useGetOrder } from '@shared/api/hooks/orders/useGetOrder';
+import { formatDate } from '@shared/utils/formatDate';
+import { formatAddressLine1, formatAddressLine2 } from '@shared/utils/formatAddress';
+import { OrderStatus } from '@shared/types';
 import { orderTrackingStyles } from './OrderTrackingPage.styles';
 
 const TRACKING_STEPS = [

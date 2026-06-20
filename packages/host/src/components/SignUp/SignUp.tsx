@@ -7,9 +7,9 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import { StyledButton } from '@components/StyledButton/StyledButton';
-import { StyledInput } from '@components/StyledInput/StyledInput';
-import { validateEmail, validateFullName, validatePassword } from '@/utils/authValidation';
+import { StyledButton } from '@shared/components/StyledButton/StyledButton';
+import { StyledInput } from '@shared/components/StyledInput/StyledInput';
+import { validateEmail, validateFullName, validatePassword } from '@shared/utils/authValidation';
 import { signUpStyles } from './SignUp.styles';
 
 interface SignUpProps {

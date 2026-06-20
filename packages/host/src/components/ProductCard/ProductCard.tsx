@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
 import { useNavigate } from 'react-router-dom';
-import type { Product } from '@types';
+import type { Product } from '@shared/types';
 import { productCardStyles } from './ProductCard.styles';
 
 interface ProductCardProps {

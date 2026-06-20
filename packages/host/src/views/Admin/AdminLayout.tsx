@@ -4,8 +4,8 @@ import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutlined";
-import { SidePanel } from "@components/SidePanel";
-import type { SidePanelItem } from "@components/SidePanel";
+import { SidePanel } from "@shared/components/SidePanel";
+import type { SidePanelItem } from "@shared/components/SidePanel";
 import { IconedRedirect } from "@components/IconedRedirect";
 import { adminLayoutStyles } from "./AdminLayout.styles";
 

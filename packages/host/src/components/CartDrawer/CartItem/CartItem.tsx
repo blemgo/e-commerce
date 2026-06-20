@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import RemoveIcon from '@mui/icons-material/Remove';
-import type { CartItem as CartItemType } from '@types';
+import type { CartItem as CartItemType } from '@shared/types';
 import { cartItemStyles } from './CartItem.styles';
 
 interface CartItemProps {

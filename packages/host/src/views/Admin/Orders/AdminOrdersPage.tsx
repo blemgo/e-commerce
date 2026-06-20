@@ -1,12 +1,12 @@
 import Box from "@mui/material/Box";
 import { AdminHeader } from "@components/AdminHeader";
 import { AdminFilterBar } from "@components/AdminFilterBar";
-import { PaginatedView } from "@components/PaginatedView";
-import { useGetAllOrders } from "@api/hooks/orders/useGetAllOrders";
-import { useUpdateOrderStatus } from "@api/hooks/orders/useUpdateOrderStatus";
-import { useOrderFilters } from "@api/hooks/orders/useOrderFilters";
-import { OrderStatus } from "@types";
-import { ORDER_STATUS_CONFIG } from "@/utils/orderStatus";
+import { PaginatedView } from "@shared/components/PaginatedView";
+import { useGetAllOrders } from "@shared/api/hooks/orders/useGetAllOrders";
+import { useUpdateOrderStatus } from "@shared/api/hooks/orders/useUpdateOrderStatus";
+import { useOrderFilters } from "@shared/api/hooks/orders/useOrderFilters";
+import { OrderStatus } from "@shared/types";
+import { ORDER_STATUS_CONFIG } from "@shared/utils/orderStatus";
 import { OrderTable } from "./Components/OrderTable";
 
 const AdminOrdersPage: React.FC = () => {

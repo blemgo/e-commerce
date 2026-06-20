@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import api from '@api/api';
-import type { AuthUser } from '@types';
+import api from '@shared/api/api';
+import type { AuthUser } from '@shared/types';
 
 const useInitAuth = (
   setUser: (user: AuthUser | null) => void,

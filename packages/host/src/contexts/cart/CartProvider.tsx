@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useUserContext } from '@contexts/user';
-import type { Cart } from '@types';
+import type { Cart } from '@shared/types';
 import { CartContext } from './CartContext';
 import type { CartProviderProps } from './CartTypes';
 import type { CartStrategy } from './strategies/CartStrategy';

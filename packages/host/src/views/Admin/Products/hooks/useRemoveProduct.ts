@@ -1,5 +1,5 @@
-import { useDeleteProduct } from "@api/hooks/products/useDeleteProduct";
-import type { Paginated, Product } from "@types";
+import { useDeleteProduct } from "@shared/api/hooks/products/useDeleteProduct";
+import type { Paginated, Product } from "@shared/types";
 
 export interface UseRemoveProductReturn {
   removeProduct: (product: Product) => Promise<void>;

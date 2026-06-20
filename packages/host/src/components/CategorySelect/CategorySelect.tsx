@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import type { CategoryNode } from "@types";
+import type { CategoryNode } from "@shared/types";
 import { categorySelectStyles } from "./CategorySelect.styles";
 import { flattenWithPath, formatPath } from "./categoryOptions";
 

@@ -11,7 +11,7 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import type { Product } from "@types";
+import type { Product } from "@shared/types";
 import { productTableStyles } from "./ProductTable.styles";
 
 const LOW_STOCK_THRESHOLD = 10;

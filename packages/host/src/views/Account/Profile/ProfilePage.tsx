@@ -1,5 +1,5 @@
-import { LoadingScreen } from '@components/LoadingScreen';
-import { useGetProfile } from '@api/hooks/users/useGetProfile';
+import { LoadingScreen } from '@shared/components/LoadingScreen';
+import { useGetProfile } from '@shared/api/hooks/users/useGetProfile';
 import { ProfileForm } from './ProfileForm';
 
 const ProfilePage: React.FC = () => {

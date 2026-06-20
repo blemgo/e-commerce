@@ -12,13 +12,13 @@ import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { StyledInput } from '@/components/StyledInput';
-import type { UserAddress } from '@types';
+import { StyledInput } from '@shared/components/StyledInput';
+import type { UserAddress } from '@shared/types';
 import {
   formatAddressLine1,
   formatAddressLine2,
   formatAddressSummary,
-} from '@/utils/formatAddress';
+} from '@shared/utils/formatAddress';
 import { orderDetailsStyles } from './OrderDetails.styles';
 
 interface OrderDetailsProps {

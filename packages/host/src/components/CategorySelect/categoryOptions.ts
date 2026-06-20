@@ -1,4 +1,4 @@
-import type { CategoryNode } from "@types";
+import type { CategoryNode } from "@shared/types";
 
 export interface CategoryOption {
   id: string;

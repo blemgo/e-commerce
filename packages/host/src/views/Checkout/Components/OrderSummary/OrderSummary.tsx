@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { OrderItem } from '@components/OrderItem';
-import type { CartItem } from '@types';
+import type { CartItem } from '@shared/types';
 import { orderSummaryStyles } from './OrderSummary.styles';
 
 interface OrderSummaryProps {

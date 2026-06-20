@@ -1,6 +1,6 @@
 import Chip from '@mui/material/Chip';
-import { OrderStatus } from '@types';
-import { ORDER_STATUS_CONFIG } from '@/utils/orderStatus';
+import { OrderStatus } from '@shared/types';
+import { ORDER_STATUS_CONFIG } from '@shared/utils/orderStatus';
 import { orderStatusChipStyles } from './OrderStatusChip.styles';
 
 interface OrderStatusChipProps {

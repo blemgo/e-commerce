@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { Cart } from '@types';
+import type { Cart } from '@shared/types';
 
 export interface CartContextValue {
   cart: Cart | null;

@@ -5,9 +5,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
-import { useGetProduct } from '@api/hooks/products/useGetProduct';
+import { useGetProduct } from '@shared/api/hooks/products/useGetProduct';
 import { useAppendCartItem } from '@contexts/cart/hooks/useAppendCartItem';
-import { LoadingScreen } from '@components/LoadingScreen';
+import { LoadingScreen } from '@shared/components/LoadingScreen';
 import { productPageStyles } from './ProductPage.styles';
 
 const ProductPage: React.FC = () => {

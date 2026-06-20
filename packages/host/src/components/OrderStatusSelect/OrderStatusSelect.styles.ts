@@ -1,5 +1,5 @@
 import type { SxProps, Theme } from "@mui/material/styles";
-import type { OrderStatusColor } from "@/utils/orderStatus";
+import type { OrderStatusColor } from "@shared/utils/orderStatus";
 
 export const orderStatusSelectStyles: Record<string, SxProps<Theme>> = {
   select: {

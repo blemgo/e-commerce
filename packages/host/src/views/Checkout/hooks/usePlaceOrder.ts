@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useCheckout } from '@api/hooks/orders/useCheckout';
+import { useCheckout } from '@shared/api/hooks/orders/useCheckout';
 import { useCartContext } from '@contexts/cart';
 
 export interface UsePlaceOrderReturn {

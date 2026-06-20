@@ -1,9 +1,9 @@
 import { Grid } from '@mui/material';
-import { useGetProducts } from '@api/hooks/products/useGetProducts';
-import { useProductFilters } from '@api/hooks/products/useProductFilters';
+import { useGetProducts } from '@shared/api/hooks/products/useGetProducts';
+import { useProductFilters } from '@shared/api/hooks/products/useProductFilters';
 import { ProductCard } from '@components/ProductCard';
-import { PaginatedView } from '@components/PaginatedView';
-import type { Product } from '@types';
+import { PaginatedView } from '@shared/components/PaginatedView';
+import type { Product } from '@shared/types';
 import { useAppendCartItem } from '@contexts/cart/hooks/useAppendCartItem';
 
 const ProductStack: React.FC = () => {

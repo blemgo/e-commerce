@@ -2,10 +2,10 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
-import { Modal } from "@components/Modal";
-import { StyledInput } from "@components/StyledInput";
+import { Modal } from "@shared/components/Modal";
+import { StyledInput } from "@shared/components/StyledInput";
 import { flattenWithPath, formatPath } from "@components/CategorySelect/categoryOptions";
-import type { CategoryNode, CreateCategoryDTO } from "@types";
+import type { CategoryNode, CreateCategoryDTO } from "@shared/types";
 import { categoryFormStyles } from "./CategoryForm.styles";
 
 interface CategoryFormProps {

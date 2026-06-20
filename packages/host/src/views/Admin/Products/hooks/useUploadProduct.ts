@@ -1,7 +1,7 @@
-import { useUploadProductImage } from "@api/hooks/cloudinary/useUploadProductImage";
-import { useCreateProduct } from "@api/hooks/products/useCreateProduct";
-import { useUpdateProduct } from "@api/hooks/products/useUpdateProduct";
-import type { CreateProductDTO, Paginated, Product } from "@types";
+import { useUploadProductImage } from "@shared/api/hooks/cloudinary/useUploadProductImage";
+import { useCreateProduct } from "@shared/api/hooks/products/useCreateProduct";
+import { useUpdateProduct } from "@shared/api/hooks/products/useUpdateProduct";
+import type { CreateProductDTO, Paginated, Product } from "@shared/types";
 
 export interface UseUploadProductReturn {
   uploadProduct: (

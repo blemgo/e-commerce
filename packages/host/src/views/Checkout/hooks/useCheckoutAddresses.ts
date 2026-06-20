@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useGetAddresses } from '@api/hooks/addresses/useGetAddresses';
-import { useCreateAddress } from '@api/hooks/addresses/useCreateAddress';
-import { useSetDefaultAddress } from '@api/hooks/addresses/useSetDefaultAddress';
-import type { CreateAddressDTO, UserAddress } from '@types';
+import { useGetAddresses } from '@shared/api/hooks/addresses/useGetAddresses';
+import { useCreateAddress } from '@shared/api/hooks/addresses/useCreateAddress';
+import { useSetDefaultAddress } from '@shared/api/hooks/addresses/useSetDefaultAddress';
+import type { CreateAddressDTO, UserAddress } from '@shared/types';
 
 export interface UseCheckoutAddressesReturn {
   addresses: UserAddress[];

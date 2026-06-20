@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Box, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { AdminHeader } from "@components/AdminHeader";
-import { StyledButton } from "@components/StyledButton";
-import { StyledInput } from "@components/StyledInput";
+import { StyledButton } from "@shared/components/StyledButton";
+import { StyledInput } from "@shared/components/StyledInput";
 import { ImageUpload } from "@components/ImageUpload";
 import { CategorySelect } from "@components/CategorySelect";
-import type { CategoryNode, CreateProductDTO, Product } from "@types";
+import type { CategoryNode, CreateProductDTO, Product } from "@shared/types";
 import { productFormStyles } from "./ProductForm.styles";
 
 interface ProductFormProps {

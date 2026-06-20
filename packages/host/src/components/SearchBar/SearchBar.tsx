@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
-import { useProductFilters, productFiltersParsers } from '@api/hooks/products/useProductFilters';
+import { useProductFilters, productFiltersParsers } from '@shared/api/hooks/products/useProductFilters';
 import { searchBarStyles } from './SearchBar.styles';
 
 const allNull = Object.fromEntries(Object.keys(productFiltersParsers).map(key => [key, null]));

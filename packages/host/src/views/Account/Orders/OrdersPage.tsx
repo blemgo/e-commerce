@@ -6,11 +6,11 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { LoadingScreen } from '@components/LoadingScreen';
+import { LoadingScreen } from '@shared/components/LoadingScreen';
 import { OrderStatusChip } from '@components/OrderStatusChip';
-import { useGetOrders } from '@api/hooks/orders/useGetOrders';
-import { formatDate } from '@/utils/formatDate';
-import type { Order } from '@types';
+import { useGetOrders } from '@shared/api/hooks/orders/useGetOrders';
+import { formatDate } from '@shared/utils/formatDate';
+import type { Order } from '@shared/types';
 import { ordersPageStyles } from './OrdersPage.styles';
 
 const itemCount = (order: Order): number =>

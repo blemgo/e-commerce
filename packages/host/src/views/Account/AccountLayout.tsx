@@ -6,10 +6,10 @@ import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutlined";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import { SidePanel } from "@components/SidePanel";
-import type { SidePanelItem } from "@components/SidePanel";
+import { SidePanel } from "@shared/components/SidePanel";
+import type { SidePanelItem } from "@shared/components/SidePanel";
 import { useUserContext } from "@contexts/user";
-import { Role } from "@types";
+import { Role } from "@shared/types";
 import { accountLayoutStyles } from "./AccountLayout.styles";
 import { IconedRedirect } from "@/components/IconedRedirect";
 

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useSetCartItemQuantity } from '@api/hooks/cart/useSetCartItemQuantity';
-import { useGetCart } from '@api/hooks/cart/useGetCart';
+import { useSetCartItemQuantity } from '@shared/api/hooks/cart/useSetCartItemQuantity';
+import { useGetCart } from '@shared/api/hooks/cart/useGetCart';
 import type { CartStrategy } from './CartStrategy';
 
 const useUserCartStrategy = (): CartStrategy => {

@@ -6,7 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Link } from 'react-router-dom';
-import type { CategoryNode } from '@types';
+import type { CategoryNode } from '@shared/types';
 import { categoryDropdownStyles } from './CategoryDropdown.styles';
 
 interface CategoryRowProps {

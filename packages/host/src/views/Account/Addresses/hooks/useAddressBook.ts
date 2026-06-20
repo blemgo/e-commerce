@@ -1,9 +1,9 @@
-import { useGetAddresses } from '@api/hooks/addresses/useGetAddresses';
-import { useCreateAddress } from '@api/hooks/addresses/useCreateAddress';
-import { useUpdateAddress } from '@api/hooks/addresses/useUpdateAddress';
-import { useDeleteAddress } from '@api/hooks/addresses/useDeleteAddress';
-import { useSetDefaultAddress } from '@api/hooks/addresses/useSetDefaultAddress';
-import type { CreateAddressDTO, UpdateAddressDTO, UserAddress } from '@types';
+import { useGetAddresses } from '@shared/api/hooks/addresses/useGetAddresses';
+import { useCreateAddress } from '@shared/api/hooks/addresses/useCreateAddress';
+import { useUpdateAddress } from '@shared/api/hooks/addresses/useUpdateAddress';
+import { useDeleteAddress } from '@shared/api/hooks/addresses/useDeleteAddress';
+import { useSetDefaultAddress } from '@shared/api/hooks/addresses/useSetDefaultAddress';
+import type { CreateAddressDTO, UpdateAddressDTO, UserAddress } from '@shared/types';
 
 export interface UseAddressBookReturn {
   addresses: UserAddress[];

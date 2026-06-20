@@ -3,8 +3,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import { formatAddressLine1, formatAddressLine2 } from '@/utils/formatAddress';
-import type { UserAddress } from '@types';
+import { formatAddressLine1, formatAddressLine2 } from '@shared/utils/formatAddress';
+import type { UserAddress } from '@shared/types';
 import { addressCardStyles } from './AddressCard.styles';
 
 interface AddressCardProps {

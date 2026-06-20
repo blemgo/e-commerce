@@ -3,11 +3,11 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-import { LoadingScreen } from '@components/LoadingScreen';
+import { LoadingScreen } from '@shared/components/LoadingScreen';
 import { AddressDialog } from '@components/AddressDialog';
 import { AddressCard } from './Components/AddressCard';
 import { useAddressBook } from './hooks/useAddressBook';
-import type { CreateAddressDTO, UserAddress } from '@types';
+import type { CreateAddressDTO, UserAddress } from '@shared/types';
 import { addressesPageStyles } from './AddressesPage.styles';
 
 const AddressesPage: React.FC = () => {

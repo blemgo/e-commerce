@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import { toast } from 'react-toastify';
-import { Modal } from '@components/Modal';
-import { StyledInput } from '@/components/StyledInput';
-import { useChangePassword } from '@api/hooks/users/useChangePassword';
+import { Modal } from '@shared/components/Modal';
+import { StyledInput } from '@shared/components/StyledInput';
+import { useChangePassword } from '@shared/api/hooks/users/useChangePassword';
 import { passwordDialogStyles } from './PasswordDialog.styles';
 
 interface PasswordDialogProps {
