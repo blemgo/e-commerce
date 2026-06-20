@@ -1,5 +1,14 @@
 {
-  "dependencies": {
-    "@nestjs/jwt": "github:nestjs/jwt"
+  "name": "bally-store",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @bally/host",
+    "dev:host": "npm run dev --workspace @bally/host",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
   }
 }
